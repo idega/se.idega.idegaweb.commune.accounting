@@ -1,4 +1,4 @@
-#Fri Oct 24 09:44:56 CEST 2003
+#Fri Oct 24 12:54:48 CEST 2003
 =
 0\ -\ 1=0 - 1
 1=1
@@ -197,6 +197,7 @@ Eda=Eda
 Eker\u00F6=Eker\u00F6
 Eksj\u00F6=Eksj\u00F6
 Elprogrammet=Elprogrammet
+Elprogrammet\ Ckeck=Elprogrammet Ckeck
 En\ ny\ regel=En ny regel
 Energiprogrammet=Energiprogrammet
 Enk\u00F6ping=Enk\u00F6ping
@@ -1142,6 +1143,7 @@ iw.component.se.idega.idegaweb.commune.accounting.school.presentation.StudyPathE
 iw.component.se.idega.idegaweb.commune.accounting.update.presentation.SetSchoolClassSchoolTypeRelation.name=SetSchoolClassSchoolTypeRelation
 iw.component.se.idega.idegaweb.commune.accounting.userinfo.presentation.HouseHoldViewer.name=HouseHoldViewer
 iw.component.se.idega.idegaweb.commune.school.presentation.CentralPlacingEditor.name=
+iw.component.se.idega.idegaweb.commune.school.presentation.InvoiceByCompensationView.name=
 main_op_error=Huvudverksamhet m\u00E5ste v\u00E4ljas
 missing_date_error=Datum saknas\!
 notice_editor.and=och
@@ -1325,7 +1327,7 @@ sch_type.school_type_forskola=F\u00F6rskola
 sch_type.school_type_forskoleklass=F\u00F6rskoleklass
 sch_type.school_type_fritids6=Fritids 6
 sch_type.school_type_fritids7-10=Fritids 7-10
-sch_type.school_type_fritidsklubb=sch_type.school_type_fritidsklubb
+sch_type.school_type_fritidsklubb=Fritidsklubb
 sch_type.school_type_grundskola=Grundskola
 sch_type.school_type_gymnasiesarskola=Gymnasies\u00E4rskola
 sch_type.school_type_gymnasieskola=Gymnasieskola
@@ -1338,6 +1340,7 @@ school_category.COLLEGE=Gymnasium
 school_category.ELEMENTARY_SCHOOL=Grundskola
 school_category.HIGH_SCHOOL=Gymnasium
 school_category.UNIVERSITY=Universitet
+school_choice.NO=
 school_class_member.invoice_interval.month=M\u00E5nad
 school_class_member.invoice_interval.term=Termin
 school_class_member.invoice_interval.year=\u00C5r

@@ -1,4 +1,4 @@
-#Fri Oct 24 09:44:56 CEST 2003
+#Fri Oct 24 12:54:48 CEST 2003
 =
 0\ -\ 1=
 1=
@@ -197,6 +197,7 @@ Eda=
 Eker\u00F6=
 Eksj\u00F6=
 Elprogrammet=
+Elprogrammet\ Ckeck=
 En\ ny\ regel=
 Energiprogrammet=
 Enk\u00F6ping=
@@ -1142,6 +1143,7 @@ iw.component.se.idega.idegaweb.commune.accounting.school.presentation.StudyPathE
 iw.component.se.idega.idegaweb.commune.accounting.update.presentation.SetSchoolClassSchoolTypeRelation.name=
 iw.component.se.idega.idegaweb.commune.accounting.userinfo.presentation.HouseHoldViewer.name=
 iw.component.se.idega.idegaweb.commune.school.presentation.CentralPlacingEditor.name=
+iw.component.se.idega.idegaweb.commune.school.presentation.InvoiceByCompensationView.name=
 main_op_error=
 missing_date_error=
 notice_editor.and=
@@ -1338,6 +1340,7 @@ school_category.COLLEGE=
 school_category.ELEMENTARY_SCHOOL=
 school_category.HIGH_SCHOOL=
 school_category.UNIVERSITY=
+school_choice.NO=
 school_class_member.invoice_interval.month=
 school_class_member.invoice_interval.term=
 school_class_member.invoice_interval.year=
