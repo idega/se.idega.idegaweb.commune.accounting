@@ -410,6 +410,58 @@
             </value>
             <type>map</type>
           </key>
+          <key>
+            <name>se.idega.idegaweb.commune.accounting.update.presentation.SetSchoolClassSchoolTypeRelation</name>
+            <value>
+              <map>
+                <key>
+                  <name>component_property_file</name>
+                  <type>java.lang.String</type>
+                  <value>se.idega.idegaweb.commune.accounting.update.presentation.SetSchoolClassSchoolTypeRelation.pxml</value>
+                </key>
+              </map>
+            </value>
+            <type>map</type>
+          </key>
+          <key>
+            <name>se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchStarter</name>
+            <value>
+              <map>
+                <key>
+                  <name>component_property_file</name>
+                  <type>java.lang.String</type>
+                  <value>se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchStarter.pxml</value>
+                </key>
+              </map>
+            </value>
+            <type>map</type>
+          </key>
+          <key>
+            <name>se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchResult</name>
+            <value>
+              <map>
+                <key>
+                  <name>component_property_file</name>
+                  <type>java.lang.String</type>
+                  <value>se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchResult.pxml</value>
+                </key>
+              </map>
+            </value>
+            <type>map</type>
+          </key>
+          <key>
+            <name>se.idega.idegaweb.commune.accounting.invoice.presentation.RemovePreliminaryInvoicing</name>
+            <value>
+              <map>
+                <key>
+                  <name>component_property_file</name>
+                  <type>java.lang.String</type>
+                  <value>se.idega.idegaweb.commune.accounting.invoice.presentation.RemovePreliminaryInvoicing.pxml</value>
+                </key>
+              </map>
+            </value>
+            <type>map</type>
+          </key>
         </map>
       </value>
       <type>map</type>
