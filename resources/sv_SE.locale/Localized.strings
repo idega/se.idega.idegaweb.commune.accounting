@@ -1,4 +1,4 @@
-#Fri Oct 24 12:54:48 CEST 2003
+#Mon Nov 03 16:09:18 CET 2003
 0\ -\ 1=0 - 1
 1=1
 1\ -\ 2=1 - 2
@@ -48,6 +48,8 @@
 8=8
 8\ -\ 9=8 - 9
 9=9
+<<<<<<<=
+>>>>>>>=
 Add\ to=
 Ale=Ale
 Alings\u00E5s=Alings\u00E5s
@@ -1126,6 +1128,7 @@ invbr.totalAmount=Total amount
 iw.component.se.idega.idegaweb.commune.accounting.export.presentation.ExportDataMappingEditor.name=ExportDataMappingEditor
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchResult.name=InvoiceBatchResult
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchStarter.name=InvoiceBatchStarter
+iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.RegularInvoiceEntriesList.name=RegularInvoiceEntriesList
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.RemovePreliminaryInvoicing.name=RemovePreliminaryInvoicing
 iw.component.se.idega.idegaweb.commune.accounting.message.presentation.NoticeEditor.name=NoticeEditor
 iw.component.se.idega.idegaweb.commune.accounting.posting.presentation.PostingParameterList.name=PostingParameterList
@@ -1223,6 +1226,7 @@ provider.statistics_foreign_provider=Utl\u00E4ndsk anordnare
 provider.statistics_private_provider=Enskild anordnare
 provider.statistics_special_school=Specialskola
 provider_editor.address=Adress
+provider_editor.all_providers=Alla anordnare
 provider_editor.bankgiro=Bankgiro
 provider_editor.button_delete=Klicka h\u00E4r f\u00F6r att ta bort denna anordnare
 provider_editor.button_edit=Redigera denna anordnare
@@ -1242,6 +1246,8 @@ provider_editor.latitude=Latitud
 provider_editor.longitude=Longitud
 provider_editor.name=Namn
 provider_editor.new=Ny
+provider_editor.operational_field=Huvudverksamhet
+provider_editor.operational_field_selector_header=V\u00E4lj huvudverksamhet
 provider_editor.operations=Verksamheter
 provider_editor.organization_number=Org. nr.
 provider_editor.payment_by_invoice=Ers\u00E4ttning mot faktura

@@ -1,4 +1,4 @@
-#Mon Oct 27 01:53:05 CET 2003
+#Fri Oct 31 10:17:45 CET 2003
 0\ -\ 1=
 1=
 1\ -\ 2=
@@ -1128,6 +1128,7 @@ invbr.totalAmount=
 iw.component.se.idega.idegaweb.commune.accounting.export.presentation.ExportDataMappingEditor.name=
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchResult.name=
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.InvoiceBatchStarter.name=
+iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.RegularInvoiceEntriesList.name=
 iw.component.se.idega.idegaweb.commune.accounting.invoice.presentation.RemovePreliminaryInvoicing.name=
 iw.component.se.idega.idegaweb.commune.accounting.message.presentation.NoticeEditor.name=
 iw.component.se.idega.idegaweb.commune.accounting.posting.presentation.PostingParameterList.name=
@@ -1225,6 +1226,7 @@ provider.statistics_foreign_provider=
 provider.statistics_private_provider=
 provider.statistics_special_school=
 provider_editor.address=
+provider_editor.all_providers=
 provider_editor.bankgiro=
 provider_editor.button_delete=
 provider_editor.button_edit=
@@ -1244,6 +1246,8 @@ provider_editor.latitude=
 provider_editor.longitude=
 provider_editor.name=
 provider_editor.new=
+provider_editor.operational_field=
+provider_editor.operational_field_selector_header=
 provider_editor.operations=
 provider_editor.organization_number=
 provider_editor.payment_by_invoice=
