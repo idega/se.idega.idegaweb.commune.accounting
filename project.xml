@@ -5,8 +5,8 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Commune Accounting</name>
   <artifactId>se.idega.idegaweb.commune.accounting</artifactId>
-  <!--currentVersion>1.0.1</currentVersion-->
-  <currentVersion>1.0-SNAPSHOT</currentVersion>
+  <currentVersion>1.0.1</currentVersion>
+  <!--currentVersion>1.0-SNAPSHOT</currentVersion-->
 
   <inceptionYear>2004</inceptionYear>
   <shortDescription>Commune Accounting</shortDescription>
