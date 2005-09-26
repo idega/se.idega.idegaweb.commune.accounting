@@ -1068,6 +1068,7 @@ provider_editor.title_delete=
 provider_editor.title_edit=
 provider_editor.zip_area=Zip area
 provider_editor.zip_code=Zip code
+provider_editor.sorted_by_date_of_birth=Sorted by date of birth
 provider_error.cannot_delete_provider=
 provider_error.illegal_organization_number=
 provider_error.name_missing=

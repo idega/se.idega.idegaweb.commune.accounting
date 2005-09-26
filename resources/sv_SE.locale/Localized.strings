@@ -832,6 +832,7 @@ provider_editor.title_delete=Ta bort anordnare
 provider_editor.title_edit=Redigera anordnare
 provider_editor.zip_area=Ort
 provider_editor.zip_code=Postnr
+provider_editor.sorted_by_date_of_birth=Sortering p\u00e5 f\u00f6delsedatum
 provider_error.cannot_delete_provider=Anordnaren kunde inte tas bort eftersom det finns skolgrupper och/eller studiev\u00E4gar kopplade till denna anordnare.
 provider_error.illegal_organization_number=Ogiltigt organisationsnummer.
 provider_error.name_missing=Namn p\u00E5 anordnaren m\u00E5ste anges.
