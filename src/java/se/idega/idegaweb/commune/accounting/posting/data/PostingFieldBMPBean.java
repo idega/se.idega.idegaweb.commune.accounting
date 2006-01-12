@@ -1,5 +1,5 @@
 /*
- * $Id: PostingFieldBMPBean.java,v 1.9 2003/12/02 09:40:26 sigtryggur Exp $
+ * $Id: PostingFieldBMPBean.java,v 1.10 2006/01/12 09:59:15 laddi Exp $
  *
  * Copyright (C) 2002 Idega hf. All Rights Reserved.
  *
@@ -58,7 +58,6 @@ public class PostingFieldBMPBean extends GenericEntity implements PostingField
 	 */
 	public void initializeAttributes() {
 		addAttribute(getIDColumnName());
-		addAttribute(COLUMN_CP_POSTING_STRING_ID, "", true, true, java.lang.Integer.class);
 		addAttribute(COLUMN_ORDER_NR, "", true, true, java.lang.Integer.class);
 		addAttribute(COLUMN_FIELD_TITLE, "", true, true, java.lang.String.class, 1000);
 		addAttribute(COLUMN_LEN, "", true, true, java.lang.Integer.class);
