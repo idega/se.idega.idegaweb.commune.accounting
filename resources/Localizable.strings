@@ -1236,7 +1236,6 @@ provider_error.cannot_delete_provider=
 provider_error.illegal_organization_number=
 provider_error.name_missing=
 provider_error.school_already_exists=
-
 reg_spec_editor.cancel=
 reg_spec_editor.click_delete=
 reg_spec_editor.click_edit=
