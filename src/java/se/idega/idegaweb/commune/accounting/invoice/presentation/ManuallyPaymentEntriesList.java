@@ -58,11 +58,11 @@ import se.idega.idegaweb.commune.accounting.regulations.data.RegulationSpecTypeH
 import se.idega.idegaweb.commune.accounting.school.presentation.PostingBlock;
 
 /**
- * Last modified: $Date: 2004/10/07 17:10:21 $ by $Author: thomas $
+ * Last modified: $Date: 2006/02/21 16:16:59 $ by $Author: laddi $
  *
  * @author <a href="mailto:roar@idega.is">Roar Skullestad</a>
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class ManuallyPaymentEntriesList extends AccountingBlock {
 
@@ -157,7 +157,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 					break;	
 				case ACTION_CANCEL:
 					handleCancelAction();
-				
+					break;
 				default:
 					newPayment = true;
 					handleEditAction(iwc);			
