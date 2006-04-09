@@ -123,8 +123,9 @@ public class BruttoIncomeBMPBean extends GenericEntity implements BruttoIncome {
 	
 	public Object ejbFindLatestByUser(Integer userID) throws FinderException{
 		Collection pks = super.idoFindPKsByQuery(idoQueryGetSelect().appendWhereEquals(COLUMN_USER,userID.intValue()).appendOrderByDescending(COLUMN_VALID_FROM),1);
-		if(pks!=null && !pks.isEmpty())
+		if(pks!=null && !pks.isEmpty()) {
 			return pks.iterator().next();
+		}
 		throw new FinderException("Nothing found");
 	}
 	

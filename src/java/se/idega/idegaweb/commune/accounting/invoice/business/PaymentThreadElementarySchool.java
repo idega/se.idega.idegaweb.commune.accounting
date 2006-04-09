@@ -44,13 +44,13 @@ public class PaymentThreadElementarySchool extends PaymentThreadSchool {
 
 	public void run() {
 		try {
-			category = getSchoolCategoryHome().findElementarySchoolCategory();
-			categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(
-					category.getPrimaryKey());
+			this.category = getSchoolCategoryHome().findElementarySchoolCategory();
+			this.categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(
+					this.category.getPrimaryKey());
 
-			if (getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(month, category.getCategory()) == 0) {
-				createBatchRunLogger(category);
-				removePreliminaryInformation(month, category.getCategory());
+			if (getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(this.month, this.category.getCategory()) == 0) {
+				createBatchRunLogger(this.category);
+				removePreliminaryInformation(this.month, this.category.getCategory());
 				// Create all the billing info derrived from the contracts
 				contracts();
 				// Create all the billing info derrived from the regular
@@ -84,13 +84,13 @@ public class PaymentThreadElementarySchool extends PaymentThreadSchool {
 		PostingDetail detail = null;
 
 		try {
-			Commune homeCommune = currentProvider.getSchool().getCommune();
+			Commune homeCommune = this.currentProvider.getSchool().getCommune();
 			ArrayList cond = new ArrayList();
 			cond.addAll(conditions);
 			cond.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_COMMUNE, homeCommune.getPrimaryKey()));
-			detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(category.getCategory(),
+			detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(this.category.getCategory(),
 					PaymentFlowConstant.OUT, // The payment flow is out
-					calculationDate, // Current date to select the correct
+					this.calculationDate, // Current date to select the correct
 										// date range
 					RuleTypeConstant.DERIVED, // The conditiontype
 					RegSpecConstant.CHECK, // The ruleSpecType shall be Check

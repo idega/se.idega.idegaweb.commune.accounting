@@ -1,5 +1,5 @@
 /*
- * $Id: Provider.java,v 1.10 2005/10/17 09:53:40 palli Exp $
+ * $Id: Provider.java,v 1.11 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -22,10 +22,10 @@ import com.idega.block.school.data.SchoolHome;
 /**
  * This class is a holder for a school bean and provider accounting information.
  * <p>
- * Last modified: $Date: 2005/10/17 09:53:40 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class Provider {
 
@@ -41,7 +41,7 @@ public class Provider {
 			this.school = school;
 			if (school != null) {
 				ProviderAccountingPropertiesHome h = (ProviderAccountingPropertiesHome) com.idega.data.IDOLookup.getHome(ProviderAccountingProperties.class);
-				properties = h.findByPrimaryKey(school.getPrimaryKey()); 
+				this.properties = h.findByPrimaryKey(school.getPrimaryKey()); 
 			}
 		} catch (RemoteException e) {
 		} catch (FinderException e) {}
@@ -55,10 +55,10 @@ public class Provider {
 	public Provider(int schoolId) {
 		try {
 			SchoolHome home = (SchoolHome) com.idega.data.IDOLookup.getHome(School.class);
-			school = home.findByPrimaryKey(new Integer(schoolId));
-			if (school != null) {
+			this.school = home.findByPrimaryKey(new Integer(schoolId));
+			if (this.school != null) {
 				ProviderAccountingPropertiesHome h = (ProviderAccountingPropertiesHome) com.idega.data.IDOLookup.getHome(ProviderAccountingProperties.class);
-				properties = h.findByPrimaryKey(new Integer(schoolId)); 
+				this.properties = h.findByPrimaryKey(new Integer(schoolId)); 
 			}
 		} catch (RemoteException e) {
 		} catch (FinderException e) {}
@@ -68,35 +68,35 @@ public class Provider {
 	 * Returns the school object for this provider.
 	 */
 	public School getSchool() {
-		return school;
+		return this.school;
 	}
 	
 	/**
 	 * Returns the accounting properties for this provider.
 	 */
 	public ProviderAccountingProperties getAccountingProperties() {
-		return properties;
+		return this.properties;
 	}
 	
 	public int getProviderTypeId() {
-		if (properties != null) {
-			return properties.getProviderTypeId();
+		if (this.properties != null) {
+			return this.properties.getProviderTypeId();
 		} else {
 			return -1;
 		}
 	}
 
 	public ProviderType getProviderType() {
-		if (properties != null) {
-			return properties.getProviderType();
+		if (this.properties != null) {
+			return this.properties.getProviderType();
 		} else {
 			return null;
 		}
 	}
 
 	public String getStatisticsType() {
-		if (properties != null) {
-			String s = properties.getStatisticsType();
+		if (this.properties != null) {
+			String s = this.properties.getStatisticsType();
 			if (s != null) {
 				return s;
 			} else {
@@ -108,56 +108,56 @@ public class Provider {
 	}
 
 	public boolean getPaymentByInvoice() {
-		if (properties != null) {
-			return properties.getPaymentByInvoice();
+		if (this.properties != null) {
+			return this.properties.getPaymentByInvoice();
 		} else {
 			return false;
 		}
 	}
 
 	public boolean getStateSubsidyGrant() {
-		if (properties != null) {
-			return properties.getStateSubsidyGrant();
+		if (this.properties != null) {
+			return this.properties.getStateSubsidyGrant();
 		} else {
 			return false;
 		}
 	}
 
 	public String getPostgiro() {
-		if (properties != null) {
-			return properties.getPostgiro();
+		if (this.properties != null) {
+			return this.properties.getPostgiro();
 		} else {
 			return "";
 		}
 	}
 
 	public String getBankgiro() {
-		if (properties != null) {
-			return properties.getBankgiro();
+		if (this.properties != null) {
+			return this.properties.getBankgiro();
 		} else {
 			return "";
 		}
 	}
 	
 	public String getGiroText() {
-		if (properties != null) {
-			return properties.getGiroText();
+		if (this.properties != null) {
+			return this.properties.getGiroText();
 		} else {
 			return "";
 		}		
 	}
 
 	public String getOwnPosting() {
-		if (properties != null) {
-			return properties.getOwnPosting();
+		if (this.properties != null) {
+			return this.properties.getOwnPosting();
 		} else {
 			return null;
 		}
 	}
 
 	public String getDoublePosting() {
-		if (properties != null) {
-			return properties.getDoublePosting();
+		if (this.properties != null) {
+			return this.properties.getDoublePosting();
 		} else {
 			return null;
 		}

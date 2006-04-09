@@ -1,5 +1,5 @@
 /*
- * $Id: ButtonPanel.java,v 1.16 2003/10/03 01:53:10 tryggvil Exp $
+ * $Id: ButtonPanel.java,v 1.17 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -20,10 +20,10 @@ import com.idega.presentation.ui.SubmitButton;
  * A class for button panels in Check & Peng application forms.
  * 
  * <p>
- * Last modified: $Date: 2003/10/03 01:53:10 $
+ * Last modified: $Date: 2006/04/09 11:53:33 $
  *
  * @author <a href="http://www.ncmedia.com">Anders Lindman</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @see ApplicationForm
  */
 public class ButtonPanel extends AccountingBlock {
@@ -37,10 +37,10 @@ public class ButtonPanel extends AccountingBlock {
 	 */
 	public ButtonPanel(AccountingBlock parent) {
 		this.parent = parent;
-		table = new Table();
-		table.setCellpadding(getCellpadding());
-		table.setCellspacing(getCellspacing());
-		super.add(table);
+		this.table = new Table();
+		this.table.setCellpadding(getCellpadding());
+		this.table.setCellspacing(getCellspacing());
+		super.add(this.table);
 	}
 
 	/**
@@ -129,21 +129,21 @@ public class ButtonPanel extends AccountingBlock {
 	 */
 	public void addButton(GenericButton button) {
 		button = getButton(button);
-		table.add(button, buttonColumn , 1);
-		buttonColumn++;
+		this.table.add(button, this.buttonColumn , 1);
+		this.buttonColumn++;
 	}
 	
 	/**
 	 * Adds a object to the panel.
 	*/
 	public void add(PresentationObject object) {
-	  table.add(object, buttonColumn , 1);
-	  buttonColumn++;
+	  this.table.add(object, this.buttonColumn , 1);
+	  this.buttonColumn++;
     }
 	
 	public String localize(String textKey, String defaultText) {
-		if (parent != null) {
-			return parent.localize(textKey, defaultText);
+		if (this.parent != null) {
+			return this.parent.localize(textKey, defaultText);
 		} else {
 			return defaultText;
 		}

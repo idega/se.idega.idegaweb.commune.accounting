@@ -1,5 +1,5 @@
 /*
- * $Id: AccountBlock.java,v 1.1 2004/03/19 10:49:46 anders Exp $
+ * $Id: AccountBlock.java,v 1.2 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -21,10 +21,10 @@ import com.idega.presentation.IWContext;
  * used for editing own posting, double posting,
  * payable account and customer claim account strings.
  * <p>
- * Last modified: $Date: 2004/03/19 10:49:46 $ by $Author: anders $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @see se.idega.idegaweb.commune.accounting.posting.presentation.PostingParameterListEditor
  */
 public class AccountBlock extends PostingParameterListEditor {
@@ -67,6 +67,6 @@ public class AccountBlock extends PostingParameterListEditor {
 	public void init(IWContext iwc) {
 		setDefaultParameters();
 		addTempFieldParameters(iwc, new Date(System.currentTimeMillis()));
-		add(getPostingParameterForm(iwc, getThisPostingParameter(iwc), ownPosting, doublePosting, payableAccount, customerClaimAccount));
+		add(getPostingParameterForm(iwc, getThisPostingParameter(iwc), this.ownPosting, this.doublePosting, this.payableAccount, this.customerClaimAccount));
 	}
 }

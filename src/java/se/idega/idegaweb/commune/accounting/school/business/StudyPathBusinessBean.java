@@ -1,5 +1,5 @@
 /*
- * $Id: StudyPathBusinessBean.java,v 1.10 2006/03/08 10:56:51 dainis Exp $
+ * $Id: StudyPathBusinessBean.java,v 1.11 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -31,10 +31,10 @@ import com.idega.data.IDORelationshipException;
 /** 
  * Business logic for age values and regulations for children in childcare.
  * <p>
- * Last modified: $Date: 2006/03/08 10:56:51 $ by $Author: dainis $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class StudyPathBusinessBean extends com.idega.business.IBOServiceBean implements StudyPathBusiness  {
 
@@ -268,21 +268,27 @@ public class StudyPathBusinessBean extends com.idega.business.IBOServiceBean imp
 		//points
 		Integer integerPoints = null;
 		int intPoints = -1;
-		if (points.equals(""))
+		if (points.equals("")) {
 			points = null;
-		if (points != null)
+		}
+		if (points != null) {
 			integerPoints = (new Integer (points));
-		if (integerPoints != null)
+		}
+		if (integerPoints != null) {
 			intPoints = integerPoints.intValue();
+		}
 		//StudyPathGroup
 		Integer integerStudyPathGroupId = null;
 		int intStudyPathGroupId = -1;
-		if (studypathgroup.equals(""))
+		if (studypathgroup.equals("")) {
 			studypathgroup = null;
-		if (studypathgroup != null)
+		}
+		if (studypathgroup != null) {
 			integerStudyPathGroupId = (new Integer (studypathgroup));
-		if (integerStudyPathGroupId != null)
+		}
+		if (integerStudyPathGroupId != null) {
 			intStudyPathGroupId= integerStudyPathGroupId.intValue();
+		}
 		
 		// Study path code
 		String s = studyPathCode.trim().toUpperCase();

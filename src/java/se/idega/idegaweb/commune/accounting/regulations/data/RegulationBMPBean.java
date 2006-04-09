@@ -1,5 +1,5 @@
 /*
- * $Id: RegulationBMPBean.java,v 1.32 2004/02/27 10:36:12 aron Exp $
+ * $Id: RegulationBMPBean.java,v 1.33 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -22,7 +22,7 @@ import com.idega.util.CalendarMonth;
 /**
  * Entity bean for regulation entries.
  * <p>
- * $Id: RegulationBMPBean.java,v 1.32 2004/02/27 10:36:12 aron Exp $
+ * $Id: RegulationBMPBean.java,v 1.33 2006/04/09 11:53:33 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
  * @version$
@@ -444,10 +444,12 @@ public class RegulationBMPBean extends GenericEntity implements Regulation {
 		if (regSpecTypeID != -1 || mainRuleId != -1) {
 			sql.appendAnd();
 			sql.appendEquals("r."+COLUMN_REG_SPEC_TYPE_ID, "t.cacc_reg_spec_type_id");
-			if (regSpecTypeID != -1)
+			if (regSpecTypeID != -1) {
 				sql.appendAndEquals("t.cacc_reg_spec_type_id",regSpecTypeID);
-			if (mainRuleId != -1)
+			}
+			if (mainRuleId != -1) {
 				sql.appendAndEquals("t.main_rule_id",mainRuleId);
+			}
 		}
 		
 		sql.appendOrderBy("r."+COLUMN_CONDITION_ORDER);

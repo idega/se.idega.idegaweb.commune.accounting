@@ -1,5 +1,5 @@
 /*
- * $Id: PostingParameterListEditor.java,v 1.42 2004/03/22 20:40:17 tryggvil Exp $
+ * $Id: PostingParameterListEditor.java,v 1.43 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -48,10 +48,10 @@ import se.idega.idegaweb.commune.accounting.school.business.StudyPathBusiness;
  * It handles posting variables for both own and double entry accounting
  *  
  * <p>
- * $Id: PostingParameterListEditor.java,v 1.42 2004/03/22 20:40:17 tryggvil Exp $
+ * $Id: PostingParameterListEditor.java,v 1.43 2006/04/09 11:53:32 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class PostingParameterListEditor extends AccountingBlock {
 
@@ -131,19 +131,19 @@ public class PostingParameterListEditor extends AccountingBlock {
 	private boolean _setToEmpty = false;
 	
 	public void setResponsePage(ICPage page) {
-		_responsePage = page;
+		this._responsePage = page;
 	}
 
 	public ICPage getResponsePage() {
-		return _responsePage;
+		return this._responsePage;
 	}
 	
 	public void setAddPayableAccount(boolean b) {
-		addPayableAccount = b;
+		this.addPayableAccount = b;
 	}
 	
 	public void setAddCustomerClaimAccount(boolean b) {
-		addCustomerClaimAccount = b;
+		this.addCustomerClaimAccount = b;
 	}
 	
 	/**
@@ -175,17 +175,17 @@ public class PostingParameterListEditor extends AccountingBlock {
 		 
 	private boolean saveData(IWContext iwc) {
 
-		_pMap.clear();
-		_pMap.put(PARAM_PERIOD_FROM, iwc.getParameter(PARAM_PERIOD_FROM));
-		_pMap.put(PARAM_PERIOD_TO, iwc.getParameter(PARAM_PERIOD_TO));
-		_pMap.put(PARAM_SIGNED, iwc.getParameter(PARAM_SIGNED));
-		_pMap.put(PARAM_SELECTOR_ACTIVITY, iwc.getParameter(PARAM_SELECTOR_ACTIVITY));				
-		_pMap.put(PARAM_SELECTOR_REGSPEC, iwc.getParameter(PARAM_SELECTOR_REGSPEC));		
-		_pMap.put(PARAM_SELECTOR_COMPANY_TYPE, iwc.getParameter(PARAM_SELECTOR_COMPANY_TYPE));					
-		_pMap.put(PARAM_SELECTOR_COM_BELONGING, iwc.getParameter(PARAM_SELECTOR_COM_BELONGING));
-		_pMap.put(PARAM_SELECTOR_SCHOOL_YEAR1, iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR1));
-		_pMap.put(PARAM_SELECTOR_SCHOOL_YEAR2, iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR2));
-		_pMap.put(PARAM_SELECTOR_STUDY_PATH, iwc.getParameter(PARAM_SELECTOR_STUDY_PATH));
+		this._pMap.clear();
+		this._pMap.put(PARAM_PERIOD_FROM, iwc.getParameter(PARAM_PERIOD_FROM));
+		this._pMap.put(PARAM_PERIOD_TO, iwc.getParameter(PARAM_PERIOD_TO));
+		this._pMap.put(PARAM_SIGNED, iwc.getParameter(PARAM_SIGNED));
+		this._pMap.put(PARAM_SELECTOR_ACTIVITY, iwc.getParameter(PARAM_SELECTOR_ACTIVITY));				
+		this._pMap.put(PARAM_SELECTOR_REGSPEC, iwc.getParameter(PARAM_SELECTOR_REGSPEC));		
+		this._pMap.put(PARAM_SELECTOR_COMPANY_TYPE, iwc.getParameter(PARAM_SELECTOR_COMPANY_TYPE));					
+		this._pMap.put(PARAM_SELECTOR_COM_BELONGING, iwc.getParameter(PARAM_SELECTOR_COM_BELONGING));
+		this._pMap.put(PARAM_SELECTOR_SCHOOL_YEAR1, iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR1));
+		this._pMap.put(PARAM_SELECTOR_SCHOOL_YEAR2, iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR2));
+		this._pMap.put(PARAM_SELECTOR_STUDY_PATH, iwc.getParameter(PARAM_SELECTOR_STUDY_PATH));
 		
 		addTempFieldParameters(iwc, parseDate(iwc.getParameter(PARAM_PERIOD_FROM)));
 		
@@ -209,14 +209,14 @@ public class PostingParameterListEditor extends AccountingBlock {
 					iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR1),
 					iwc.getParameter(PARAM_SELECTOR_SCHOOL_YEAR2),
 					iwc.getParameter(PARAM_SELECTOR_STUDY_PATH),
-					_theOwnString,
-					_theDoubleString
+					this._theOwnString,
+					this._theDoubleString
 			);
 		} catch (PostingParametersException e) {
 			if(e.getTextKey().compareTo(KEY_ERROR_LENGTH) == 0) {
-				_errorText = localize(e.getTextKey(), "Fel längd på fält: ")+e.getDefaultText();
+				this._errorText = localize(e.getTextKey(), "Fel längd på fält: ")+e.getDefaultText();
 			} else {
-				_errorText = localize(e.getTextKey(), e.getDefaultText());
+				this._errorText = localize(e.getTextKey(), e.getDefaultText());
 			}
 			return false;
 		} catch (RemoteException e) {
@@ -230,10 +230,10 @@ public class PostingParameterListEditor extends AccountingBlock {
 
 	public void generateStrings(IWContext iwc) throws PostingParametersException {
 
-		_theOwnString = "";
-		_theDoubleString = "";
-		_thePayableAccountString = "";
-		_theCustomerClaimAccountString = "";
+		this._theOwnString = "";
+		this._theDoubleString = "";
+		this._thePayableAccountString = "";
+		this._theCustomerClaimAccountString = "";
 		try {
 			int index = 1;
 			PostingBusiness pBiz = getPostingBusiness(iwc);
@@ -259,13 +259,13 @@ public class PostingParameterListEditor extends AccountingBlock {
 				if(len != field.getLen() && len > 0) {
 					throw new PostingParametersException(KEY_ERROR_LENGTH, field.getFieldTitle());			
 				}
-				_theOwnString += pBiz.pad(iwc.getParameter(PARAM_OWN_STRING + "_" + index), field);
-				_theDoubleString += pBiz.pad(iwc.getParameter(PARAM_DOUBLE_STRING + "_" + index), field);
-				if (addPayableAccount) {
-					_thePayableAccountString += pBiz.pad(iwc.getParameter(PARAM_PAYABLE_ACCOUNT + "_" + index), field);
+				this._theOwnString += pBiz.pad(iwc.getParameter(PARAM_OWN_STRING + "_" + index), field);
+				this._theDoubleString += pBiz.pad(iwc.getParameter(PARAM_DOUBLE_STRING + "_" + index), field);
+				if (this.addPayableAccount) {
+					this._thePayableAccountString += pBiz.pad(iwc.getParameter(PARAM_PAYABLE_ACCOUNT + "_" + index), field);
 				}
-				if (addCustomerClaimAccount) {
-					_theCustomerClaimAccountString += pBiz.pad(iwc.getParameter(PARAM_CUSTOMER_CLAIM_ACCOUNT + "_" + index), field);
+				if (this.addCustomerClaimAccount) {
+					this._theCustomerClaimAccountString += pBiz.pad(iwc.getParameter(PARAM_CUSTOMER_CLAIM_ACCOUNT + "_" + index), field);
 				}
 				index++;
 			}
@@ -279,32 +279,32 @@ public class PostingParameterListEditor extends AccountingBlock {
 	 * Returns the own posting string.
 	 */
 	public String getOwnPosting() {
-		return _theOwnString;
+		return this._theOwnString;
 	}
 
 	/**
 	 * Returns the double posting string.
 	 */
 	public String getDoublePosting() {
-		return _theDoubleString;
+		return this._theDoubleString;
 	}
 
 	/**
 	 * Returns the payable account string.
 	 */
 	public String getPayableAccount() {
-		return _thePayableAccountString;
+		return this._thePayableAccountString;
 	}
 
 	/**
 	 * Returns the customer claim account string.
 	 */
 	public String getCustomerClaimAccount() {
-		return _theCustomerClaimAccountString;
+		return this._theCustomerClaimAccountString;
 	}
 
 	private void closeMe(IWContext iwc) {
-		String backUrl = BuilderLogic.getInstance().getIBPageURL(iwc, ((Integer)_responsePage.getPrimaryKey()).intValue());
+		String backUrl = BuilderLogic.getInstance().getIBPageURL(iwc, ((Integer)this._responsePage.getPrimaryKey()).intValue());
 		backUrl += 	"&"	+ PostingParameterList.PARAM_RETURN_FROM_DATE + "=" + 
 						iwc.getParameter(PostingParameterList.PARAM_RETURN_FROM_DATE)+
 					"&"	+ PostingParameterList.PARAM_RETURN_TO_DATE + "=" + 
@@ -378,8 +378,8 @@ public class PostingParameterListEditor extends AccountingBlock {
 		String from = formatDate(pp != null ? pp.getPeriodFrom() : dd, 4);
 		String to = formatDate(pp != null ? pp.getPeriodTo() : dd, 4);
 		if(hasError()) {
-			if (_errorText.length() != 0) {
-				table.add(getErrorText(_errorText), 1, row);
+			if (this._errorText.length() != 0) {
+				table.add(getErrorText(this._errorText), 1, row);
 				table.mergeCells(1, row, 4, row);
 				row++;
 			}
@@ -388,12 +388,12 @@ public class PostingParameterListEditor extends AccountingBlock {
 		table.add(getLocalizedLabel(KEY_FROM_DATE, "Från datum"),1 ,row);
 		table.add(getTextInput(PARAM_PERIOD_FROM, 
 				(pp != null ? from : 
-				(String) _pMap.get(PARAM_PERIOD_FROM)), 40, 4), 2, row);
+				(String) this._pMap.get(PARAM_PERIOD_FROM)), 40, 4), 2, row);
 	
 		table.add(getLocalizedLabel(KEY_TO_DATE, "Tom datum"),3 ,row);
 		table.add(getTextInput(PARAM_PERIOD_TO, 
 				(pp != null ? to : 
-				(String) _pMap.get(PARAM_PERIOD_TO)), 40, 4), 4, row);
+				(String) this._pMap.get(PARAM_PERIOD_TO)), 40, 4), 4, row);
 		
 		row++;
 
@@ -429,13 +429,13 @@ public class PostingParameterListEditor extends AccountingBlock {
 		Table selectors = new Table();
 
 		try {
-			int actPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_ACTIVITY));
-			int regPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_REGSPEC));
-			String comPK = (String) _pMap.get(PARAM_SELECTOR_COMPANY_TYPE);
-			int comBelPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_REGSPEC));
-			int schoolYearPK1 = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_SCHOOL_YEAR1));
-			int schoolYearPK2 = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_SCHOOL_YEAR2));
-			int studyPathPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_STUDY_PATH));
+			int actPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_ACTIVITY));
+			int regPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_REGSPEC));
+			String comPK = (String) this._pMap.get(PARAM_SELECTOR_COMPANY_TYPE);
+			int comBelPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_REGSPEC));
+			int schoolYearPK1 = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_SCHOOL_YEAR1));
+			int schoolYearPK2 = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_SCHOOL_YEAR2));
+			int studyPathPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_STUDY_PATH));
 			
 			if (pp != null) {
 				actPK = Integer.parseInt(pp.getActivity() != null ? 
@@ -496,7 +496,7 @@ public class PostingParameterListEditor extends AccountingBlock {
 	 *
 	 */
 	public void setToEmpty(){
-		_setToEmpty=true;
+		this._setToEmpty=true;
 	}
 	
 	/*
@@ -559,27 +559,27 @@ public class PostingParameterListEditor extends AccountingBlock {
 				String theData2 = "";
 				String theData3 = "";
 				String theData4 = "";
-				if (! _setToEmpty){
+				if (! this._setToEmpty){
 				
 					if(iwc.isParameterSet(PARAM_OWN_STRING+"_"+index)) {
-						theData1 = (String) _pMap.get(PARAM_OWN_STRING+"_"+index);
+						theData1 = (String) this._pMap.get(PARAM_OWN_STRING+"_"+index);
 					}
 					if(iwc.isParameterSet(PARAM_DOUBLE_STRING+"_"+index)) {
-						theData2 = (String) _pMap.get(PARAM_DOUBLE_STRING+"_"+index);
+						theData2 = (String) this._pMap.get(PARAM_DOUBLE_STRING+"_"+index);
 					}
 					if(iwc.isParameterSet(PARAM_PAYABLE_ACCOUNT+"_"+index)) {
-						theData3 = (String) _pMap.get(PARAM_PAYABLE_ACCOUNT+"_"+index);
+						theData3 = (String) this._pMap.get(PARAM_PAYABLE_ACCOUNT+"_"+index);
 					}
 					if(iwc.isParameterSet(PARAM_CUSTOMER_CLAIM_ACCOUNT+"_"+index)) {
-						theData4 = (String) _pMap.get(PARAM_CUSTOMER_CLAIM_ACCOUNT+"_"+index);
+						theData4 = (String) this._pMap.get(PARAM_CUSTOMER_CLAIM_ACCOUNT+"_"+index);
 					}
 					if (postingString != null && !iwc.isParameterSet(PARAM_BUTTON_SAVE)) {
 						theData1 = pBiz.extractField(postingString,readPointer, fieldLength, field);
 						theData2 = pBiz.extractField(doublePostingString,readPointer, fieldLength, field);
-						if (addPayableAccount) {
+						if (this.addPayableAccount) {
 							theData3 = pBiz.extractField(payableAccountString,readPointer, fieldLength, field);							
 						}
-						if (addCustomerClaimAccount) {
+						if (this.addCustomerClaimAccount) {
 							theData4 = pBiz.extractField(customerClaimAccountString,readPointer, fieldLength, field);							
 						}
 					}
@@ -593,13 +593,13 @@ public class PostingParameterListEditor extends AccountingBlock {
 						getTextInput(PARAM_DOUBLE_STRING+"_"+index, theData2, 80, field.getLen()),
 						field
 						));
-				if (addPayableAccount) {
+				if (this.addPayableAccount) {
 					list3.add(inputTextFieldValidation(
 							getTextInput(PARAM_PAYABLE_ACCOUNT+"_"+index, theData3, 80, field.getLen()),
 							field
 							));					
 				}
-				if (addCustomerClaimAccount) {
+				if (this.addCustomerClaimAccount) {
 					list4.add(inputTextFieldValidation(
 							getTextInput(PARAM_CUSTOMER_CLAIM_ACCOUNT+"_"+index, theData4, 80, field.getLen()),
 							field
@@ -614,11 +614,11 @@ public class PostingParameterListEditor extends AccountingBlock {
 		accounts.add(list1, 1, 2);
 		accounts.add(getLocalizedText(KEY_HEADER_DOUBLE_ENTRY, "Mot kontering"), 1, 3);
 		accounts.add(list2, 1, 4);
-		if (addPayableAccount) {
+		if (this.addPayableAccount) {
 			accounts.add(getLocalizedText(KEY_HEADER_PAYABLE_ACCOUNT, "Konto leverantörsreskontra"), 1, 5);
 			accounts.add(list3, 1, 6);
 		}				
-		if (addCustomerClaimAccount) {
+		if (this.addCustomerClaimAccount) {
 			accounts.add(getLocalizedText(KEY_HEADER_CUSTOMER_CLAIM_ACCOUNT, "Konto kundfodran"), 1, 7);
 			accounts.add(list4, 1, 8);
 		}				
@@ -638,8 +638,8 @@ public class PostingParameterListEditor extends AccountingBlock {
 			Iterator iter = fields.iterator();
 			while (iter.hasNext()) {
 				iter.next();
-				_pMap.put(PARAM_OWN_STRING+"_"+index, iwc.getParameter(PARAM_OWN_STRING+"_"+index)); 
-				_pMap.put(PARAM_DOUBLE_STRING+"_"+index, iwc.getParameter(PARAM_DOUBLE_STRING+"_"+index)); 
+				this._pMap.put(PARAM_OWN_STRING+"_"+index, iwc.getParameter(PARAM_OWN_STRING+"_"+index)); 
+				this._pMap.put(PARAM_DOUBLE_STRING+"_"+index, iwc.getParameter(PARAM_DOUBLE_STRING+"_"+index)); 
 				index++;
 			}
 		} catch (RemoteException e) {
@@ -649,18 +649,18 @@ public class PostingParameterListEditor extends AccountingBlock {
 
 	protected void setDefaultParameters() {
 		//String ds = formatDate(new Date(System.currentTimeMillis()), 4);
-		if(_pMap == null) {
-			_pMap = new HashMap();
+		if(this._pMap == null) {
+			this._pMap = new HashMap();
 		}
-		if(!_pMap.containsKey(PARAM_PERIOD_FROM)) {
-			_pMap.put(PARAM_PERIOD_FROM, "" );
-			_pMap.put(PARAM_PERIOD_TO, "");
-			_pMap.put(PARAM_SELECTOR_ACTIVITY, "0");
-			_pMap.put(PARAM_SELECTOR_REGSPEC, "0");
-			_pMap.put(PARAM_SELECTOR_COMPANY_TYPE, "0");
-			_pMap.put(PARAM_SELECTOR_SCHOOL_YEAR1, "0");
-			_pMap.put(PARAM_SELECTOR_SCHOOL_YEAR2, "0");
-			_pMap.put(PARAM_SELECTOR_STUDY_PATH, "0");
+		if(!this._pMap.containsKey(PARAM_PERIOD_FROM)) {
+			this._pMap.put(PARAM_PERIOD_FROM, "" );
+			this._pMap.put(PARAM_PERIOD_TO, "");
+			this._pMap.put(PARAM_SELECTOR_ACTIVITY, "0");
+			this._pMap.put(PARAM_SELECTOR_REGSPEC, "0");
+			this._pMap.put(PARAM_SELECTOR_COMPANY_TYPE, "0");
+			this._pMap.put(PARAM_SELECTOR_SCHOOL_YEAR1, "0");
+			this._pMap.put(PARAM_SELECTOR_SCHOOL_YEAR2, "0");
+			this._pMap.put(PARAM_SELECTOR_STUDY_PATH, "0");
 		}	
 	}
 
@@ -830,7 +830,7 @@ public class PostingParameterListEditor extends AccountingBlock {
 	
 	
 	private boolean hasError() {
-		return _errorText.length() == 0 ? false : true;
+		return this._errorText.length() == 0 ? false : true;
 	}
 
 

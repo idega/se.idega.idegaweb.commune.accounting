@@ -1,5 +1,5 @@
 /*
- * $Id: RegulationListEditor.java,v 1.27 2005/10/13 08:09:37 palli Exp $
+ * $Id: RegulationListEditor.java,v 1.28 2006/04/09 11:53:33 laddi Exp $
  * 
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  * 
@@ -42,10 +42,10 @@ import com.idega.util.IWTimestamp;
 /**
  * RegulationListEditor is an idegaWeb block that edits a Regulation
  * <p>
- * $Id: RegulationListEditor.java,v 1.27 2005/10/13 08:09:37 palli Exp $
+ * $Id: RegulationListEditor.java,v 1.28 2006/04/09 11:53:33 laddi Exp $
  * 
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class RegulationListEditor extends AccountingBlock {
 
@@ -175,11 +175,11 @@ public class RegulationListEditor extends AccountingBlock {
 	private static IWTimestamp nextUpdate = null;
 
 	public void setResponsePage(ICPage page) {
-		_responsePage = page;
+		this._responsePage = page;
 	}
 
 	public ICPage getResponsePage() {
-		return _responsePage;
+		return this._responsePage;
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class RegulationListEditor extends AccountingBlock {
 					break;
 				case ACTION_SAVE:
 					if (!saveData(iwc)) {
-						viewMainForm(iwc, _errorText);
+						viewMainForm(iwc, this._errorText);
 					}
 					break;
 				case ACTION_CANCEL:
@@ -215,25 +215,25 @@ public class RegulationListEditor extends AccountingBlock {
 
 		int newId = 0;
 
-		_pMap.clear();
-		_pMap.put(PARAM_PERIOD_FROM, iwc.getParameter(PARAM_PERIOD_FROM));
-		_pMap.put(PARAM_PERIOD_TO, iwc.getParameter(PARAM_PERIOD_TO));
-		_pMap.put(PARAM_NAME, iwc.getParameter(PARAM_NAME));
-		_pMap.put(PARAM_AMOUNT, iwc.getParameter(PARAM_AMOUNT));
-		_pMap.put(PARAM_CONDITION_ORDER, iwc.getParameter(PARAM_CONDITION_ORDER));
-		_pMap.put(PARAM_SELECTOR_PAYMENT_FLOW_TYPE, iwc.getParameter(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
-		_pMap.put(PARAM_SELECTOR_VAT_ELIGIBLE, iwc.getParameter(PARAM_SELECTOR_VAT_ELIGIBLE));
-		_pMap.put(PARAM_SELECTOR_REG_SPEC_TYPE, iwc.getParameter(PARAM_SELECTOR_REG_SPEC_TYPE));
-		_pMap.put(PARAM_SELECTOR_CONDITION_TYPE, iwc.getParameter(PARAM_SELECTOR_CONDITION_TYPE));
-		_pMap.put(PARAM_SELECTOR_SPECIAL_CALCULATION, iwc.getParameter(PARAM_SELECTOR_SPECIAL_CALCULATION));
-		_pMap.put(PARAM_SELECTOR_VAT_RULE, iwc.getParameter(PARAM_SELECTOR_VAT_RULE));
-		_pMap.put(PARAM_CHANGED_SIGN, iwc.getParameter(PARAM_CHANGED_SIGN));
-		_pMap.put(PARAM_DISCOUNT, iwc.getParameter(PARAM_DISCOUNT));
-		_pMap.put(PARAM_MAX_AMOUNT_DISCOUNT, iwc.getParameter(PARAM_MAX_AMOUNT_DISCOUNT));
+		this._pMap.clear();
+		this._pMap.put(PARAM_PERIOD_FROM, iwc.getParameter(PARAM_PERIOD_FROM));
+		this._pMap.put(PARAM_PERIOD_TO, iwc.getParameter(PARAM_PERIOD_TO));
+		this._pMap.put(PARAM_NAME, iwc.getParameter(PARAM_NAME));
+		this._pMap.put(PARAM_AMOUNT, iwc.getParameter(PARAM_AMOUNT));
+		this._pMap.put(PARAM_CONDITION_ORDER, iwc.getParameter(PARAM_CONDITION_ORDER));
+		this._pMap.put(PARAM_SELECTOR_PAYMENT_FLOW_TYPE, iwc.getParameter(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
+		this._pMap.put(PARAM_SELECTOR_VAT_ELIGIBLE, iwc.getParameter(PARAM_SELECTOR_VAT_ELIGIBLE));
+		this._pMap.put(PARAM_SELECTOR_REG_SPEC_TYPE, iwc.getParameter(PARAM_SELECTOR_REG_SPEC_TYPE));
+		this._pMap.put(PARAM_SELECTOR_CONDITION_TYPE, iwc.getParameter(PARAM_SELECTOR_CONDITION_TYPE));
+		this._pMap.put(PARAM_SELECTOR_SPECIAL_CALCULATION, iwc.getParameter(PARAM_SELECTOR_SPECIAL_CALCULATION));
+		this._pMap.put(PARAM_SELECTOR_VAT_RULE, iwc.getParameter(PARAM_SELECTOR_VAT_RULE));
+		this._pMap.put(PARAM_CHANGED_SIGN, iwc.getParameter(PARAM_CHANGED_SIGN));
+		this._pMap.put(PARAM_DISCOUNT, iwc.getParameter(PARAM_DISCOUNT));
+		this._pMap.put(PARAM_MAX_AMOUNT_DISCOUNT, iwc.getParameter(PARAM_MAX_AMOUNT_DISCOUNT));
 
 		for (int index = 1; index <= 5; index++) {
-			_pMap.put(PARAM_SELECTOR_CONDITION + "_" + index, iwc.getParameter(PARAM_SELECTOR_CONDITION + "_" + index));
-			_pMap.put(PARAM_SELECTOR_INTERVAL + "_" + index, iwc.getParameter(PARAM_SELECTOR_INTERVAL + "_" + index));
+			this._pMap.put(PARAM_SELECTOR_CONDITION + "_" + index, iwc.getParameter(PARAM_SELECTOR_CONDITION + "_" + index));
+			this._pMap.put(PARAM_SELECTOR_INTERVAL + "_" + index, iwc.getParameter(PARAM_SELECTOR_INTERVAL + "_" + index));
 		}
 
 		try {
@@ -258,7 +258,7 @@ public class RegulationListEditor extends AccountingBlock {
 					iwc.getParameter(PARAM_MAX_AMOUNT_DISCOUNT));
 		}
 		catch (RegulationException e) {
-			_errorText = localize(e.getTextKey(), e.getDefaultText());
+			this._errorText = localize(e.getTextKey(), e.getDefaultText());
 			return false;
 		}
 		catch (RemoteException e) {
@@ -274,7 +274,7 @@ public class RegulationListEditor extends AccountingBlock {
 			}
 		}
 		catch (RegulationException e) {
-			_errorText = localize(e.getTextKey(), e.getDefaultText());
+			this._errorText = localize(e.getTextKey(), e.getDefaultText());
 			return false;
 		}
 		catch (RemoteException e) {
@@ -356,22 +356,22 @@ public class RegulationListEditor extends AccountingBlock {
 		catch (RemoteException e) {
 		}
 
-		int payStreamPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
-		int condTypePK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_CONDITION_TYPE));
-		int regSpecTypePK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_REG_SPEC_TYPE));
+		int payStreamPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
+		int condTypePK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_CONDITION_TYPE));
+		int regSpecTypePK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_REG_SPEC_TYPE));
 
 		if (r != null && hasNoError()) {
 			mainOpPK = r.getOperation() != null ? r.getOperation().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_MAIN_OPERATION);
+					: (String) this._pMap.get(PARAM_SELECTOR_MAIN_OPERATION);
 
 			payStreamPK = Integer.parseInt(r.getPaymentFlowType() != null ? r.getPaymentFlowType().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
+					: (String) this._pMap.get(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
 
 			condTypePK = Integer.parseInt(r.getConditionType() != null ? r.getConditionType().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_CONDITION_TYPE));
+					: (String) this._pMap.get(PARAM_SELECTOR_CONDITION_TYPE));
 
 			regSpecTypePK = Integer.parseInt(r.getRegSpecType() != null ? r.getRegSpecType().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_REG_SPEC_TYPE));
+					: (String) this._pMap.get(PARAM_SELECTOR_REG_SPEC_TYPE));
 		}
 		if (iwc.isLoggedOn()) {
 			User user = iwc.getCurrentUser();
@@ -400,18 +400,18 @@ public class RegulationListEditor extends AccountingBlock {
 		// table.add(mainOperationSelector(iwc, PARAM_SELECTOR_MAIN_OPERATION,
 		// mainOpPK), 2, row++);
 
-		table.add(getTextInput(PARAM_NAME, r != null && hasNoError() ? r.getName() : (String) _pMap.get(PARAM_NAME),
+		table.add(getTextInput(PARAM_NAME, r != null && hasNoError() ? r.getName() : (String) this._pMap.get(PARAM_NAME),
 				200, 40), 2, row++);
 
 		table.add(getTextInput(PARAM_AMOUNT, r != null && hasNoError() ? formatCash(r.getAmount())
-				: (String) _pMap.get(PARAM_AMOUNT), 60, 10), 2, row++);
+				: (String) this._pMap.get(PARAM_AMOUNT), 60, 10), 2, row++);
 
 		table.add(getTextInput(PARAM_DISCOUNT, r != null && hasNoError() ? "" + r.getDiscount()
-				: (String) _pMap.get(PARAM_DISCOUNT), 40, 5), 2, row);
+				: (String) this._pMap.get(PARAM_DISCOUNT), 40, 5), 2, row);
 		table.add(getSmallText("%"), 2, row++);
 
 		table.add(getTextInput(PARAM_PERIOD_FROM, (formatDate(r != null && hasNoError() ? r.getPeriodFrom()
-				: parseDate((String) _pMap.get(PARAM_PERIOD_FROM)), 4)), 40, 4), 2, row++);
+				: parseDate((String) this._pMap.get(PARAM_PERIOD_FROM)), 4)), 40, 4), 2, row++);
 
 		String dts = formatDate(r != null && hasNoError() ? r.getChangedDate() : rightNow, 6);
 		table.add(getText(r != null ? dts : ""), 2, row++);
@@ -432,11 +432,11 @@ public class RegulationListEditor extends AccountingBlock {
 		table.add("", 4, row++);
 
 		table.add(getTextInput(PARAM_MAX_AMOUNT_DISCOUNT, r != null && hasNoError() ? "" + r.getMaxAmountDiscount()
-				: (String) _pMap.get(PARAM_MAX_AMOUNT_DISCOUNT), 40, 5), 4, row);
+				: (String) this._pMap.get(PARAM_MAX_AMOUNT_DISCOUNT), 40, 5), 4, row);
 		table.add(getSmallText("%"), 4, row++);
 
 		table.add(getTextInput(PARAM_PERIOD_TO, (formatDate(r != null && hasNoError() ? r.getPeriodTo()
-				: parseDate((String) _pMap.get(PARAM_PERIOD_TO)), 4)), 40, 4), 4, row++);
+				: parseDate((String) this._pMap.get(PARAM_PERIOD_TO)), 4)), 40, 4), 4, row++);
 		table.add(getText(r != null ? r.getChangedSign() : ""), 4, row++);
 		table.add(new HiddenInput(PARAM_CHANGED_SIGN, "" + userName));
 
@@ -448,10 +448,10 @@ public class RegulationListEditor extends AccountingBlock {
 
 		if (r != null && hasNoError()) {
 			table.add(getTextInput(PARAM_CONDITION_ORDER, r.getConditionOrder() != null ? ""
-					+ r.getConditionOrder().intValue() : (String) _pMap.get(PARAM_CONDITION_ORDER), 40, 4), 4, row);
+					+ r.getConditionOrder().intValue() : (String) this._pMap.get(PARAM_CONDITION_ORDER), 40, 4), 4, row);
 		}
 		else {
-			table.add(getTextInput(PARAM_CONDITION_ORDER, (String) _pMap.get(PARAM_CONDITION_ORDER), 40, 4), 4, row);
+			table.add(getTextInput(PARAM_CONDITION_ORDER, (String) this._pMap.get(PARAM_CONDITION_ORDER), 40, 4), 4, row);
 		}
 
 		if (iwc.isParameterSet(PARAM_MODE_COPY)) {
@@ -500,8 +500,8 @@ public class RegulationListEditor extends AccountingBlock {
 				dDrop.setSelectedValues("" + field.getConditionID(), "" + field.getIntervalID());
 			}
 			else {
-				dDrop.setSelectedValues((String) _pMap.get(PARAM_SELECTOR_CONDITION + "_" + index),
-						(String) _pMap.get(PARAM_SELECTOR_INTERVAL + "_" + index));
+				dDrop.setSelectedValues((String) this._pMap.get(PARAM_SELECTOR_CONDITION + "_" + index),
+						(String) this._pMap.get(PARAM_SELECTOR_INTERVAL + "_" + index));
 			}
 			table.add(dDrop, 2, row++);
 
@@ -518,9 +518,9 @@ public class RegulationListEditor extends AccountingBlock {
 	 */
 	private Table getVATPanel(IWContext iwc, Regulation r) {
 
-		int vatYesNoID = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_VAT_ELIGIBLE));
-		int vatRulePK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_VAT_RULE));
-		int specCalcPK = Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_SPECIAL_CALCULATION));
+		int vatYesNoID = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_VAT_ELIGIBLE));
+		int vatRulePK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_VAT_RULE));
+		int specCalcPK = Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_SPECIAL_CALCULATION));
 
 		Table table = new Table();
 		table.add(getLocalizedLabel(KEY_HEADER_SPECIAL_CALCULATION, "Specialberäkning"), 1, 1);
@@ -529,11 +529,11 @@ public class RegulationListEditor extends AccountingBlock {
 
 		if (r != null && hasNoError()) {
 			vatYesNoID = r.getVATEligible() != null ? r.getVATEligible().intValue()
-					: Integer.parseInt((String) _pMap.get(PARAM_SELECTOR_VAT_ELIGIBLE));
+					: Integer.parseInt((String) this._pMap.get(PARAM_SELECTOR_VAT_ELIGIBLE));
 			vatRulePK = Integer.parseInt(r.getVATRuleRegulation() != null ? r.getVATRuleRegulation().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_VAT_RULE));
+					: (String) this._pMap.get(PARAM_SELECTOR_VAT_RULE));
 			specCalcPK = Integer.parseInt(r.getSpecialCalculation() != null ? r.getSpecialCalculation().getPrimaryKey().toString()
-					: (String) _pMap.get(PARAM_SELECTOR_SPECIAL_CALCULATION));
+					: (String) this._pMap.get(PARAM_SELECTOR_SPECIAL_CALCULATION));
 		}
 
 		table.add(specialCalculationSelector(iwc, PARAM_SELECTOR_SPECIAL_CALCULATION, specCalcPK), 2, 1);
@@ -819,7 +819,7 @@ public class RegulationListEditor extends AccountingBlock {
 
 	private void closeMe(IWContext iwc) {
 		String backUrl = BuilderLogic.getInstance().getIBPageURL(iwc,
-				((Integer) _responsePage.getPrimaryKey()).intValue());
+				((Integer) this._responsePage.getPrimaryKey()).intValue());
 		backUrl += "&" + RegulationList.PARAM_SELECTOR_PAYMENT_FLOW_TYPE + "="
 				+ iwc.getParameter(PARAM_SELECTOR_PAYMENT_FLOW_TYPE) + "&" + RegulationList.PARAM_RETURN_FROM_DATE
 				+ "=" + iwc.getParameter(RegulationList.PARAM_RETURN_FROM_DATE) + "&"
@@ -829,24 +829,24 @@ public class RegulationListEditor extends AccountingBlock {
 
 	private void setDefaultParameters() {
 		// String ds = formatDate(new Date(System.currentTimeMillis()), 4);
-		if (_pMap == null) {
-			_pMap = new HashMap();
+		if (this._pMap == null) {
+			this._pMap = new HashMap();
 		}
-		if (!_pMap.containsKey(PARAM_PERIOD_FROM)) {
-			_pMap.put(PARAM_PERIOD_FROM, "");
-			_pMap.put(PARAM_PERIOD_TO, "");
-			_pMap.put(PARAM_NAME, "");
-			_pMap.put(PARAM_AMOUNT, "0");
-			_pMap.put(PARAM_CONDITION_ORDER, "");
-			_pMap.put(PARAM_SELECTOR_PAYMENT_FLOW_TYPE, "0");
-			_pMap.put(PARAM_SELECTOR_VAT_ELIGIBLE, "0");
-			_pMap.put(PARAM_SELECTOR_REG_SPEC_TYPE, "0");
-			_pMap.put(PARAM_SELECTOR_CONDITION_TYPE, "0");
-			_pMap.put(PARAM_SELECTOR_SPECIAL_CALCULATION, "0");
-			_pMap.put(PARAM_SELECTOR_VAT_RULE, "0");
-			_pMap.put(PARAM_CHANGED_SIGN, "");
-			_pMap.put(PARAM_DISCOUNT, "");
-			_pMap.put(PARAM_MAX_AMOUNT_DISCOUNT, "");
+		if (!this._pMap.containsKey(PARAM_PERIOD_FROM)) {
+			this._pMap.put(PARAM_PERIOD_FROM, "");
+			this._pMap.put(PARAM_PERIOD_TO, "");
+			this._pMap.put(PARAM_NAME, "");
+			this._pMap.put(PARAM_AMOUNT, "0");
+			this._pMap.put(PARAM_CONDITION_ORDER, "");
+			this._pMap.put(PARAM_SELECTOR_PAYMENT_FLOW_TYPE, "0");
+			this._pMap.put(PARAM_SELECTOR_VAT_ELIGIBLE, "0");
+			this._pMap.put(PARAM_SELECTOR_REG_SPEC_TYPE, "0");
+			this._pMap.put(PARAM_SELECTOR_CONDITION_TYPE, "0");
+			this._pMap.put(PARAM_SELECTOR_SPECIAL_CALCULATION, "0");
+			this._pMap.put(PARAM_SELECTOR_VAT_RULE, "0");
+			this._pMap.put(PARAM_CHANGED_SIGN, "");
+			this._pMap.put(PARAM_DISCOUNT, "");
+			this._pMap.put(PARAM_MAX_AMOUNT_DISCOUNT, "");
 		}
 	}
 
@@ -855,7 +855,7 @@ public class RegulationListEditor extends AccountingBlock {
 	}
 
 	private boolean hasNoError() {
-		return _errorText.length() == 0 ? true : false;
+		return this._errorText.length() == 0 ? true : false;
 	}
 
 	// private SchoolBusiness getSchoolBusiness(IWContext iwc) throws

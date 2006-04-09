@@ -14,27 +14,27 @@ public class ConditionParameter {
 	}
 	
 	public ConditionParameter(String c, Object i){
-		condition = c;
-		interval = i;
+		this.condition = c;
+		this.interval = i;
 	}
 	
 	public String getCondition(){
-		return condition;
+		return this.condition;
 	}
 	
 	public Object getInterval() {
-		return interval;
+		return this.interval;
 	}
 
 	public void setCondition(String string) {
-		condition = string;
+		this.condition = string;
 	}
 
 	public void setInterval(Object object) {
-		interval = object;
+		this.interval = object;
 	}
 
 	public String toString () {
-		return "{" + condition + ", " + interval + "}";
+		return "{" + this.condition + ", " + this.interval + "}";
 	}
 }

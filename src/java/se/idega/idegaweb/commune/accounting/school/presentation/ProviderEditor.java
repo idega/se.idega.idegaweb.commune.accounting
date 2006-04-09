@@ -1,5 +1,5 @@
 /*
- * $Id: ProviderEditor.java,v 1.36 2005/10/17 09:53:40 palli Exp $
+ * $Id: ProviderEditor.java,v 1.37 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -62,10 +62,10 @@ import com.idega.presentation.ui.TextArea;
  * AgeEditor is an idegaWeb block that handles age values and
  * age regulations for children in childcare.
  * <p>
- * Last modified: $Date: 2005/10/17 09:53:40 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class ProviderEditor extends AccountingBlock {
 
@@ -179,23 +179,23 @@ public class ProviderEditor extends AccountingBlock {
     private boolean showSortedByBirthdateCheckbox = false;
 	
 	public boolean getUseCancelButton() {
-		return _useCancelButton;
+		return this._useCancelButton;
 	}
 	
 	public void setUseCancelButton(boolean b) {
-		_useCancelButton = b;
+		this._useCancelButton = b;
 	}
 	
 	public boolean getUseProviderStringId() {
-		return _useProviderStringId;
+		return this._useProviderStringId;
 	}
 	
 	public void setUseProviderStringId(boolean b) {
-		_useProviderStringId = b;
+		this._useProviderStringId = b;
 	}
 	
 	public boolean isShowSortedByBirthdateCheckbox() {
-        return showSortedByBirthdateCheckbox;
+        return this.showSortedByBirthdateCheckbox;
     }
 
     public void setShowSortedByBirthdateCheckbox(
@@ -468,7 +468,7 @@ public class ProviderEditor extends AccountingBlock {
 			String areaId = getParameter(iwc, PARAMETER_SCHOOL_AREA_ID);
 			String subAreaId = getParameter(iwc, PARAMETER_SCHOOL_SUB_AREA_ID);
 			
-			if(requireAreaChoiceForDefaultCommune){
+			if(this.requireAreaChoiceForDefaultCommune){
 				CommuneHome home = (CommuneHome) com.idega.data.IDOLookup.getHome(Commune.class);
 				try{
 					Commune c = home.findByPrimaryKey(communeId);
@@ -512,7 +512,7 @@ public class ProviderEditor extends AccountingBlock {
 					getParameter(iwc, PARAMETER_STATISTICS_TYPE),
 					ownPosting, 
 					doublePosting,
-					_useProviderStringId,
+					this._useProviderStringId,
                      getParameter(iwc, PARAMETER_SORTED_BY_DATE_OF_BIRTH),
                      getParameter(iwc, PARAMETER_GIROTEXT)); 
 		} catch (RemoteException e) {
@@ -616,7 +616,7 @@ public class ProviderEditor extends AccountingBlock {
 		buttonTable.setCellpadding(getCellpadding());
 		buttonTable.setCellspacing(getCellspacing());
 		buttonTable.add(getLocalizedButton(PARAMETER_NEW, KEY_NEW, "New"), 1, 1);
-		if (_useCancelButton) {
+		if (this._useCancelButton) {
 			try {
 				ICPage homePage = iwc.getCurrentUser().getHomePage();
 				if (homePage == null) {
@@ -804,7 +804,7 @@ public class ProviderEditor extends AccountingBlock {
 		table.setCellpadding(getCellpadding());
 		table.setCellspacing(getCellspacing());
 		int row = 1;
-		if (_useProviderStringId) {
+		if (this._useProviderStringId) {
 			table.add(getSmallHeader(localize(KEY_PROVIDER_STRING_ID, "Provider ID")), 1, row);
 			table.mergeCells(2, row, 4, row);
 			table.add(getTextInput(PARAMETER_PROVIDER_STRING_ID, providerStringId, 140), 2, row++);
@@ -1345,7 +1345,7 @@ public class ProviderEditor extends AccountingBlock {
      * @return Returns the requireAreaChoiceForDefaultCommune.
      */
     public boolean isRequireAreaChoiceForDefaultCommune() {
-        return requireAreaChoiceForDefaultCommune;
+        return this.requireAreaChoiceForDefaultCommune;
     }
     /**
      * @param requireAreaChoiceForDefaultCommune The requireAreaChoiceForDefaultCommune to set.

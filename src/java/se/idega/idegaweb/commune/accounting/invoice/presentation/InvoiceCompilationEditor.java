@@ -94,10 +94,10 @@ import se.idega.idegaweb.commune.care.data.ChildCareContractHome;
  * <li>Amount VAT = Momsbelopp i kronor
  * </ul>
  * <p>
- * Last modified: $Date: 2005/02/16 11:12:05 $ by $Author: laddi $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.138 $
+ * @version $Revision: 1.139 $
  * @see com.idega.presentation.IWContext
  * @see se.idega.idegaweb.commune.accounting.invoice.business.InvoiceBusiness
  * @see se.idega.idegaweb.commune.accounting.invoice.data
@@ -329,7 +329,7 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 					break;
 					
 				default:
-					if (iShowHistory) {
+					if (this.iShowHistory) {
 						showCompilationHistory(context);
 					}
 					else {
@@ -1302,7 +1302,9 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 						final RadioButton button = getRadioButton
 								(INVOICE_RECEIVER_KEY,
 								 custodian.getPrimaryKey () + "");
-						if (1 == radioRow) button.setSelected ();
+						if (1 == radioRow) {
+							button.setSelected ();
+						}
 						radioTable.add (button, 1, radioRow);
 						radioTable.add (getUserInfo (custodian), 2, radioRow);
 					}
@@ -1893,7 +1895,9 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 	}
 	
 	private String getProviderName (final SchoolClassMember placement) {
-		if (null == placement) return "";
+		if (null == placement) {
+			return "";
+		}
 		final String providerName
 				= placement.getSchoolClass ().getSchool ().getName ();
 		final String groupName = placement.getSchoolClass ().getName ();
@@ -2145,8 +2149,12 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 		if (null != key) {
 			final String sessionAttribute
 					= (String) context.getSessionAttribute (key);
-			if (context.isParameterSet (key)) result = context.getParameter (key);
-			else if (null != sessionAttribute) result = sessionAttribute;
+			if (context.isParameterSet (key)) {
+				result = context.getParameter (key);
+			}
+			else if (null != sessionAttribute) {
+				result = sessionAttribute;
+			}
 		}
 		return result;
 	}
@@ -2240,7 +2248,9 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 	private static Date getPeriodParameter (final IWContext context,
 																					final String key) {
 		final String rawString = context.getParameter (key);
-		if (null == rawString || rawString.length () != 4) return null;
+		if (null == rawString || rawString.length () != 4) {
+			return null;
+		}
 		try {
 			final int year = Integer.parseInt (rawString.substring (0, 2))
 					+ 2000;
@@ -2264,7 +2274,9 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 	
 	private static Date getDateParameter (final IWContext iwc, final String key) {
 		String rawInput = iwc.getParameter(key);
-		if (null == rawInput) return null;
+		if (null == rawInput) {
+			return null;
+		}
 		final StringBuffer digitOnlyInput = new StringBuffer();
 		for (int i = 0; i < rawInput.length(); i++) {
 			char number = rawInput.charAt(i);
@@ -2280,11 +2292,15 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 			final int century = inputYear + 2000 > currentYear ? 19 : 20;
 			rawInput = century + rawInput;
 		}
-		if (rawInput.length() != 8)	return null;
+		if (rawInput.length() != 8) {
+			return null;
+		}
 		final int year = new Integer(rawInput.substring(0, 4)).intValue();
 		final int month = new Integer(rawInput.substring(4, 6)).intValue();
 		final int day = new Integer(rawInput.substring(6, 8)).intValue();
-		if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+		if (month < 1 || month > 12 || day < 1 || day > 31) {
+			return null;
+		}
 		final Calendar calendar = Calendar.getInstance ();
 		calendar.set (year, month - 1, day);
 		return new Date (calendar.getTimeInMillis ());
@@ -2297,7 +2313,9 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 	private static Integer getIntegerParameter (final IWContext context,
 																							final String key) {
 		final String rawString = context.getParameter (key);
-		if (null == rawString) return null;
+		if (null == rawString) {
+			return null;
+		}
 		try {
 			final Integer result = new Integer (rawString);
 			return result;
@@ -2669,6 +2687,6 @@ public class InvoiceCompilationEditor extends AccountingBlock {
 	}
 	
 	public void setShowHistory(boolean showHistory) {
-		iShowHistory = showHistory;
+		this.iShowHistory = showHistory;
 	}
 }

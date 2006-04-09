@@ -49,58 +49,58 @@ public class PostingDetail {
 	*/
 	
 	public float getAmount() {
-		return amount;
+		return this.amount;
 	}
 
 	public String getTerm() {
-		return term;
+		return this.term;
 	}
 
 	public void setAmount(float i) {
-		amount = i;
+		this.amount = i;
 	}
 
 	public void setTerm(String string) {
-		term = string;
+		this.term = string;
 	}
 
 	public float getVATPercent() {
-		return vat;
+		return this.vat;
 	}
 
 	public void setVATPercent(float f) {
-		vat = f;
+		this.vat = f;
 	}
 
 	public int getVatRuleRegulationId() {
-		return vatRuleRegulationID;
+		return this.vatRuleRegulationID;
 	}
 
 	public void setVatRuleRegulationId(int i) {
-		vatRuleRegulationID = i;
+		this.vatRuleRegulationID = i;
 	}
 
 	public String getRuleSpecType() {
-		return ruleSpecType;
+		return this.ruleSpecType;
 	}
 
 	public void setRuleSpecType(String i) {
-		ruleSpecType = i;
+		this.ruleSpecType = i;
 	}
 
 	public int getOrderID() {
-		return orderID;
+		return this.orderID;
 	}
 
 	public void setOrderID(int i) {
-		orderID = i;
+		this.orderID = i;
 	}
 
 	/**
 	 * @return Returns the vatRegulation.
 	 */
 	public VATRegulation getVATRegulation() {
-		return vatRegulation;
+		return this.vatRegulation;
 	}
 
 	/**
@@ -115,11 +115,11 @@ public class PostingDetail {
 	}
 	
 	public float getVATAmount(){
-		return vatAmount;
+		return this.vatAmount;
 	}
 	
 	public void setVATAmount(float VATAmount){
-		vatAmount=VATAmount;
+		this.vatAmount=VATAmount;
 	}
 
 }

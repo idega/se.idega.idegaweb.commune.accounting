@@ -63,9 +63,9 @@ public class BruttoIncomeEditor extends AccountingBlock {
 	}
 	public void init(IWContext iwc) {
 		if (iwc.isParameterSet(PRM_USER_ID)) {
-			userID = Integer.valueOf(iwc.getParameter(PRM_USER_ID));
+			this.userID = Integer.valueOf(iwc.getParameter(PRM_USER_ID));
 			try {
-				user = getUserService(iwc).getUser(userID);
+				this.user = getUserService(iwc).getUser(this.userID);
 			}
 			catch (RemoteException e) {
 				e.printStackTrace();
@@ -74,7 +74,7 @@ public class BruttoIncomeEditor extends AccountingBlock {
 	}
 	public void process(IWContext iwc) {
 		if (iwc.isParameterSet(PRM_SAVE)) {
-			if (userID != null && iwc.isParameterSet("brt_income_amount") && iwc.isParameterSet("brt_valid_from")) {
+			if (this.userID != null && iwc.isParameterSet("brt_income_amount") && iwc.isParameterSet("brt_valid_from")) {
 				Float income = Float.valueOf(iwc.getParameter("brt_income_amount"));
 				IWTimestamp validFrom = new IWTimestamp(iwc.getParameter("brt_valid_from"));
 				try {
@@ -82,7 +82,7 @@ public class BruttoIncomeEditor extends AccountingBlock {
 					boolean validDate =true;
 					try {
 						// check if no from date is the same
-						Collection incomes = infoService.getBruttoIncomeHome().findByUser(userID);
+						Collection incomes = infoService.getBruttoIncomeHome().findByUser(this.userID);
 						if(incomes!=null && !incomes.isEmpty()){
 							Iterator iter = incomes.iterator();
 							while (iter.hasNext()) {
@@ -98,10 +98,12 @@ public class BruttoIncomeEditor extends AccountingBlock {
 					catch (FinderException e1) {
 						
 					}
-					if(validDate)
-						infoService.createBruttoIncome(userID,income,	validFrom.getDate(),new Integer(iwc.getCurrentUserId()));
-					else
-						registerErrorMsg = localize("error_same_from_date","Can't register same from date more than once");
+					if(validDate) {
+						infoService.createBruttoIncome(this.userID,income,	validFrom.getDate(),new Integer(iwc.getCurrentUserId()));
+					}
+					else {
+						this.registerErrorMsg = localize("error_same_from_date","Can't register same from date more than once");
+					}
 				}
 				catch (RemoteException e) {
 					e.printStackTrace();
@@ -137,31 +139,33 @@ public class BruttoIncomeEditor extends AccountingBlock {
 		}
 	}
 	public void presentate(IWContext iwc) {
-		appForm = new ApplicationForm(this);
-		appForm.setLocalizedTitle(localizePrefix + "title", "Brutto income registration");
+		this.appForm = new ApplicationForm(this);
+		this.appForm.setLocalizedTitle(localizePrefix + "title", "Brutto income registration");
 		//mainTable.setWidth(this.getWidth());
-		add(appForm);
+		add(this.appForm);
 		presentateHeader(iwc);
-		if (isCreateView(iwc))
+		if (isCreateView(iwc)) {
 			presentateCreateRecord();
-		else
+		}
+		else {
 			presentateList(iwc);
+		}
 		presentateButtons(iwc);
 	}
 	private void presentateHeader(IWContext iwc) {
 		// set up user search if no user selected
-		if (user == null) {
+		if (this.user == null) {
 			UserSearcher searcher = new UserSearcher();
 			searcher.setUniqueIdentifier(searchIdentifier);
 			searcher.setShowMiddleNameInSearch(false);
-			appForm.setSearchPanel(searcher);
+			this.appForm.setSearchPanel(searcher);
 		}
 		else {
 			presentateUserHeader(iwc);
 		}
 	}
 	protected boolean isCreateView(IWContext iwc) {
-		return iwc.isParameterSet(PRM_CREATE) || registerErrorMsg!=null ;
+		return iwc.isParameterSet(PRM_CREATE) || this.registerErrorMsg!=null ;
 	}
 	protected boolean isListView(IWContext iwc) {
 		return !isCreateView(iwc);
@@ -183,13 +187,13 @@ public class BruttoIncomeEditor extends AccountingBlock {
 			btnDelete.setOnClick("return confirm('" + deleteWarning + "');");
 			bPanel.addButton(btnDelete);
 			*/
-			if (showCancelCloseButton) {
+			if (this.showCancelCloseButton) {
 				CloseButton btnClose = new CloseButton(localize("close", "Close"));
 				btnClose.setOnClick("window.opener.location.reload()");
 				bPanel.addButton(btnClose);
 			}
 		}
-		appForm.setButtonPanel(bPanel);
+		this.appForm.setButtonPanel(bPanel);
 	}
 	private void presentateUserHeader(IWContext iwc) {
 		Table table = new Table();
@@ -200,12 +204,12 @@ public class BruttoIncomeEditor extends AccountingBlock {
 		//table.setColor(1, 1, getHeaderColor());
 		table.add(getHeader(localize("name", "Name")), 1, 2);
 		//table.setColor(1, 2, getHeaderColor());
-		if (user != null) {
-			table.add(getText(user.getPersonalID()), 2, 1);
-			Name name = new Name(user.getFirstName(), user.getMiddleName(), user.getLastName());
+		if (this.user != null) {
+			table.add(getText(this.user.getPersonalID()), 2, 1);
+			Name name = new Name(this.user.getFirstName(), this.user.getMiddleName(), this.user.getLastName());
 			table.add(getText(name.getName(iwc.getApplicationSettings().getDefaultLocale())), 2, 2);
 		}
-		appForm.setSearchPanel(table);
+		this.appForm.setSearchPanel(table);
 	}
 	private void presentateList(IWContext iwc) {
 		ListTable table = new ListTable(this, 5);
@@ -220,9 +224,9 @@ public class BruttoIncomeEditor extends AccountingBlock {
 		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, iwc.getCurrentLocale());
 		DateFormat tf = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, iwc.getCurrentLocale());
 		String tooltip  = localize("tooltip_delete_bruttonincome","Delete income");
-		if (userID != null) {
+		if (this.userID != null) {
 			try {
-				Collection incomes = getUserInfoService(iwc).getBruttoIncomeHome().findByUser(userID);
+				Collection incomes = getUserInfoService(iwc).getBruttoIncomeHome().findByUser(this.userID);
 				if (incomes != null && !incomes.isEmpty()) {
 					for (Iterator iter = incomes.iterator(); iter.hasNext();) {
 						BruttoIncome income = (BruttoIncome) iter.next();
@@ -250,8 +254,8 @@ public class BruttoIncomeEditor extends AccountingBlock {
 				e.printStackTrace();
 			}
 		}
-		appForm.maintainParameter(PRM_USER_ID);
-		appForm.setMainPanel(table);
+		this.appForm.maintainParameter(PRM_USER_ID);
+		this.appForm.setMainPanel(table);
 	}
 	private void presentateCreateRecord() {
 		Table table = new Table();
@@ -274,21 +278,21 @@ public class BruttoIncomeEditor extends AccountingBlock {
 		validFromInput.setToShowDay(false);
 		setStyle(validFromInput, STYLENAME_INTERFACE);
 		table.add(validFromInput, 2, 3);
-		if(registerErrorMsg!=null){
+		if(this.registerErrorMsg!=null){
 			
 			table.mergeCells(1,5,2,5);
-			table.add(getErrorText(registerErrorMsg),1,5);
+			table.add(getErrorText(this.registerErrorMsg),1,5);
 			
 		}
 		//SubmitButton btnSave = new SubmitButton(localize("save","Save"),PRM_SAVE,"true");
 		//SubmitButton btnCancel = new SubmitButton(localize("cancel","Cancel"),PRM_CANCEL,"true");
-		appForm.maintainParameter(PRM_USER_ID);
+		this.appForm.maintainParameter(PRM_USER_ID);
 		table.setCellspacing(getCellspacing());
 		table.setCellpadding(getCellpadding());
 		//table.add(getButton(btnSave),1,5);
 		//table.add(getButton(btnCancel),2,5);			
 		//table.mergeCells(1,5,table.getColumns(),5);
-		appForm.setMainPanel(table);
+		this.appForm.setMainPanel(table);
 	}
 	private CommuneUserBusiness getUserService(IWContext iwc) throws RemoteException {
 		return (CommuneUserBusiness) IBOLookup.getServiceInstance(iwc, CommuneUserBusiness.class);
@@ -305,7 +309,7 @@ public class BruttoIncomeEditor extends AccountingBlock {
 	
 	private Link getDeleteLink(String ID,String tooltip){
 		Link link = new Link(getDeleteIcon(tooltip));
-		link.addParameter(PRM_USER_ID,userID.toString());
+		link.addParameter(PRM_USER_ID,this.userID.toString());
 		link.addParameter(PRM_DEL_ITEM,ID);
 		return link;
 	}

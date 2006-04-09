@@ -224,7 +224,7 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 					handleDefaultAction(iwc, school, fromDate, toDate);
 					break;
 				case ACTION_NEW:
-					newPayment = true;
+					this.newPayment = true;
 					handleEditAction(iwc, getEmptyEntry());
 					break;
 				case ACTION_DELETE:
@@ -403,9 +403,9 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 
 	private void handleSaveAction(IWContext iwc, School school) {
 		Map errorMessages = new HashMap();
-		checkNotNull(iwc, RegulationSearchPanel.PAR_PLACING, errorMessages, ERROR_PLACING_NULL, "Placing must be set");
+		checkNotNull(iwc, RegulationSearchPanel.PAR_PLACING, errorMessages, this.ERROR_PLACING_NULL, "Placing must be set");
 		if (!iwc.isLoggedOn()) {
-			errorMessages.put(ERROR_NO_USER_SESSION, localize(ERROR_NO_USER_SESSION, "Not logged in."));
+			errorMessages.put(this.ERROR_NO_USER_SESSION, localize(this.ERROR_NO_USER_SESSION, "Not logged in."));
 			return;
 		}
 		User loggedOnUser = iwc.getCurrentUser();
@@ -437,16 +437,16 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 			}
 			catch (NumberFormatException ex) {
 				ex.printStackTrace();
-				errorMessages.put(ERROR_AMOUNT_FORMAT, localize(ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
+				errorMessages.put(this.ERROR_AMOUNT_FORMAT, localize(this.ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
 			}
 			Date from = parseDate(iwc.getParameter(PAR_FROM));
 			Date to = parseDate(iwc.getParameter(PAR_TO));
 			if (from == null || to == null) {
-				errorMessages.put(ERROR_DATE_FORMAT, localize(LOCALIZER_PREFIX + "date_format_yymm_warning",
+				errorMessages.put(this.ERROR_DATE_FORMAT, localize(LOCALIZER_PREFIX + "date_format_yymm_warning",
 						"Wrong date format. use: yymm."));
 			}
 			else if (to.before(from)) {
-				errorMessages.put(ERROR_DATE_PERIODE_NEGATIVE, localize(LOCALIZER_PREFIX + "negative_periode",
+				errorMessages.put(this.ERROR_DATE_PERIODE_NEGATIVE, localize(LOCALIZER_PREFIX + "negative_periode",
 						"Neagtive periode"));
 			}
 			else {
@@ -481,14 +481,14 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 				entry.setDoublePosting(p.getDoublePosting());
 			}
 			catch (PostingParametersException e) {
-				errorMessages.put(ERROR_POSTING, localize(e.getTextKey(), e.getTextKey()) + e.getDefaultText());
+				errorMessages.put(this.ERROR_POSTING, localize(e.getTextKey(), e.getTextKey()) + e.getDefaultText());
 			}
 			if (entry.getPlacing() == null || entry.getPlacing().length() == 0) {
-				errorMessages.put(ERROR_PLACING_EMPTY, localize(LOCALIZER_PREFIX + "placing_null",
+				errorMessages.put(this.ERROR_PLACING_EMPTY, localize(LOCALIZER_PREFIX + "placing_null",
 						"Placing must be given a value"));
 			}
 			if (entry.getOwnPosting() == null || entry.getOwnPosting().length() == 0) {
-				errorMessages.put(ERROR_OWNPOSTING_EMPTY, localize(LOCALIZER_PREFIX + "own_posting_null",
+				errorMessages.put(this.ERROR_OWNPOSTING_EMPTY, localize(LOCALIZER_PREFIX + "own_posting_null",
 						"Own posting must be given a value"));
 			}
 		} // END: errorMessages.isEmpty
@@ -608,28 +608,28 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 	}
 
 	private UserSearcher getUserSearcher(IWContext iwc, User user) {
-		searcher = new UserSearcher();
-		searcher.setPersonalIDLength(15);
-		searcher.setFirstNameLength(25);
-		searcher.setLastNameLength(25);
-		searcher.setShowMiddleNameInSearch(false);
-		searcher.setOwnFormContainer(false);
-		searcher.setUniqueIdentifier("");
-		searcher.setBelongsToParent(true);
-		searcher.setConstrainToUniqueSearch(false);
-		searcher.maintainParameter(new Parameter(PAR_EDIT_FROM_SCREEN, " "));
-		searcher.maintainParameter(new Parameter(PAR_OWN_POSTING, " "));
-		searcher.maintainParameter(new Parameter(PAR_DOUBLE_ENTRY_ACCOUNT, " "));
-		searcher.setToFormSubmit(true);
-		searcher.setHeaderFontStyle(getSmallHeaderFontStyle());
+		this.searcher = new UserSearcher();
+		this.searcher.setPersonalIDLength(15);
+		this.searcher.setFirstNameLength(25);
+		this.searcher.setLastNameLength(25);
+		this.searcher.setShowMiddleNameInSearch(false);
+		this.searcher.setOwnFormContainer(false);
+		this.searcher.setUniqueIdentifier("");
+		this.searcher.setBelongsToParent(true);
+		this.searcher.setConstrainToUniqueSearch(false);
+		this.searcher.maintainParameter(new Parameter(PAR_EDIT_FROM_SCREEN, " "));
+		this.searcher.maintainParameter(new Parameter(PAR_OWN_POSTING, " "));
+		this.searcher.maintainParameter(new Parameter(PAR_DOUBLE_ENTRY_ACCOUNT, " "));
+		this.searcher.setToFormSubmit(true);
+		this.searcher.setHeaderFontStyle(getSmallHeaderFontStyle());
 		String pk = iwc.getParameter(PAR_PK);
 		if (pk != null) {
-			searcher.add(new HiddenInput(PAR_PK, pk));
+			this.searcher.add(new HiddenInput(PAR_PK, pk));
 		}
 		try {
-			searcher.process(iwc);
-			if (searcher.getUser() == null && !searcher.isHasManyUsers() && !searcher.isClearedButtonPushed(iwc)) {
-				searcher.setUser(user);
+			this.searcher.process(iwc);
+			if (this.searcher.getUser() == null && !this.searcher.isHasManyUsers() && !this.searcher.isClearedButtonPushed(iwc)) {
+				this.searcher.setUser(user);
 			}
 		}
 		catch (FinderException ex) {
@@ -638,7 +638,7 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 		catch (RemoteException ex) {
 			ex.printStackTrace();
 		}
-		return searcher;
+		return this.searcher;
 	}
 
 	private int addPeriodeForm(IWContext iwc, Table table, Date fromDate, Date toDate, String errorMessage, int row) {
@@ -733,11 +733,11 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 		Table table = new Table();
 		int row = 1;
 		row = addOperationalFieldPanel(table, row, PAR_OPFIELD_DETAILSCREEN);
-		if (errorMessages.get(ERROR_NO_USER_SESSION) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_NO_USER_SESSION)), 1, row++);
+		if (errorMessages.get(this.ERROR_NO_USER_SESSION) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_NO_USER_SESSION)), 1, row++);
 		}
-		if (errorMessages.get(ERROR_PLACING_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_PLACING_NULL)), 1, row++);
+		if (errorMessages.get(this.ERROR_PLACING_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_PLACING_NULL)), 1, row++);
 		}
 		RegulationSearchPanel regSearchPanel = new RegulationSearchPanel(iwc, PAR_SELECTED_PROVIDER);
 		regSearchPanel.setLeftColumnMinWidth(MIN_LEFT_COLUMN_WIDTH);
@@ -761,9 +761,9 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 			entry = getNotStoredEntry(iwc, reg, posting);
 		}
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
-		if (errorMessages.get(ERROR_DATE_FORMAT) != null) {
+		if (errorMessages.get(this.ERROR_DATE_FORMAT) != null) {
 			table.mergeCells(1, row, 10, row);
-			table.add(getErrorText((String) errorMessages.get(ERROR_DATE_FORMAT)), 1, row++);
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_DATE_FORMAT)), 1, row++);
 		}
 		table.add(getLocalizedLabel(KEY_PERIODE, "Periode:"), 1, row);
 		TextInput fromInput = getTextInput(PAR_FROM, KEY_FROM);
@@ -781,8 +781,8 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 		addField(table, KEY_DAY_REGULATED, formatDate(entry.getEditDate(), 6), 1, row);
 		addField(table, KEY_SIGNATURE, entry.getEditName(), 3, row++);
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
-		if (errorMessages.get(ERROR_AMOUNT_FORMAT) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_AMOUNT_FORMAT)), 1, row++);
+		if (errorMessages.get(this.ERROR_AMOUNT_FORMAT) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_AMOUNT_FORMAT)), 1, row++);
 		}
 		addIntField(table, PAR_AMOUNT_PR_MONTH, KEY_AMOUNT_PR_MONTH,
 				"" + AccountingUtil.roundAmount(entry.getAmount()), 1, row++);
@@ -800,11 +800,11 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 			ex.printStackTrace();
 		}
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
-		if (errorMessages.get(ERROR_POSTING) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_POSTING)), 2, row++);
+		if (errorMessages.get(this.ERROR_POSTING) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_POSTING)), 2, row++);
 		}
-		else if (errorMessages.get(ERROR_OWNPOSTING_EMPTY) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_OWNPOSTING_EMPTY)), 2, row++);
+		else if (errorMessages.get(this.ERROR_OWNPOSTING_EMPTY) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_OWNPOSTING_EMPTY)), 2, row++);
 		}
 		else if (postingError != null) {
 			table.add(getErrorText(postingError), 2, row++);
@@ -817,7 +817,7 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 		else {
 			// When searching for user, the posting info is lost
 			postingBlock = new PostingBlock();
-			if (newPayment) {
+			if (this.newPayment) {
 				postingBlock.setToEmpty();
 			}
 			else {

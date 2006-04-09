@@ -44,9 +44,10 @@ public class JournalLogList extends AccountingBlock {
 		ApplicationForm form = new ApplicationForm(this);
 
 		try {
-			_currentOperation = getSession().getOperationalField();
-			if (_currentOperation == null)
-				_currentOperation = "";
+			this._currentOperation = getSession().getOperationalField();
+			if (this._currentOperation == null) {
+				this._currentOperation = "";
+			}
 		}
 		catch (RemoteException e) {
 		}
@@ -84,7 +85,7 @@ public class JournalLogList extends AccountingBlock {
 		try {
 			biz = getIFSBusiness(iwc);
 
-			Collection items = biz.getJournalLogBySchoolCategory(_currentOperation);
+			Collection items = biz.getJournalLogBySchoolCategory(this._currentOperation);
 			if (items != null && !items.isEmpty()) {
 				Iterator iter = items.iterator();
 				while (iter.hasNext()) {

@@ -22,23 +22,26 @@ public class PaymentComparator implements Comparator {
 	 */
 	
 	public int compare(Object o1, Object o2) {		
-		collator = Collator.getInstance(LocaleUtil.getSwedishLocale());
+		this.collator = Collator.getInstance(LocaleUtil.getSwedishLocale());
 
 		if (o1 instanceof PaymentHeader) {
-			compareString1 = ((PaymentHeader) o1).getSchool().getName();
-			compareString2 = ((PaymentHeader) o2).getSchool().getName();
+			this.compareString1 = ((PaymentHeader) o1).getSchool().getName();
+			this.compareString2 = ((PaymentHeader) o2).getSchool().getName();
 		}
 		else if (o1 instanceof PaymentRecord) {
 			int int1 = ((PaymentRecord) o1).getOrderId();
 			int int2 = ((PaymentRecord) o2).getOrderId();
 			
-			if (int1 == int2)
+			if (int1 == int2) {
 				return 0;
-			else if (int1 < int2)
+			}
+			else if (int1 < int2) {
 				return -1;
-			else 
+			}
+			else {
 				return 1;
+			}
 		}
-		return collator.compare(compareString1, compareString2);
+		return this.collator.compare(this.compareString1, this.compareString2);
 	}
 }

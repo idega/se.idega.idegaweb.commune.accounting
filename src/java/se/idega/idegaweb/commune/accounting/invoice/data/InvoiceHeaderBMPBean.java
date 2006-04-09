@@ -351,7 +351,9 @@ public class InvoiceHeaderBMPBean extends GenericEntity implements InvoiceHeader
 	 */
 	private static Date getPeriod (final java.util.Date date,
 																 final int monthOffset) {
-		if (null == date) return null;
+		if (null == date) {
+			return null;
+		}
 		final Calendar calendar = Calendar.getInstance ();
 		calendar.setTime (date);
 		calendar.set (calendar.get (Calendar.YEAR),

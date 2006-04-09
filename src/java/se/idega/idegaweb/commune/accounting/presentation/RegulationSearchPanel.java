@@ -105,8 +105,8 @@ public class RegulationSearchPanel extends AccountingBlock {
 		Table t = new Table();
 		t.add(getSearchForm(iwc), 1, 1);
 		
-		if (_searchResult != null){
-			t.add(getResultList(iwc, _searchResult), 1, 2); 
+		if (this._searchResult != null){
+			t.add(getResultList(iwc, this._searchResult), 1, 2); 
 		} 
 		add(t);
 	} 
@@ -118,23 +118,23 @@ public class RegulationSearchPanel extends AccountingBlock {
 	 * @param iwc
 	 */
 	public void process(IWContext iwc){
-		if (! processed){
+		if (! this.processed){
 			boolean searchAction = iwc.getParameter(SEARCH_REGULATION) != null;
 			
 			//Find selected category, date and provider
 			String vDate = iwc.getParameter(PAR_VALID_DATE);
-			_validDate = parseDate(vDate);		
-			if (vDate != null && vDate.length() > 0 && _validDate == null){
-				_dateFormatErrorMessage = localize("regulation_search_panel.date_format_error", "Error i dateformat");
+			this._validDate = parseDate(vDate);		
+			if (vDate != null && vDate.length() > 0 && this._validDate == null){
+				this._dateFormatErrorMessage = localize("regulation_search_panel.date_format_error", "Error i dateformat");
 			} else {
 				
-				_currentSchool = null;
+				this._currentSchool = null;
 				//First time on this page: PAR_PROVIDER parameter not set
 				if (iwc.getParameter(PAR_PROVIDER) != null){
 					try{
 						SchoolHome schoolHome = (SchoolHome) IDOLookup.getHome(School.class);	
 						int currentSchoolId = new Integer(iwc.getParameter(PAR_PROVIDER)).intValue();
-						_currentSchool = schoolHome.findByPrimaryKey("" + currentSchoolId);
+						this._currentSchool = schoolHome.findByPrimaryKey("" + currentSchoolId);
 					}catch(RemoteException ex){
 						ex.printStackTrace();
 					}catch(FinderException ex){ 
@@ -145,46 +145,46 @@ public class RegulationSearchPanel extends AccountingBlock {
 					
 				//Search regulations
 				if (searchAction){
-					_searchResult = doSearch(iwc);
+					this._searchResult = doSearch(iwc);
 				} 
 						
 				//Lookup regulation and postings
 				String regId = iwc.getParameter(PAR_ENTRY_PK);
 				//regId and _currentRegulation will get a value only after choosing a regulation (by clicking a link)
 				if (regId != null){
-					_currentRegulation = getRegulation(regId);
+					this._currentRegulation = getRegulation(regId);
 					try{
 						RegulationsBusiness regBiz = (RegulationsBusiness) IBOLookup.getServiceInstance(iwc, RegulationsBusiness.class);
 						PostingBusiness postingBiz = (PostingBusiness) IBOLookup.getServiceInstance(iwc, PostingBusiness.class);
-						if (_currentRegulation != null){
-							_currentSchoolType = regBiz.getSchoolType(_currentRegulation);
-							_currentPosting = postingBiz.getPostingStrings(getCurrentSchoolCategory(iwc), _currentSchoolType, ((Integer) _currentRegulation.getRegSpecType().getPrimaryKey()).intValue(), new Provider(_currentSchool), _validDate);
+						if (this._currentRegulation != null){
+							this._currentSchoolType = regBiz.getSchoolType(this._currentRegulation);
+							this._currentPosting = postingBiz.getPostingStrings(getCurrentSchoolCategory(iwc), this._currentSchoolType, ((Integer) this._currentRegulation.getRegSpecType().getPrimaryKey()).intValue(), new Provider(this._currentSchool), this._validDate);
 						}
 					}catch (RemoteException ex){
 						ex.printStackTrace();
 					}catch (PostingException ex){
-						_postingException = ex;
+						this._postingException = ex;
 					}
 									
 				}
-				if (_currentRegulation!= null){
-					_currentPlacing = _currentRegulation.getName();
+				if (this._currentRegulation!= null){
+					this._currentPlacing = this._currentRegulation.getName();
 				} else if (iwc.getParameter(PAR_PLACING) != null){
-					_currentPlacing = iwc.getParameter(PAR_PLACING);
+					this._currentPlacing = iwc.getParameter(PAR_PLACING);
 				}
 								
 			}
-			processed = true;
+			this.processed = true;
 		}
 	}
 	
 	public SchoolCategory getCurrentSchoolCategory(IWContext iwc){
-		if (_currentSchoolCategory == null){
+		if (this._currentSchoolCategory == null){
 		
 			try {
 				SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup.getServiceInstance(iwc.getApplicationContext(),	SchoolBusiness.class);
 				String opField = getSession().getOperationalField();
-				_currentSchoolCategory = schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField);					
+				this._currentSchoolCategory = schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField);					
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			} catch (FinderException e) {
@@ -192,28 +192,28 @@ public class RegulationSearchPanel extends AccountingBlock {
 			}	
 		}
 		
-		return _currentSchoolCategory;	
+		return this._currentSchoolCategory;	
 	}
 		
 	
 	private List _maintainParameters = new ArrayList();
 	public void maintainParameter(String par){
-		_maintainParameters.add(par);
+		this._maintainParameters.add(par);
 	}
 	public void maintainParameter(String[] parameters){
 		for(int i = 0; i < parameters.length; i++){
-			_maintainParameters.add(parameters[i]);			
+			this._maintainParameters.add(parameters[i]);			
 		}
 	}	
 	
 	private List _setParameters = new ArrayList();	
 	public void setParameter(String par, String value){
-		_setParameters.add(new Parameter(par, value));
+		this._setParameters.add(new Parameter(par, value));
 	}	
 	
 	
 	private void maintainParameters(IWContext iwc, Link link){
-		Iterator i = _maintainParameters.iterator();
+		Iterator i = this._maintainParameters.iterator();
 		while(i.hasNext()){
 		String par = (String) i.next();
 			link.maintainParameter(par, iwc);
@@ -221,7 +221,7 @@ public class RegulationSearchPanel extends AccountingBlock {
 	}
 	
 	private void setParameters(Link link){
-		Iterator i = _setParameters.iterator();
+		Iterator i = this._setParameters.iterator();
 		while(i.hasNext()){
 			link.addParameter((Parameter) i.next());
 		}
@@ -250,7 +250,7 @@ public class RegulationSearchPanel extends AccountingBlock {
 							
 			while(i.hasNext()){
 				Regulation reg = (Regulation) i.next();
-				if (_outFlowOnly && !reg.getPaymentFlowType().getLocalizationKey().equals(PaymentFlowConstant.OUT)) {
+				if (this._outFlowOnly && !reg.getPaymentFlowType().getLocalizationKey().equals(PaymentFlowConstant.OUT)) {
 					continue;
 				}else{
 					Link link = new Link(reg.getName() /* + " ("+formatDate(reg.getPeriodFrom(), 4) + "-" + formatDate(reg.getPeriodTo(), 4)+")"*/ );
@@ -284,8 +284,8 @@ public class RegulationSearchPanel extends AccountingBlock {
 			
 			String catId = getCurrentSchoolCategoryId(iwc);
 			
-			matches = _validDate != null ? 
-				regHome.findRegulationsByNameNoCaseDateAndCategory(wcName, _validDate, catId)
+			matches = this._validDate != null ? 
+				regHome.findRegulationsByNameNoCaseDateAndCategory(wcName, this._validDate, catId)
 				: regHome.findRegulationsByNameNoCaseAndCategory(wcName, catId);
 
 			
@@ -326,7 +326,7 @@ public class RegulationSearchPanel extends AccountingBlock {
 	 * @return the currently chosen Regulation
 	 */
 	public Regulation getRegulation(){
-		return _currentRegulation;
+		return this._currentRegulation;
 	}
 	
 
@@ -337,10 +337,10 @@ public class RegulationSearchPanel extends AccountingBlock {
 	 * @return the currently chosen posting strings as String[]
 	 */
 	public String[] getPosting() throws PostingException{
-		if (_postingException != null){
-			throw _postingException;
+		if (this._postingException != null){
+			throw this._postingException;
 		}
-		return _currentPosting;
+		return this._currentPosting;
 	}	
 
 	/**
@@ -366,7 +366,7 @@ public class RegulationSearchPanel extends AccountingBlock {
 		Table table = new Table();
 		int row = 1;
 		
-		String currentSchoolId = _currentSchool != null ? "" + _currentSchool.getPrimaryKey() : "0";
+		String currentSchoolId = this._currentSchool != null ? "" + this._currentSchool.getPrimaryKey() : "0";
 		addDropDown(table, PAR_PROVIDER, KEY_PROVIDER, providers, currentSchoolId, "getSchoolName", true, 1, row++);
 		
 //		Collection types = null;
@@ -381,33 +381,33 @@ public class RegulationSearchPanel extends AccountingBlock {
 //			addDropDown(table, PAR_TYPE, KEY_TYPE, types, currentTypeId, "getName", false, 1, row++);
 //		}
 		
-		if (_placingErrorMessage != null){
-			table.add(getErrorText(_placingErrorMessage), 2, row);
+		if (this._placingErrorMessage != null){
+			table.add(getErrorText(this._placingErrorMessage), 2, row);
 		}		
-		if (_dateFormatErrorMessage != null){
-			table.add(getErrorText(_dateFormatErrorMessage), 4, row);
+		if (this._dateFormatErrorMessage != null){
+			table.add(getErrorText(this._dateFormatErrorMessage), 4, row);
 		}		
 
-		if (_dateFormatErrorMessage != null || _placingErrorMessage != null){
+		if (this._dateFormatErrorMessage != null || this._placingErrorMessage != null){
 			row++;
 		}
 		
 
 		
-		addField(table, PAR_PLACING, KEY_PLACING, _currentPlacing, 1, row, 300);		
+		addField(table, PAR_PLACING, KEY_PLACING, this._currentPlacing, 1, row, 300);		
 		String date = iwc.getParameter(PAR_VALID_DATE) != null ? iwc.getParameter(PAR_VALID_DATE) :
 			formatDate(new Date(System.currentTimeMillis()), 4); 
 		addField(table, PAR_VALID_DATE, KEY_VALID_DATE, date, 3, row, 35);	
 		table.add(getLocalizedButton(SEARCH_REGULATION, KEY_SEARCH, "Search"), 5, row++);
 
-		table.setColumnWidth(1, "" + _leftColMinWidth);
+		table.setColumnWidth(1, "" + this._leftColMinWidth);
 		return table;
 	
 	}
 
 	private int _leftColMinWidth = 0;
 	public void setLeftColumnMinWidth(int minWidth){
-		_leftColMinWidth = minWidth;
+		this._leftColMinWidth = minWidth;
 	}
 	
 	
@@ -430,29 +430,29 @@ public class RegulationSearchPanel extends AccountingBlock {
 	}
 	
 	public void setOutFlowOnly(boolean b){
-		_outFlowOnly = b;
+		this._outFlowOnly = b;
 	}
 
 	public void setPlacingIfNull(String placing) {
-		if (_currentPlacing == null){
-			_currentPlacing = placing;
+		if (this._currentPlacing == null){
+			this._currentPlacing = placing;
 		}
 	}		
 	
 	public void setSchoolIfNull(School school) {
-		if (_currentSchool == null){
-			_currentSchool = school;
+		if (this._currentSchool == null){
+			this._currentSchool = school;
 		}
 	}		
 		
 
 
 	public void setError(String placingErrorMessage){
-		_placingErrorMessage = placingErrorMessage;
+		this._placingErrorMessage = placingErrorMessage;
 	}
 	
 	public School getSchool(){
-		return _currentSchool;
+		return this._currentSchool;
 	}
 	
 	public String getCurrentSchoolCategoryId(IWContext iwc) throws RemoteException, FinderException{
@@ -465,7 +465,7 @@ public class RegulationSearchPanel extends AccountingBlock {
 	 * @return
 	 */
 	public SchoolType getCurrentSchoolType() {
-		return _currentSchoolType;
+		return this._currentSchoolType;
 	}
 		
 	

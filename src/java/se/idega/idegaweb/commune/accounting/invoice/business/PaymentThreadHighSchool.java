@@ -50,13 +50,13 @@ public class PaymentThreadHighSchool extends PaymentThreadSchool {
 
 	public void run() {
 		try {
-			category = getSchoolCategoryHome().findHighSchoolCategory();
-			categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(category.getPrimaryKey());
+			this.category = getSchoolCategoryHome().findHighSchoolCategory();
+			this.categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(this.category.getPrimaryKey());
 
-			if (getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(month, category.getCategory()) == 0) {
+			if (getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(this.month, this.category.getCategory()) == 0) {
 				
-				createBatchRunLogger(category);
-				removePreliminaryInformation(month, category.getCategory());
+				createBatchRunLogger(this.category);
+				removePreliminaryInformation(this.month, this.category.getCategory());
 				//Create all the billing info derrived from the contracts
 				contracts();
 				//Create all the billing info derrived from the regular payments
@@ -91,9 +91,9 @@ public class PaymentThreadHighSchool extends PaymentThreadSchool {
 			ArrayList cond = new ArrayList();
 			cond.addAll(conditions);
 			cond.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_COMMUNE, defaultCommune.getPrimaryKey()));
-			detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(category.getCategory(), 
+			detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(this.category.getCategory(), 
 				PaymentFlowConstant.OUT, //The payment flow is out
-				calculationDate, //Current date to select the correct date range
+				this.calculationDate, //Current date to select the correct date range
 				RuleTypeConstant.DERIVED, //The conditiontype
 				RegSpecConstant.CHECK, //The ruleSpecType shall be Check
 				cond, //The conditions that need to fulfilled
@@ -107,13 +107,13 @@ public class PaymentThreadHighSchool extends PaymentThreadSchool {
 
 		if (detail == null) {
 			try {
-				Commune homeCommune = currentProvider.getSchool().getCommune();
+				Commune homeCommune = this.currentProvider.getSchool().getCommune();
 				ArrayList cond = new ArrayList();
 				cond.addAll(conditions);
 				cond.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_COMMUNE, homeCommune.getPrimaryKey()));
-				detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(category.getCategory(), 
+				detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(this.category.getCategory(), 
 					PaymentFlowConstant.OUT, //The payment flow is out
-					calculationDate, //Current date to select the correct date range
+					this.calculationDate, //Current date to select the correct date range
 					RuleTypeConstant.DERIVED, //The conditiontype
 					RegSpecConstant.CHECK, //The ruleSpecType shall be Check
 					cond, //The conditions that need to fulfilled
@@ -133,9 +133,9 @@ public class PaymentThreadHighSchool extends PaymentThreadSchool {
 				ArrayList cond = new ArrayList();
 				cond.addAll(conditions);
 				cond.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_COMMUNE, stateCommune.getPrimaryKey()));
-				detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(category.getCategory(), 
+				detail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(this.category.getCategory(), 
 					PaymentFlowConstant.OUT, //The payment flow is out
-					calculationDate, //Current date to select the correct date range
+					this.calculationDate, //Current date to select the correct date range
 					RuleTypeConstant.DERIVED, //The conditiontype
 					RegSpecConstant.CHECK, //The ruleSpecType shall be Check
 					cond, //The conditions that need to fulfilled
@@ -178,13 +178,13 @@ public class PaymentThreadHighSchool extends PaymentThreadSchool {
 			conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_STUDY_PATH, new Integer(studyPathId)));
 			try {
 				SchoolStudyPath schoolStudyPath = ((SchoolStudyPathHome) IDOLookup.getHome(SchoolStudyPath.class)).findByPrimaryKey(new Integer(schoolClassMember.getStudyPathId()));
-				errorRelated.append("Study path code " + schoolStudyPath.getCode());
+				this.errorRelated.append("Study path code " + schoolStudyPath.getCode());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		else {
-		 createNewErrorMessage(errorRelated, "invoice.StudypathMissing");
+		 createNewErrorMessage(this.errorRelated, "invoice.StudypathMissing");
 		 }
 	}
 }

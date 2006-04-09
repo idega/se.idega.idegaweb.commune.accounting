@@ -48,8 +48,9 @@ public class ChildCareContractPlacementBusinessBean extends IBOServiceBean imple
 				
 				IWTimestamp fromDate = new IWTimestamp(application.getFromDate());
 				Timestamp endDate = null;
-				if (application.getRejectionDate() != null)
+				if (application.getRejectionDate() != null) {
 					endDate = new IWTimestamp(application.getRejectionDate()).getTimestamp();
+				}
 				
 				try {
 					Collection contracts = getChildCareContractHome().findByApplication(((Integer)application.getPrimaryKey()).intValue());

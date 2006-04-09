@@ -1,5 +1,5 @@
 /*
- * $Id: BatchDeadlineServiceBean.java,v 1.3 2004/11/25 12:05:08 aron Exp $
+ * $Id: BatchDeadlineServiceBean.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
  * Created on 12.11.2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -24,10 +24,10 @@ import com.idega.util.TimePeriod;
 
 /**
  * 
- *  Last modified: $Date: 2004/11/25 12:05:08 $ by $Author: aron $
+ *  Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  * 
  * @author <a href="mailto:aron@idega.com">aron</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BatchDeadlineServiceBean extends IBOServiceBean  implements BatchDeadlineService{
     
@@ -68,8 +68,9 @@ public class BatchDeadlineServiceBean extends IBOServiceBean  implements BatchDe
     public boolean hasDeadlinePassed(){
         BatchDeadline deadline = getCurrentDeadline();
         IWTimestamp today = new IWTimestamp();
-        if(deadline!=null && today.getDay()<=deadline.getDeadlineDay())
-            return false;
+        if(deadline!=null && today.getDay()<=deadline.getDeadlineDay()) {
+					return false;
+				}
         return true;
     }
     

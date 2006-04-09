@@ -125,18 +125,18 @@ public class TestPosts extends InvoiceBatchStarter {
 		
     
 	private School getSelectedSchool(){
-		if (_currentSchool == null && getIWContext().isParameterSet(PAR_PROVIDER)){
+		if (this._currentSchool == null && getIWContext().isParameterSet(PAR_PROVIDER)){
 			try{
 				SchoolHome schoolHome = (SchoolHome) IDOLookup.getHome(School.class);			
 				int currentSchoolId = new Integer(getIWContext().getParameter(PAR_PROVIDER)).intValue();
-				_currentSchool = schoolHome.findByPrimaryKey("" + currentSchoolId);	
+				this._currentSchool = schoolHome.findByPrimaryKey("" + currentSchoolId);	
 			}catch(RemoteException ex){
 				ex.printStackTrace();
 			}catch(FinderException ex){ 
 				ex.printStackTrace();
 			}		
 		}		
-		return _currentSchool;
+		return this._currentSchool;
 	}    
 
     protected void addBatchRunToQueue(Date month, Date readDate,
@@ -163,14 +163,14 @@ public class TestPosts extends InvoiceBatchStarter {
     }
 
     public SchoolCategory getCurrentSchoolCategory(IWContext iwc) {
-        if (_currentSchoolCategory == null) {
+        if (this._currentSchoolCategory == null) {
 
             try {
                 SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup
                         .getServiceInstance(iwc.getApplicationContext(),
                                 SchoolBusiness.class);
                 String opField = getSession().getOperationalField();
-                _currentSchoolCategory = schoolBusiness.getSchoolCategoryHome()
+                this._currentSchoolCategory = schoolBusiness.getSchoolCategoryHome()
                         .findByPrimaryKey(opField);
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -179,7 +179,7 @@ public class TestPosts extends InvoiceBatchStarter {
             }
         }
 
-        return _currentSchoolCategory;
+        return this._currentSchoolCategory;
     }
 
     /** The following methods is stolen from PaymentRecordMaintenance* */

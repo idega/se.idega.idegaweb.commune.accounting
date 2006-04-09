@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationForm.java,v 1.14 2003/09/09 14:09:44 laddi Exp $
+ * $Id: ApplicationForm.java,v 1.15 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -20,10 +20,10 @@ import com.idega.presentation.ui.HiddenInput;
  * A generic form for Check & Peng presentation blocks.
  * 
  * <p>
- * Last modified: $Date: 2003/09/09 14:09:44 $
+ * Last modified: $Date: 2006/04/09 11:53:33 $
  *
  * @author <a href="http://www.ncmedia.com">Anders Lindman</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class ApplicationForm extends AccountingBlock {
 
@@ -36,13 +36,13 @@ public class ApplicationForm extends AccountingBlock {
 	 * @parent the parent block to use for localization.
 	 */
 	public ApplicationForm(AccountingBlock parent){
-		form = new Form();
-		table = new Table(1, 4);
-		table.setWidth(getWidth());
-		table.setCellpadding(getCellpadding());
-		table.setCellspacing(getCellspacing());
-		form.add(table);
-		super.add(form);
+		this.form = new Form();
+		this.table = new Table(1, 4);
+		this.table.setWidth(getWidth());
+		this.table.setCellpadding(getCellpadding());
+		this.table.setCellspacing(getCellspacing());
+		this.form.add(this.table);
+		super.add(this.form);
 		setParent(parent);
 	}
 	
@@ -57,7 +57,7 @@ public class ApplicationForm extends AccountingBlock {
 	 * Should not be used.
 	 */
 	public void add(PresentationObject po) {
-		form.add(new Text("add() should not be used in application forms." +				" Use setTitle(), setSearchPanel(), setMainPanel() and setButtonPanel()."));
+		this.form.add(new Text("add() should not be used in application forms." +				" Use setTitle(), setSearchPanel(), setMainPanel() and setButtonPanel()."));
 	}
 	
 	/**
@@ -67,9 +67,9 @@ public class ApplicationForm extends AccountingBlock {
 	 * @param defaultText the default localized text for the title
 	 */
 	public void setLocalizedTitle(String textKey, String defaultText) {
-		table.add(getHeader(localize(textKey, defaultText)), 1, 1);
-		table.setRowColor(1, getHeaderColor());
-		table.setAlignment(1, 1, Table.HORIZONTAL_ALIGN_CENTER);
+		this.table.add(getHeader(localize(textKey, defaultText)), 1, 1);
+		this.table.setRowColor(1, getHeaderColor());
+		this.table.setAlignment(1, 1, Table.HORIZONTAL_ALIGN_CENTER);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class ApplicationForm extends AccountingBlock {
 	 * @param searchPanel the table containing the search panel
 	 */
 	public void setSearchPanel(PresentationObject searchPanel) {
-		table.add(searchPanel, 1, 2);
+		this.table.add(searchPanel, 1, 2);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class ApplicationForm extends AccountingBlock {
 	 * @param mainPanel the presentation object containing the main panel
 	 */
 	public void setMainPanel(PresentationObject mainPanel) {
-		table.add(mainPanel, 1, 3);
+		this.table.add(mainPanel, 1, 3);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class ApplicationForm extends AccountingBlock {
 	 * @see ButtonPanel
 	 */
 	public void setButtonPanel(PresentationObject buttonPanel) {
-		table.add(buttonPanel, 1, 4);
+		this.table.add(buttonPanel, 1, 4);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class ApplicationForm extends AccountingBlock {
 	 * @param value the hidden input parameter va?ue
 	 */
 	public void addHiddenInput(String parameter, String value) {
-		table.add(new HiddenInput(parameter, value), 1, 4);
+		this.table.add(new HiddenInput(parameter, value), 1, 4);
 	}
 	
 	/**
@@ -114,13 +114,14 @@ public class ApplicationForm extends AccountingBlock {
 	 * @param parameterName
 	 */
 	public void maintainParameter(String parameterName){
-		if(this.form!=null)
+		if(this.form!=null) {
 			this.form.maintainParameter(parameterName);
+		}
 	}
 	
 	public String localize(String textKey, String defaultText) {
-		if (parent != null) {
-			return parent.localize(textKey, defaultText);
+		if (this.parent != null) {
+			return this.parent.localize(textKey, defaultText);
 		} else {
 			return defaultText;
 		}

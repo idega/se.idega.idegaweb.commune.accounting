@@ -1,5 +1,5 @@
 /*
- * $Id: RegulationList.java,v 1.19 2004/02/18 19:56:00 aron Exp $
+ * $Id: RegulationList.java,v 1.20 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -39,10 +39,10 @@ import se.idega.idegaweb.commune.accounting.regulations.data.Regulation;
  * @see se.idega.idegaweb.commune.accounting.regulations.data.RegulationBMPBean#
  * @see se.idega.idegaweb.commune.accounting.regulations.data.ConditionBMPBean#
  * <p>
- * $Id: RegulationList.java,v 1.19 2004/02/18 19:56:00 aron Exp $
+ * $Id: RegulationList.java,v 1.20 2006/04/09 11:53:33 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class RegulationList extends AccountingBlock {
 
@@ -102,14 +102,14 @@ public class RegulationList extends AccountingBlock {
 	 * Handles the property editPage
 	 */
 	public void setEditPage(ICPage page) {
-		_editPage = page;
+		this._editPage = page;
 	}
 
 	/**
 	 * Handles the property editPage
 	 */
 	public ICPage getEditPage() {
-		return _editPage;
+		return this._editPage;
 	}
 
 
@@ -166,25 +166,25 @@ public class RegulationList extends AccountingBlock {
 		ApplicationForm app = new ApplicationForm(this);
 
 		try {
-			_currentOperation = getSession().getOperationalField();
-			_currentOperation = _currentOperation == null ? "" : _currentOperation;
+			this._currentOperation = getSession().getOperationalField();
+			this._currentOperation = this._currentOperation == null ? "" : this._currentOperation;
 		} catch (RemoteException e) {}
 
 		if (iwc.isParameterSet(PARAM_SELECTOR_PAYMENT_FLOW_TYPE)) {
-			_currentFlowType = 	Integer.parseInt(iwc.getParameter(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
+			this._currentFlowType = 	Integer.parseInt(iwc.getParameter(PARAM_SELECTOR_PAYMENT_FLOW_TYPE));
 		} else if (iwc.getSession().getAttribute(ATTRIB_SELECTOR_PAYMENT_FLOW_TYPE) != null) {
-			_currentFlowType = Integer.parseInt((String) iwc.getSession().getAttribute(ATTRIB_SELECTOR_PAYMENT_FLOW_TYPE));
+			this._currentFlowType = Integer.parseInt((String) iwc.getSession().getAttribute(ATTRIB_SELECTOR_PAYMENT_FLOW_TYPE));
 		} else {
-			_currentFlowType = 1;
+			this._currentFlowType = 1;
 		}
 
 		if (iwc.isParameterSet(PARAM_SELECTOR_SORT_BY)) {
-			_currentSortBy = Integer.parseInt(iwc.getParameter(PARAM_SELECTOR_SORT_BY));
+			this._currentSortBy = Integer.parseInt(iwc.getParameter(PARAM_SELECTOR_SORT_BY));
 			
 		} else if (iwc.getSession().getAttribute(ATTRIB_SELECTOR_SORT_BY) != null) {
-			_currentSortBy = Integer.parseInt((String) iwc.getSession().getAttribute(ATTRIB_SELECTOR_SORT_BY));
+			this._currentSortBy = Integer.parseInt((String) iwc.getSession().getAttribute(ATTRIB_SELECTOR_SORT_BY));
 		} else {			
-			_currentSortBy = 1;
+			this._currentSortBy = 1;
 		}
 
 		
@@ -201,7 +201,7 @@ public class RegulationList extends AccountingBlock {
 
 	private ButtonPanel getButtonPanel() {
 		ButtonPanel buttonPanel = new ButtonPanel(this);
-		buttonPanel.addLocalizedButton(PARAM_NEW, KEY_NEW, "Ny", _editPage);
+		buttonPanel.addLocalizedButton(PARAM_NEW, KEY_NEW, "Ny", this._editPage);
 		return buttonPanel;
 	}
 	
@@ -234,7 +234,7 @@ public class RegulationList extends AccountingBlock {
 		try {
 			rBiz = getRegulationBusiness(iwc);
 
-			Collection items = rBiz.findRegulationsByPeriod(_currentFromDate, _currentToDate, _currentOperation, _currentFlowType, _currentSortBy);
+			Collection items = rBiz.findRegulationsByPeriod(this._currentFromDate, this._currentToDate, this._currentOperation, this._currentFlowType, this._currentSortBy);
 			if (items != null) {
 				Iterator iter = items.iterator();
 				while (iter.hasNext()) {
@@ -243,7 +243,7 @@ public class RegulationList extends AccountingBlock {
 										 PARAM_EDIT_ID, r.getPrimaryKey().toString());
 					link.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					link.addParameter(PARAM_RETURN_TO_DATE, tod);
-					link.setPage(_editPage);
+					link.setPage(this._editPage);
 					list.add(link);
 
 					list.add(r.getName() != null ? r.getName() : "" );
@@ -274,7 +274,7 @@ public class RegulationList extends AccountingBlock {
 					edit.addParameter(PARAM_EDIT_ID, r.getPrimaryKey().toString());
 					edit.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					edit.addParameter(PARAM_RETURN_TO_DATE, tod);
-					edit.setPage(_editPage);
+					edit.setPage(this._editPage);
 					list.add(edit);
 
 					Link copy = new Link(getCopyIcon(localize(KEY_BUTTON_COPY, "Kopiera")));
@@ -282,7 +282,7 @@ public class RegulationList extends AccountingBlock {
 					copy.addParameter(PARAM_MODE_COPY, "1");
 					copy.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					copy.addParameter(PARAM_RETURN_TO_DATE, tod);
-					copy.setPage(_editPage);
+					copy.setPage(this._editPage);
 					list.add(copy);
 
 					SubmitButton delete = new SubmitButton(getDeleteIcon(localize(KEY_REMOVE, "Radera")));
@@ -315,13 +315,13 @@ public class RegulationList extends AccountingBlock {
 		table.add(getLocalizedLabel(KEY_PERIOD_SEARCH, "Period"), 1, 3);
 		table.add(new OperationalFieldsMenu(), 2, 1);
 		
-		table.add(paymentFlowTypeSelector(iwc, PARAM_SELECTOR_PAYMENT_FLOW_TYPE, _currentFlowType), 2, 2);
-		table.add(getFromToDatePanel(PARAM_FROM, _currentFromDate, PARAM_TO, _currentToDate), 2, 3);
+		table.add(paymentFlowTypeSelector(iwc, PARAM_SELECTOR_PAYMENT_FLOW_TYPE, this._currentFlowType), 2, 2);
+		table.add(getFromToDatePanel(PARAM_FROM, this._currentFromDate, PARAM_TO, this._currentToDate), 2, 3);
 
 		table.add(getLocalizedLabel(KEY_HEADER_SORT_BY, "Sortera på"), 3, 1);
 		table.add(getLocalizedButton(PARAM_SEARCH, KEY_SEARCH, "Sök"), 3, 3);
 
-		table.add(sortBySelector(PARAM_SELECTOR_SORT_BY, _currentSortBy), 4, 1);
+		table.add(sortBySelector(PARAM_SELECTOR_SORT_BY, this._currentSortBy), 4, 1);
 
 		return table;
 	}
@@ -392,37 +392,37 @@ public class RegulationList extends AccountingBlock {
 		} catch (Exception e) {}
 	
 		if (iwc.isParameterSet(PARAM_FROM)) {
-			_currentFromDate = parseDate(iwc.getParameter(PARAM_FROM));
+			this._currentFromDate = parseDate(iwc.getParameter(PARAM_FROM));
 		} else if (iwc.isParameterSet(PARAM_RETURN_FROM_DATE)) {
-			_currentFromDate = parseDate(iwc.getParameter(PARAM_RETURN_FROM_DATE));
+			this._currentFromDate = parseDate(iwc.getParameter(PARAM_RETURN_FROM_DATE));
 		}
 		else if (sessionFromDate != null) {
-			_currentFromDate = sessionFromDate;				
+			this._currentFromDate = sessionFromDate;				
 		} else {
-			_currentFromDate = getFlattenedTodaysDate();
+			this._currentFromDate = getFlattenedTodaysDate();
 		}
 			
 		if (iwc.isParameterSet(PARAM_TO)) {
-			_currentToDate = parseDate(iwc.getParameter(PARAM_TO));
+			this._currentToDate = parseDate(iwc.getParameter(PARAM_TO));
 		} else if (iwc.isParameterSet(PARAM_RETURN_TO_DATE)) {
-			_currentToDate = parseDate(iwc.getParameter(PARAM_RETURN_TO_DATE));
+			this._currentToDate = parseDate(iwc.getParameter(PARAM_RETURN_TO_DATE));
 		}else if (sessionToDate != null) {
-			_currentToDate = sessionToDate;				
+			this._currentToDate = sessionToDate;				
 		} else {
-			_currentToDate = parseDate("9999-12-31");
+			this._currentToDate = parseDate("9999-12-31");
 		}
 			
-		if(_currentToDate == null) {
-			_currentToDate = parseDate("9999-12-31");
+		if(this._currentToDate == null) {
+			this._currentToDate = parseDate("9999-12-31");
 		}
-		if(_currentFromDate == null) {
-			_currentFromDate = getFlattenedTodaysDate();
+		if(this._currentFromDate == null) {
+			this._currentFromDate = getFlattenedTodaysDate();
 		}
-		_currentFromDate = parseDate(formatDate(_currentFromDate, 4));
-		_currentToDate = parseDate(formatDate(_currentToDate, 4));
+		this._currentFromDate = parseDate(formatDate(this._currentFromDate, 4));
+		this._currentToDate = parseDate(formatDate(this._currentToDate, 4));
 		try {
-			getSession().getUserContext().setSessionAttribute(PARAM_FROM, _currentFromDate);
-			getSession().getUserContext().setSessionAttribute(PARAM_TO, _currentToDate);
+			getSession().getUserContext().setSessionAttribute(PARAM_FROM, this._currentFromDate);
+			getSession().getUserContext().setSessionAttribute(PARAM_TO, this._currentToDate);
 		} catch (Exception e) {}
 	}
 

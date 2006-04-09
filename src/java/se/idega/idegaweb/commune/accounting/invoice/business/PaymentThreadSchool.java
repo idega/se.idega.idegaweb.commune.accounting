@@ -70,11 +70,11 @@ import com.idega.util.IWTimestamp;
 /**
  * Abstract class that holds all the logic that is common for the shool billing
  * 
- * Last modified: $Date: 2005/10/13 08:09:37 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  * 
  * @author <a href="mailto:joakim@idega.com">Joakim Johnson</a>
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.142 $
+ * @version $Revision: 1.143 $
  * 
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadElementarySchool
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadHighSchool
@@ -150,7 +150,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 
 		try {
 			// Set the category parameter to ElementarySchool
-			categoryPosting = getCategoryPosting();
+			this.categoryPosting = getCategoryPosting();
 			ProviderTypeHome providerTypeHome = (ProviderTypeHome) IDOLookup.getHome(ProviderType.class);
 			ProviderType providerType = providerTypeHome.findPrivateType();
 			if (hasPlacements()) {
@@ -174,7 +174,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 				while (i.hasNext()) {
 					school = (School) i.next();
 					contractForProvider(school, validSchoolSeasonId, privateType, regBus);
-					if (!running) {
+					if (!this.running) {
 						return;
 
 					}
@@ -183,9 +183,9 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (RemoteException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				errorRelated.append(e);
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.RemoteException", "Remote Exception"));
+			if (this.errorRelated != null) {
+				this.errorRelated.append(e);
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.RemoteException", "Remote Exception"));
 			}
 			else {
 				createNewErrorMessage(getLocalizedString("invoice.PaymentSchool", "Payment School"),
@@ -194,8 +194,8 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.Severe_CouldNotFindSchoolCategory",
+			if (this.errorRelated != null) {
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.Severe_CouldNotFindSchoolCategory",
 						"Severe. Could not find school category"));
 			}
 			else {
@@ -206,8 +206,8 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (EJBException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.Severe_CouldNotFindHomeCommune",
+			if (this.errorRelated != null) {
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.Severe_CouldNotFindHomeCommune",
 						"Severe Could not find  home commune"));
 			}
 			else {
@@ -218,9 +218,9 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (IDOException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				errorRelated.append(e);
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.Severe_IDOException",
+			if (this.errorRelated != null) {
+				this.errorRelated.append(e);
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.Severe_IDOException",
 						"Severe IDO Exception"));
 			}
 			else {
@@ -233,8 +233,8 @@ public abstract class PaymentThreadSchool extends BillingThread {
 	private void contractForProvider(School school, int validSchoolSeasonId, int privateType, RegulationsBusiness regBus) {
 		try {
 			// school = getSchoolHome().findByPrimaryKey(new Integer(8));
-			errorRelated = new ErrorLogger();
-			errorRelated.append(getLocalizedString("invoice.School", "School") + ":" + school.getName(), 1);
+			this.errorRelated = new ErrorLogger();
+			this.errorRelated.append(getLocalizedString("invoice.School", "School") + ":" + school.getName(), 1);
 			boolean schoolIsInDefaultCommune;
 			final boolean schoolIsPrivate;
 			Provider provider = null;
@@ -242,11 +242,11 @@ public abstract class PaymentThreadSchool extends BillingThread {
 				provider = new Provider(Integer.parseInt(school.getPrimaryKey().toString()));
 				// Only look at those not "payment by invoice"
 				// Check if it is private or in Nacka
-				errorRelated.append(getLocalizedString("invoice.SchoolCommune", "School commune") + ":"
+				this.errorRelated.append(getLocalizedString("invoice.SchoolCommune", "School commune") + ":"
 						+ school.getCommune().getCommuneName());
 				schoolIsInDefaultCommune = school.getCommune().getIsDefault();
 				schoolIsPrivate = provider.getProviderTypeId() == privateType;
-				if (categoryPosting.getCreatePaymentsForCommuneProvidersOutsideCommune() && !schoolIsInDefaultCommune) {
+				if (this.categoryPosting.getCreatePaymentsForCommuneProvidersOutsideCommune() && !schoolIsInDefaultCommune) {
 					if (school.getManagementTypeId().equals(SchoolManagementTypeBMPBean.TYPE_COMMUNE)) {
 						schoolIsInDefaultCommune = true;
 					}
@@ -259,12 +259,12 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			// errorRelated.logToConsole();
 
 			if ((schoolIsInDefaultCommune || schoolIsPrivate) && !provider.getPaymentByInvoice()) {
-				ErrorLogger tmpErrorRelated = new ErrorLogger(errorRelated);
+				ErrorLogger tmpErrorRelated = new ErrorLogger(this.errorRelated);
 				Collection pupils = getSchoolClassMembers(school);
 				Iterator j = pupils.iterator();
 				for (; j.hasNext();) {
 					try {
-						errorRelated = new ErrorLogger(tmpErrorRelated);
+						this.errorRelated = new ErrorLogger(tmpErrorRelated);
 						SchoolClassMember schoolClassMember = (SchoolClassMember) j.next();
 						if (schoolClassMember.getSchoolClass().getSchoolSeasonId() == validSchoolSeasonId) {
 							createPaymentForSchoolClassMember(regBus, provider, schoolClassMember,
@@ -273,77 +273,77 @@ public abstract class PaymentThreadSchool extends BillingThread {
 					}
 					catch (NullPointerException e) {
 						e.printStackTrace();
-						errorRelated.append(e);
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.NullPointer", "Nullpointer"));
+						this.errorRelated.append(e);
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.NullPointer", "Nullpointer"));
 					}
 					catch (MissingFlowTypeException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.ErrorFindingFlowType",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.ErrorFindingFlowType",
 								"Error Finding FlowType"));
 					}
 					catch (MissingConditionTypeException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.ErrorFindingConditionType",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.ErrorFindingConditionType",
 								"Error Finding ConditionType"));
 					}
 					catch (MissingRegSpecTypeException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.ErrorFindingRegSpecType",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.ErrorFindingRegSpecType",
 								"Error Finding RegSpecType"));
 					}
 					catch (TooManyRegulationsException e) {
 						e.printStackTrace();
-						errorRelated.append(getLocalizedString("invoice.Regulations_found", "Regulations found") + ":"
+						this.errorRelated.append(getLocalizedString("invoice.Regulations_found", "Regulations found") + ":"
 								+ e.getRegulationNamesString());
-						createNewErrorMessage(errorRelated, getLocalizedString(
+						createNewErrorMessage(this.errorRelated, getLocalizedString(
 								"invoice.ErrorFindingTooManyRegulations", "Error Finding too many regulations"));
 					}
 					catch (PostingException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.PostingString",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.PostingString",
 								"Posting String"));
 					}
 					catch (RegulationException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.RegulationException",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.RegulationException",
 								"Regulation Exception"));
 					}
 					catch (RemoteException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.RemoteException",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.RemoteException",
 								"Remote Exception"));
 					}
 					catch (FinderException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.FinderException",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.FinderException",
 								"Finder Exception"));
 					}
 					catch (EJBException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.EJBException", "EJB Exception"));
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.EJBException", "EJB Exception"));
 					}
 					catch (CreateException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString("invoice.CreateException",
+						createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.CreateException",
 								"Create Exception"));
 					}
 					catch (NotDefaultCommuneException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated, getLocalizedString(
+						createNewErrorMessage(this.errorRelated, getLocalizedString(
 								"invoice.BothStudentAndSchoolOutsideDefaultCommmune",
 								"Both student and school outside default commmune"));
 					}
 				}
 			}
 			else {
-				log.info("School " + school.getName()
+				this.log.info("School " + school.getName()
 						+ " is not in home commune and not private or gets payment by invoice");
 			}
 		}
 		catch (RemoteException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.DBError_Creating_contracts_for_school",
+			if (this.errorRelated != null) {
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.DBError_Creating_contracts_for_school",
 						"DBError, Creating contracts for school"));
 			}
 			else {
@@ -353,8 +353,8 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			if (errorRelated != null) {
-				createNewErrorMessage(errorRelated, getLocalizedString("invoice.CouldNotFindContractForSchool",
+			if (this.errorRelated != null) {
+				createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.CouldNotFindContractForSchool",
 						"Could not find contract for school"));
 			}
 			else {
@@ -364,7 +364,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		}
 		catch (SchoolMissingVitalDataException e) {
 			e.printStackTrace();
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.SchoolMissingVitalData",
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.SchoolMissingVitalData",
 					"School is missing vital data"));
 		}
 		catch (NullPointerException e) {
@@ -376,8 +376,8 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			 * (errorRelated.toString().length() > 900) errorRelated = new
 			 * ErrorLogger(errorRelated.toString().substring(1, 900));
 			 */
-			errorRelated.append(e);
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.NullpointerException",
+			this.errorRelated.append(e);
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.NullpointerException",
 					"Nullpointer exception"));
 		}
 	}
@@ -385,7 +385,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 	protected PostingDetail getCheck(RegulationsBusiness regBus, Collection conditions, SchoolClassMember placement)
 			throws RegulationException, MissingFlowTypeException, MissingConditionTypeException,
 			MissingRegSpecTypeException, TooManyRegulationsException, RemoteException {
-		return regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(category.getCategory(), /*
+		return regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(this.category.getCategory(), /*
 																											 * The
 																											 * ID
 																											 * that
@@ -396,7 +396,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 																											 * regulation
 																											 */
 		PaymentFlowConstant.OUT, // The payment flow is out
-				calculationDate, // Current date to select the correct date
+				this.calculationDate, // Current date to select the correct date
 				// range
 				RuleTypeConstant.DERIVED, // The conditiontype
 				RegSpecConstant.CHECK, // The ruleSpecType shall be Check
@@ -412,10 +412,10 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			MissingFlowTypeException, MissingConditionTypeException, MissingRegSpecTypeException,
 			TooManyRegulationsException, RemoteException, NotDefaultCommuneException {
 
-		errorRelated.append(getLocalizedString("invoice.SchoolClassMemeber", "SchoolClassMemeber") + ":"
+		this.errorRelated.append(getLocalizedString("invoice.SchoolClassMemeber", "SchoolClassMemeber") + ":"
 				+ schoolClassMember.getPrimaryKey());
 		if (null != schoolClassMember.getStudent()) {
-			errorRelated.append(getLocalizedString("invoice.Student", "Student") + ":"
+			this.errorRelated.append(getLocalizedString("invoice.Student", "Student") + ":"
 					+ schoolClassMember.getStudent().getName() + "; "
 					+ getLocalizedString("invoice.PersonalID", "PersonalID") + ":"
 					+ schoolClassMember.getStudent().getPersonalID());
@@ -439,9 +439,9 @@ public abstract class PaymentThreadSchool extends BillingThread {
 
 			ArrayList conditions = getConditions(schoolClassMember, provider);
 			School school = schoolClassMember.getSchoolClass().getSchool();
-			errorRelated.append(getLocalizedString("invoice.Date", "Date") + ":" + calculationDate.toString());
+			this.errorRelated.append(getLocalizedString("invoice.Date", "Date") + ":" + this.calculationDate.toString());
 			// Get the check
-			currentProvider = provider;
+			this.currentProvider = provider;
 			PostingDetail postingDetail = getCheck(regBus, conditions, schoolClassMember);
 			RegulationSpecType regSpecType = getRegulationSpecTypeHome().findByRegulationSpecType(
 					postingDetail.getRuleSpecType());
@@ -484,11 +484,11 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			}
 			catch (IDORelationshipException e) {
 				e.printStackTrace();
-				if (errorRelated != null) {
-					createNewErrorMessage(errorRelated, "invoice.DBRelationshipError");
+				if (this.errorRelated != null) {
+					createNewErrorMessage(this.errorRelated, "invoice.DBRelationshipError");
 				}
 				else {
-					createNewErrorMessage(createRelatedString(category, schoolClassMember.getSchoolType(), school,
+					createNewErrorMessage(createRelatedString(this.category, schoolClassMember.getSchoolType(), school,
 							schoolClassMember.getStudent()), "invoice.DBRelationshipError");
 				}
 			}
@@ -496,10 +496,10 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			Collection resources = getResourceBusiness().getResourcePlacementsByMemberId(
 					(Integer) schoolClassMember.getPrimaryKey());
 			// errorRelated.append("Found " + resources.size() + " resources");
-			ErrorLogger tmpErrorRelated = new ErrorLogger(errorRelated);
+			ErrorLogger tmpErrorRelated = new ErrorLogger(this.errorRelated);
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ResourceClassMember resource = (ResourceClassMember) i.next();
-				errorRelated = new ErrorLogger(tmpErrorRelated);
+				this.errorRelated = new ErrorLogger(tmpErrorRelated);
 				try {
 					createPaymentsForResource(regBus, provider, schoolClassMember, conditions, resource);
 				}
@@ -508,16 +508,16 @@ public abstract class PaymentThreadSchool extends BillingThread {
 					// errorRelated = new ErrorLogger();
 					User user = null != schoolClassMember ? schoolClassMember.getStudent() : null;
 					String studentInfo = null != user ? user.getName() + " " + user.getPersonalID() : "";
-					errorRelated.append(getLocalizedString("invoice.Student", "Student") + ":" + studentInfo);
-					errorRelated.append(getLocalizedString("invoice.Conditions", "Conditions") + ":" + conditions);
-					errorRelated.append(getLocalizedString("invoice.Resource", "Resource") + ":" + resource);
+					this.errorRelated.append(getLocalizedString("invoice.Student", "Student") + ":" + studentInfo);
+					this.errorRelated.append(getLocalizedString("invoice.Conditions", "Conditions") + ":" + conditions);
+					this.errorRelated.append(getLocalizedString("invoice.Resource", "Resource") + ":" + resource);
 					// java.io.StringWriter sw = new java.io.StringWriter();
 					// e.printStackTrace(new java.io.PrintWriter(sw, true));
-					errorRelated.append(e);
+					this.errorRelated.append(e);
 					// if (errorRelated.toString().length() > 900)
 					// errorRelated = new StringBuffer(errorRelated.substring(1,
 					// 900));
-					createNewErrorMessage(errorRelated, getLocalizedString("invoice.createPaymentsForResourceError",
+					createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.createPaymentsForResourceError",
 							"Create payments for resource error"));
 				}
 			}
@@ -546,10 +546,10 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		if (schoolClassMember.getRemovedDate() != null) {
 			placementEnd = new IWTimestamp(schoolClassMember.getRemovedDate().getTime());
 		}
-		IWTimestamp periodStart = new IWTimestamp(startPeriod);
-		startPeriod.setAsDate();
-		IWTimestamp periodEnd = new IWTimestamp(endPeriod);
-		endPeriod.setAsDate();
+		IWTimestamp periodStart = new IWTimestamp(this.startPeriod);
+		this.startPeriod.setAsDate();
+		IWTimestamp periodEnd = new IWTimestamp(this.endPeriod);
+		this.endPeriod.setAsDate();
 		final boolean placementIsInPeriod = !placementStart.isLaterThan(periodEnd)
 				&& (null == placementEnd || !periodStart.isLaterThan(placementEnd));
 		return placementIsInPeriod;
@@ -560,7 +560,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		Collection resourceConditions = new ArrayList();
 		// Just a safety precation to trace down null pointer error
 		if (null == regBus || null == schoolClassMember || null == resource || null == provider) {
-			createNewErrorMessage(errorRelated, getLocalizedString(
+			createNewErrorMessage(this.errorRelated, getLocalizedString(
 					"invoice.NullpointerInCallToGetRegulationForResourceArray",
 					"Nullpointer in call to get regulation for resource array"));
 			return resourceConditions;
@@ -568,21 +568,21 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		if (null != schoolClassMember.getSchoolType()) {
 		}
 		else {
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.NullpointerInSchoolType",
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.NullpointerInSchoolType",
 					"Nullpointer in schooltype"));
 			return resourceConditions;
 		}
 		if (null != resource.getResource()) {
-			errorRelated.append(getLocalizedString("invoice.Resource", "Resource") + ":"
+			this.errorRelated.append(getLocalizedString("invoice.Resource", "Resource") + ":"
 					+ resource.getResource().getResourceName());
 		}
 		else {
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.NullpointerInResource",
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.NullpointerInResource",
 					"Nullpointer in resource"));
 			return resourceConditions;
 		}
 		if (null == schoolClassMember.getSchoolYear()) {
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.NullpointerInSchoolYear",
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.NullpointerInSchoolYear",
 					"Nullpointer in schoolyear"));
 			return resourceConditions;
 		}
@@ -594,7 +594,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		resourceConditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_SCHOOL_YEAR,
 				schoolClassMember.getSchoolYear().getName()));
 		Collection regulationForResourceArray = regBus.getAllRegulationsByOperationFlowPeriodConditionTypeRegSpecType(
-				category.getCategory(), PaymentFlowConstant.OUT, calculationDate, RuleTypeConstant.DERIVED,
+				this.category.getCategory(), PaymentFlowConstant.OUT, this.calculationDate, RuleTypeConstant.DERIVED,
 				RegSpecConstant.RESOURCE, resourceConditions);
 
 		return regulationForResourceArray;
@@ -620,10 +620,10 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			for (Iterator i = regulationForResourceArray.iterator(); i.hasNext();) {
 				try {
 					Regulation regulation = (Regulation) i.next();
-					errorRelated.append(getLocalizedString("invoice.Regulation", "Regulation") + ":"
+					this.errorRelated.append(getLocalizedString("invoice.Regulation", "Regulation") + ":"
 							+ regulation.getName());
 					PostingDetail postingDetail = regBus.getPostingDetailForPlacement(0.0f, schoolClassMember,
-							regulation, calculationDate, conditions, placementTimes);
+							regulation, this.calculationDate, conditions, placementTimes);
 					RegulationSpecType regSpecType = getRegulationSpecTypeHome().findByRegulationSpecType(
 							postingDetail.getRuleSpecType());
 					String[] postings = getPostingStrings(provider, schoolClassMember, regSpecType);
@@ -682,13 +682,13 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		ArrayList oppenConditions = new ArrayList();
 		oppenConditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_OPERATION, FRITIDSKLUBB));
 		Collection regulationForTypeArray = regBus.getAllRegulationsByOperationFlowPeriodConditionTypeRegSpecType(
-				category.getCategory(), PaymentFlowConstant.OUT, calculationDate, RuleTypeConstant.DERIVED, null,
+				this.category.getCategory(), PaymentFlowConstant.OUT, this.calculationDate, RuleTypeConstant.DERIVED, null,
 				oppenConditions);
 		if (regulationForTypeArray.size() != 1) {
-			errorRelated.append(getLocalizedString("invoice.Number_of_regulations_found_for_fritidsklubb",
+			this.errorRelated.append(getLocalizedString("invoice.Number_of_regulations_found_for_fritidsklubb",
 					"Number of regulations found for fritidsklubb")
 					+ ":" + regulationForTypeArray.size());
-			createNewErrorMessage(errorRelated, getLocalizedString(
+			createNewErrorMessage(this.errorRelated, getLocalizedString(
 					"invoice.Number_of_regulations_for_fritidsklubb_not_correct",
 					"Number of regulations for fritidsklubb not correct"));
 		}
@@ -696,18 +696,18 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			try {
 				Regulation regulation = (Regulation) i.next();
 				PostingDetail postingDetail = regBus.getPostingDetailForPlacement(0.0f, schoolClassMember, regulation,
-						calculationDate, conditions, placementTimes);
+						this.calculationDate, conditions, placementTimes);
 				// RegulationSpecType regSpecType =
 				// getRegulationSpecTypeHome().findByRegulationSpecType(postingDetail.getRuleSpecType());
 				RegulationSpecType regSpecType = regulation.getRegSpecType();
-				errorRelated.append("RegSpecType from regulation " + regulation.getRegSpecType(), 1);
-				errorRelated.append(
+				this.errorRelated.append("RegSpecType from regulation " + regulation.getRegSpecType(), 1);
+				this.errorRelated.append(
 						"RegSpecType from posting detail"
 								+ (getRegulationSpecTypeHome().findByRegulationSpecType(postingDetail.getRuleSpecType())).getLocalizationKey(),
 						1);
 				if (!regulation.getRegSpecType().getLocalizationKey().equalsIgnoreCase(
 						(getRegulationSpecTypeHome().findByRegulationSpecType(postingDetail.getRuleSpecType())).getLocalizationKey())) {
-					createNewErrorMessage(errorRelated, getLocalizedString(
+					createNewErrorMessage(this.errorRelated, getLocalizedString(
 							"invoice.WarningConflictingRegSpecTypesGivenForFritidsKlubb",
 							"Warning: Conflicting RegSpecTypes given for fritidsklubb"));
 				}
@@ -719,11 +719,11 @@ public abstract class PaymentThreadSchool extends BillingThread {
 					int schoolYearInt = Integer.parseInt(schoolYearName.substring(len - 1, len));
 					SchoolYear schoolYear = ((SchoolYearHome) IDOLookup.getHome(SchoolYear.class)).findByYearName(FRITIDSKLUBB_YEAR_PREFIX
 							+ schoolYearInt);
-					errorRelated.append(getLocalizedString("invoice.FritidsklubbSchoolyear", "Fritidsklubb schoolyear")
+					this.errorRelated.append(getLocalizedString("invoice.FritidsklubbSchoolyear", "Fritidsklubb schoolyear")
 							+ ":" + FRITIDSKLUBB_YEAR_PREFIX + schoolYearInt);
 
-					String[] postings = getPostingStrings(category, schoolType,
-							((Integer) regSpecType.getPrimaryKey()).intValue(), provider, calculationDate,
+					String[] postings = getPostingStrings(this.category, schoolType,
+							((Integer) regSpecType.getPrimaryKey()).intValue(), provider, this.calculationDate,
 							((Integer) schoolYear.getPrimaryKey()).intValue(), schoolClassMember.getStudyPathId());
 
 					PaymentRecord record = createPaymentRecord(postingDetail, postings[0], postings[1],
@@ -738,13 +738,13 @@ public abstract class PaymentThreadSchool extends BillingThread {
 				}
 				catch (FinderException e1) {
 					e1.printStackTrace();
-					createNewErrorMessage(errorRelated, getLocalizedString(
+					createNewErrorMessage(this.errorRelated, getLocalizedString(
 							"invoice.CouldNotFindSchoolYearForFritidsklubb",
 							"Could not find schoolyear for fritidsklubb"));
 				}
 				catch (NumberFormatException e1) {
 					e1.printStackTrace();
-					createNewErrorMessage(errorRelated, getLocalizedString(
+					createNewErrorMessage(this.errorRelated, getLocalizedString(
 							"invoice.CouldNotParseSchoolYearForFritidsklubb",
 							"Could not parse schoolyear for fritidsklubb"));
 				}
@@ -768,20 +768,17 @@ public abstract class PaymentThreadSchool extends BillingThread {
 
 		oppenConditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_OPERATION, OPPEN_VERKSAMHET));
 		Collection regulationForTypeArray = regBus.getAllRegulationsByOperationFlowPeriodConditionTypeRegSpecType(
-				category.getCategory(), PaymentFlowConstant.OUT, // The
-				// payment
-				// flow is
-				// out
-				calculationDate, // Current date to select the correct date
+				this.category.getCategory(), PaymentFlowConstant.OUT, // The
+				this.calculationDate, // Current date to select the correct date
 				// range
 				RuleTypeConstant.DERIVED, // The conditiontype
 				null, oppenConditions // The conditions that need to fulfilled
 				);
 		if (regulationForTypeArray.size() != 1) {
-			errorRelated.append(getLocalizedString("invoice.Number_of_regulations_found_for_oppen_verksamhet",
+			this.errorRelated.append(getLocalizedString("invoice.Number_of_regulations_found_for_oppen_verksamhet",
 					"Number of regulations found for oppen verksamhet")
 					+ ":" + regulationForTypeArray.size());
-			createNewErrorMessage(errorRelated, getLocalizedString(
+			createNewErrorMessage(this.errorRelated, getLocalizedString(
 					"invoice.NumberOfRegulationsForOppenVerksamhetNotCorrect",
 					"Number of regulations for oppen verksamhet not correct"));
 		}
@@ -789,11 +786,11 @@ public abstract class PaymentThreadSchool extends BillingThread {
 			try {
 				Regulation regulation = (Regulation) i.next();
 				PostingDetail postingDetail = regBus.getPostingDetailForPlacement(0.0f, schoolClassMember, regulation,
-						calculationDate, conditions, placementTimes);
+						this.calculationDate, conditions, placementTimes);
 				RegulationSpecType regSpecType = getRegulationSpecTypeHome().findByRegulationSpecType(
 						postingDetail.getRuleSpecType());
-				String[] postings = getPostingStrings(category, schoolType,
-						((Integer) regSpecType.getPrimaryKey()).intValue(), provider, calculationDate,
+				String[] postings = getPostingStrings(this.category, schoolType,
+						((Integer) regSpecType.getPrimaryKey()).intValue(), provider, this.calculationDate,
 						((Integer) schoolClassMember.getSchoolYear().getPrimaryKey()).intValue(),
 						schoolClassMember.getStudyPathId());
 
@@ -862,25 +859,25 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		try {
 			if (isTestRun() && school != null) {
 				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndSchool(
-						startPeriod.getDate(), endPeriod.getDate(), school).iterator();
+						this.startPeriod.getDate(), this.endPeriod.getDate(), school).iterator();
 			}
 			else {
 				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndCategory(
-						startPeriod.getDate(), category).iterator();
+						this.startPeriod.getDate(), this.category).iterator();
 			}
 			School regPaymentSchool;
 
 			// Go through all the regular payments
 			while (regularPaymentIter.hasNext()) {
 				RegularPaymentEntry regularPaymentEntry = (RegularPaymentEntry) regularPaymentIter.next();
-				errorRelated = new ErrorLogger(getLocalizedString("invoice.RegularPaymentEntryID",
+				this.errorRelated = new ErrorLogger(getLocalizedString("invoice.RegularPaymentEntryID",
 						"RegularPaymentEntry ID")
 						+ ":" + regularPaymentEntry.getPrimaryKey());
-				errorRelated.append(getLocalizedString("invoice.Placing", "Placing") + ":"
+				this.errorRelated.append(getLocalizedString("invoice.Placing", "Placing") + ":"
 						+ regularPaymentEntry.getPlacing());
-				errorRelated.append(getLocalizedString("invoice.Amount", "Amount") + ":"
+				this.errorRelated.append(getLocalizedString("invoice.Amount", "Amount") + ":"
 						+ regularPaymentEntry.getAmount());
-				errorRelated.append(getLocalizedString("invoice.School", "School") + ":"
+				this.errorRelated.append(getLocalizedString("invoice.School", "School") + ":"
 						+ regularPaymentEntry.getSchool());
 				postingDetail = new PostingDetail(regularPaymentEntry);
 				regPaymentSchool = regularPaymentEntry.getSchool();
@@ -900,21 +897,21 @@ public abstract class PaymentThreadSchool extends BillingThread {
 						}
 						catch (FinderException e) {
 							createNewErrorMessage(
-									errorRelated,
+									this.errorRelated,
 									getLocalizedString("invoice.schoolClassMemberNotFound",
 											"The regular invoice pointed to a user, but the accordingly school class member was not found."));
 						}
 					}
 				}
 				catch (IDOLookupException e) {
-					createNewErrorMessage(errorRelated, getLocalizedString("invoice.IDOLookup", "IDOLookup"));
+					createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.IDOLookup", "IDOLookup"));
 					e.printStackTrace();
 				}
 				catch (CreateException e) {
-					createNewErrorMessage(errorRelated, getLocalizedString("invoice.Create", "Create"));
+					createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.Create", "Create"));
 					e.printStackTrace();
 				}
-				if (!running) {
+				if (!this.running) {
 					return;
 				}
 			}
@@ -950,10 +947,10 @@ public abstract class PaymentThreadSchool extends BillingThread {
 		conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_MANAGEMENT_TYPE,
 				schoolClassMember.getSchoolClass().getSchool().getManagementTypeId()));
 		if (null != schoolClassMember) {
-			errorRelated.append("School Year:" + schoolClassMember.getSchoolYear().getName());
+			this.errorRelated.append("School Year:" + schoolClassMember.getSchoolYear().getName());
 		}
 		if (null != provider) {
-			errorRelated.append("StateSubsidyGrant:" + provider.getStateSubsidyGrant());
+			this.errorRelated.append("StateSubsidyGrant:" + provider.getStateSubsidyGrant());
 		}
 		setStudyPath(schoolClassMember, conditions);
 		return conditions;
@@ -967,16 +964,16 @@ public abstract class PaymentThreadSchool extends BillingThread {
 
 	private ExportDataMapping getCategoryPosting() throws FinderException, IDOLookupException, EJBException {
 		return (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(
-				category.getPrimaryKey());
+				this.category.getPrimaryKey());
 	}
 
 	private Collection getSchools() throws IDOLookupException, EJBException, FinderException, RemoteException {
-		return getSchoolHome().findAllByCategory(category);
+		return getSchoolHome().findAllByCategory(this.category);
 	}
 
 	private Collection getSchoolClassMembers(School school) throws FinderException, RemoteException, EJBException {
 		int i = Integer.parseInt(school.getPrimaryKey().toString());
-		return getSchoolClassMemberHome().findBySchool(i, -1, category.getCategory(), calculationDate);
+		return getSchoolClassMemberHome().findBySchool(i, -1, this.category.getCategory(), this.calculationDate);
 	}
 
 	private Collection getSchoolTypes(SchoolClassMember schoolClassMember) throws IDORelationshipException {
@@ -986,16 +983,17 @@ public abstract class PaymentThreadSchool extends BillingThread {
 	protected String[] getPostingStrings(Provider provider, SchoolClassMember schoolClassMember,
 			RegulationSpecType regSpecType) throws PostingException, RemoteException, EJBException {
 		int id = schoolClassMember.getStudyPathId();
-		return getPostingStrings(category, schoolClassMember.getSchoolType(),
-				((Integer) regSpecType.getPrimaryKey()).intValue(), provider, calculationDate,
+		return getPostingStrings(this.category, schoolClassMember.getSchoolType(),
+				((Integer) regSpecType.getPrimaryKey()).intValue(), provider, this.calculationDate,
 				((Integer) schoolClassMember.getSchoolYear().getPrimaryKey()).intValue(), id);
 	}
 
 	protected String[] getPostingStrings(SchoolCategory category, SchoolType schoolType, int regSpecTypeId,
 			Provider provider, Date calculationDate, int schoolYearId, int studyPathId) throws PostingException,
 			RemoteException {
-		if (studyPathId == -1)
+		if (studyPathId == -1) {
 			studyPathId = -1;
+		}
 		return getPostingBusiness().getPostingStrings(category, schoolType, regSpecTypeId, provider, calculationDate,
 				schoolYearId, -1, false);
 	}
@@ -1005,7 +1003,7 @@ public abstract class PaymentThreadSchool extends BillingThread {
 	}
 
 	protected Collection getRegularPayments() throws RemoteException {
-		return getRegularPaymentBusiness().findRegularPaymentsForPeriode(startPeriod.getDate(), endPeriod.getDate());
+		return getRegularPaymentBusiness().findRegularPaymentsForPeriode(this.startPeriod.getDate(), this.endPeriod.getDate());
 	}
 
 	private SchoolClassMemberHome getSchoolClassMemberHome() throws RemoteException {
@@ -1017,11 +1015,11 @@ public abstract class PaymentThreadSchool extends BillingThread {
 	}
 
 	private CommuneUserBusiness getCommuneUserBusiness() throws RemoteException {
-		return (CommuneUserBusiness) IBOLookup.getServiceInstance(iwc, CommuneUserBusiness.class);
+		return (CommuneUserBusiness) IBOLookup.getServiceInstance(this.iwc, CommuneUserBusiness.class);
 	}
 
 	private ResourceBusiness getResourceBusiness() throws RemoteException {
-		return (ResourceBusiness) IBOLookup.getServiceInstance(iwc, ResourceBusiness.class);
+		return (ResourceBusiness) IBOLookup.getServiceInstance(this.iwc, ResourceBusiness.class);
 	}
 
 	private SchoolHome getSchoolHome() throws RemoteException {

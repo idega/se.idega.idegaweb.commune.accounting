@@ -16,7 +16,7 @@ public class SortableSibling implements Comparable{
 	}
 	
 	public SortableSibling(User u){
-		sibling = u;
+		this.sibling = u;
 	}	
 	
 	/**
@@ -24,24 +24,24 @@ public class SortableSibling implements Comparable{
 	 */
 	public int compareTo(Object o) throws DateOfBirthMissingException {
 		SortableSibling other = (SortableSibling)o;
-		if(null==sibling.getDateOfBirth() || null==other.getSibling().getDateOfBirth()){
+		if(null==this.sibling.getDateOfBirth() || null==other.getSibling().getDateOfBirth()){
 			throw new DateOfBirthMissingException("Date of birth missing");
 		}
-		if(sibling.getDateOfBirth().after(other.getSibling().getDateOfBirth())){
+		if(this.sibling.getDateOfBirth().after(other.getSibling().getDateOfBirth())){
 			return -1;
-		} else if(sibling.getDateOfBirth().before(other.getSibling().getDateOfBirth())){
+		} else if(this.sibling.getDateOfBirth().before(other.getSibling().getDateOfBirth())){
 			return 1;
 		}
 
 		// since date of birth is equal, compare ssn and return 0 if equal
-		return sibling.getPersonalID ().compareTo (other.getSibling ().getPersonalID ());
+		return this.sibling.getPersonalID ().compareTo (other.getSibling ().getPersonalID ());
 	}
 
 	public User getSibling() {
-		return sibling;
+		return this.sibling;
 	}
 
 	public void setSibling(User user) {
-		sibling = user;
+		this.sibling = user;
 	}
 }

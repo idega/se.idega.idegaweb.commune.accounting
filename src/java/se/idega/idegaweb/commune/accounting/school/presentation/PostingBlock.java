@@ -1,5 +1,5 @@
 /*
- * $Id: PostingBlock.java,v 1.4 2004/01/05 17:20:41 roar Exp $
+ * $Id: PostingBlock.java,v 1.5 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -20,10 +20,10 @@ import com.idega.presentation.IWContext;
  * This block is a subclass of PostingParameterListEditor  
  * used for editing own posting and double posting strings.
  * <p>
- * Last modified: $Date: 2004/01/05 17:20:41 $ by $Author: roar $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @see se.idega.idegaweb.commune.accounting.posting.presentation.PostingParameterListEditor
  */
 public class PostingBlock extends PostingParameterListEditor {
@@ -58,6 +58,6 @@ public class PostingBlock extends PostingParameterListEditor {
 	public void init(final IWContext iwc) {
 		setDefaultParameters();
 		addTempFieldParameters(iwc, new Date(System.currentTimeMillis()));
-		add(getPostingParameterForm(iwc, getThisPostingParameter(iwc), ownPosting, doublePosting));
+		add(getPostingParameterForm(iwc, getThisPostingParameter(iwc), this.ownPosting, this.doublePosting));
 	}
 }

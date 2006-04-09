@@ -1,4 +1,4 @@
-/* $Id: ControlListWriter.java,v 1.12 2004/10/01 12:21:43 laddi Exp $
+/* $Id: ControlListWriter.java,v 1.13 2006/04/09 11:53:32 laddi Exp $
 *
 * Copyright (C) 2003 Agura IT. All Rights Reserved.
 *
@@ -50,7 +50,7 @@ import com.lowagie.text.pdf.PdfWriter;
 /** 
  * PDF and XLS Writer for the Control List
  * <p>
- * $Id: ControlListWriter.java,v 1.12 2004/10/01 12:21:43 laddi Exp $
+ * $Id: ControlListWriter.java,v 1.13 2006/04/09 11:53:32 laddi Exp $
  *
  * @author Kelly
  */
@@ -76,11 +76,11 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 	
 	public void init(HttpServletRequest req, IWContext iwc) {
 		try {
-			locale = iwc.getApplicationSettings().getApplicationLocale();
+			this.locale = iwc.getApplicationSettings().getApplicationLocale();
 			//TODO The correnct bundle_ident variable is called IW_ACCOUNTING_BUNDLE_IDENTIFER and this
 			//     one points to CommuneBlock.IW_BUNDLE_IDENTIFIER and therefore this class is using the
 			//     wrong resourceBundle. Remember that, when fixing this, whoever you are ....
-			iwrb = iwc.getIWMainApplication().getBundle(AccountingBlock.IW_BUNDLE_IDENTIFIER).getResourceBundle(locale);
+			this.iwrb = iwc.getIWMainApplication().getBundle(AccountingBlock.IW_BUNDLE_IDENTIFIER).getResourceBundle(this.locale);
 			ControlListBusiness business = getControlListBusiness(iwc.getIWMainApplication().getIWApplicationContext());
 			
 			String type = req.getParameter(prmPrintType);
@@ -89,9 +89,9 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 			String of = req.getParameter(opField);
 			
 			if (type.equals(PDF)) {
-				buffer = writePDF(business.getControlListValues(cDate, wDate, of));
+				this.buffer = writePDF(business.getControlListValues(cDate, wDate, of));
 			} else if (type.equals(XLS)) {
-				buffer = writeXLS(business.getControlListValues(cDate, wDate, of));
+				this.buffer = writeXLS(business.getControlListValues(cDate, wDate, of));
 			}
 		}
 		catch (Exception e) {
@@ -100,22 +100,24 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 	}
 	
 	public String getMimeType() {
-		if (buffer != null)
-			return buffer.getMimeType();
+		if (this.buffer != null) {
+			return this.buffer.getMimeType();
+		}
 		return "application/pdf";
 	}
 	
 	public void writeTo(OutputStream out) throws IOException {
-		if (buffer != null) {
-			MemoryInputStream mis = new MemoryInputStream(buffer);
+		if (this.buffer != null) {
+			MemoryInputStream mis = new MemoryInputStream(this.buffer);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			while (mis.available() > 0) {
 				baos.write(mis.read());
 			}
 			baos.writeTo(out);
 		}
-		else
+		else {
 			System.err.println("buffer is null");
+		}
 	}
 	
 	public MemoryFileBuffer writeXLS(Collection data) throws Exception {
@@ -138,19 +140,19 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 	
 			HSSFRow row = sheet.createRow(0);
 			HSSFCell cell = row.createCell((short)0);
-			cell.setCellValue(iwrb.getLocalizedString(ControlList.KEY_PROVIDER, "Provider"));
+			cell.setCellValue(this.iwrb.getLocalizedString(ControlList.KEY_PROVIDER, "Provider"));
 			cell.setCellStyle(style);
 			cell = row.createCell((short)1);
-			cell.setCellValue(iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_PREL, "No of individuals, prel."));
+			cell.setCellValue(this.iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_PREL, "No of individuals, prel."));
 			cell.setCellStyle(style);
 			cell = row.createCell((short)2);
-			cell.setCellValue(iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_COMPARE_MONTH, "No of individuals, compare"));
+			cell.setCellValue(this.iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_COMPARE_MONTH, "No of individuals, compare"));
 			cell.setCellStyle(style);
 			cell = row.createCell((short)3);
-			cell.setCellValue(iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_PREL, "Total amount, prel."));
+			cell.setCellValue(this.iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_PREL, "Total amount, prel."));
 			cell.setCellStyle(style);
 			cell = row.createCell((short)4);
-			cell.setCellValue(iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_COMPARE_MONTH, "Total amount, compare"));
+			cell.setCellValue(this.iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_COMPARE_MONTH, "Total amount, compare"));
 			cell.setCellStyle(style);
 
 			
@@ -229,11 +231,11 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 			document.open();
 			
 			String[] headers = {
-				iwrb.getLocalizedString(ControlList.KEY_PROVIDER, "Provider"), 
-				iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_PREL, "No of individuals, prel."),
-				iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_COMPARE_MONTH, "No of individuals, compare"),
-				iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_PREL, "Total amount, prel."),
-				iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_COMPARE_MONTH, "Total amount, compare")};
+				this.iwrb.getLocalizedString(ControlList.KEY_PROVIDER, "Provider"), 
+				this.iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_PREL, "No of individuals, prel."),
+				this.iwrb.getLocalizedString(ControlList.KEY_NUM_INDIVIDUALS_COMPARE_MONTH, "No of individuals, compare"),
+				this.iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_PREL, "Total amount, prel."),
+				this.iwrb.getLocalizedString(ControlList.KEY_TOTAL_AMOUNT_COMPARE_MONTH, "Total amount, compare")};
 				
 			int[] sizes = { 30, 20, 20, 20, 20 };
 			Cell cell;
@@ -286,8 +288,9 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 		datatable.setSpacing(0.0f);
 		datatable.setBorder(Rectangle.NO_BORDER);
 		datatable.setWidth(100);
-		if (sizes != null)
+		if (sizes != null) {
 			datatable.setWidths(sizes);
+		}
 		for (int i = 0; i < headers.length; i++) {
 			Cell cell = new Cell(new Phrase(headers[i], new Font(Font.HELVETICA, 12, Font.BOLD)));
 			cell.setBorder(Rectangle.BOTTOM);

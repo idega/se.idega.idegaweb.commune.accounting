@@ -89,61 +89,68 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		DropdownMenu operationalField = this.getDropdownMenuLocalized(PARAMETER_OPERATIONAL_FIELD, getBusiness().getExportBusiness().getAllOperationalFields(), "getLocalizedKey");
 		operationalField.addMenuElementFirst("", localize("export.select_operational_field", "Select operational field"));
 		operationalField.setToSubmit();
-		if (_operationalField != null)
-			operationalField.setSelectedElement(_operationalField);
+		if (this._operationalField != null) {
+			operationalField.setSelectedElement(this._operationalField);
+		}
 			
 		table.add(getSmallHeader(localize("export.operational_field", "Operational field") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(operationalField, 3, row++);
 		
-		TextInput journalNumber = getTextInput(PARAMETER_JOURNAL_NUMBER, "", _inputWidth, 255);
-		if (_mapping != null && _mapping.getJournalNumber() != null)
-			journalNumber.setContent(_mapping.getJournalNumber());
+		TextInput journalNumber = getTextInput(PARAMETER_JOURNAL_NUMBER, "", this._inputWidth, 255);
+		if (this._mapping != null && this._mapping.getJournalNumber() != null) {
+			journalNumber.setContent(this._mapping.getJournalNumber());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.journal_number", "Journal number") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(journalNumber, 3, row++);
 
-		TextInput fileCreationFolder = getTextInput(PARAMETER_FILE_CREATION_FOLDER, "", _inputWidth * 3, 255);
-		if (_mapping != null && _mapping.getFileCreationFolder() != null)
-			fileCreationFolder.setContent(_mapping.getFileCreationFolder());
+		TextInput fileCreationFolder = getTextInput(PARAMETER_FILE_CREATION_FOLDER, "", this._inputWidth * 3, 255);
+		if (this._mapping != null && this._mapping.getFileCreationFolder() != null) {
+			fileCreationFolder.setContent(this._mapping.getFileCreationFolder());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.file_creation_folder", "File creation folder") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(fileCreationFolder, 3, row++);
 		
-		TextInput IFSFileFolder = getTextInput(PARAMETER_IFS_FILE_FOLDER, "", _inputWidth * 3, 255);
-		if (_mapping != null && _mapping.getIFSFileFolder() != null)
-			IFSFileFolder.setContent(_mapping.getIFSFileFolder());
+		TextInput IFSFileFolder = getTextInput(PARAMETER_IFS_FILE_FOLDER, "", this._inputWidth * 3, 255);
+		if (this._mapping != null && this._mapping.getIFSFileFolder() != null) {
+			IFSFileFolder.setContent(this._mapping.getIFSFileFolder());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.ifs_file_folder", "IFS file folder") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(IFSFileFolder, 3, row++);
 
-		TextInput fileBackupFolder = getTextInput(PARAMETER_FILE_BACKUP_FOLDER, "", _inputWidth * 3, 255);
-		if (_mapping != null && _mapping.getFileBackupFolder() != null)
-			fileBackupFolder.setContent(_mapping.getFileBackupFolder());
+		TextInput fileBackupFolder = getTextInput(PARAMETER_FILE_BACKUP_FOLDER, "", this._inputWidth * 3, 255);
+		if (this._mapping != null && this._mapping.getFileBackupFolder() != null) {
+			fileBackupFolder.setContent(this._mapping.getFileBackupFolder());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.file_backup_folder", "File backup folder") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(fileBackupFolder, 3, row++);
 
-		TextInput listCreationFolder = getTextInput(PARAMETER_LIST_CREATION_FOLDER, "", _inputWidth * 3, 255);
-		if (_mapping != null && _mapping.getListCreationFolder() != null)
-			listCreationFolder.setContent(_mapping.getListCreationFolder());
+		TextInput listCreationFolder = getTextInput(PARAMETER_LIST_CREATION_FOLDER, "", this._inputWidth * 3, 255);
+		if (this._mapping != null && this._mapping.getListCreationFolder() != null) {
+			listCreationFolder.setContent(this._mapping.getListCreationFolder());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.list_creation_folder", "List creation folder") + ":"), 1, row);
 		table.setNoWrap(1, row);
 		table.add(listCreationFolder, 3, row++);
 		
-		TextInput listBackupFolder = getTextInput(PARAMETER_LIST_BACKUP_FOLDER, "", _inputWidth * 3, 255);
-		if (_mapping != null && _mapping.getListBackupFolder() != null)
-			listBackupFolder.setContent(_mapping.getListBackupFolder());
+		TextInput listBackupFolder = getTextInput(PARAMETER_LIST_BACKUP_FOLDER, "", this._inputWidth * 3, 255);
+		if (this._mapping != null && this._mapping.getListBackupFolder() != null) {
+			listBackupFolder.setContent(this._mapping.getListBackupFolder());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.list_backup_folder", "List backup folder") + ":"), 1, row);
@@ -153,8 +160,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		DropdownMenu accountSettlementType = (DropdownMenu) getStyledInterface(new DropdownMenu(PARAMETER_ACCOUNT_SETTLEMENT_TYPE));
 		accountSettlementType.addMenuElement(getBusiness().getExportBusiness().getAccountSettlementTypeDayByDay(), localize("export.type_day_by_day", "Day by day"));
 		accountSettlementType.addMenuElement(getBusiness().getExportBusiness().getAccountSettlementTypeSpecificDate(), localize("export.type_specific_date", "Specific date"));
-		if (_mapping != null && _mapping.getAccountSettlementType() != -1)
-			accountSettlementType.setSelectedElement(_mapping.getAccountSettlementType());
+		if (this._mapping != null && this._mapping.getAccountSettlementType() != -1) {
+			accountSettlementType.setSelectedElement(this._mapping.getAccountSettlementType());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.account_settlement_type", "Account settlement type") + ":"), 1, row);
@@ -166,8 +174,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		for (int i = 1; i <= 31; i++) {
 			standardPaymentDay.addMenuElement(i, String.valueOf(i));
 		}
-		if (_mapping != null && _mapping.getStandardPaymentDay() != -1)
-			standardPaymentDay.setSelectedElement(_mapping.getStandardPaymentDay());
+		if (this._mapping != null && this._mapping.getStandardPaymentDay() != -1) {
+			standardPaymentDay.setSelectedElement(this._mapping.getStandardPaymentDay());
+		}
 		
 		table.setHeight(row++, 3);
 		table.add(getSmallHeader(localize("export.standard_payment_day", "Standard payment day") + ":"), 1, row);
@@ -175,8 +184,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		table.add(standardPaymentDay, 3, row++);
 		
 		CheckBox cashFlowIn = getCheckBox(PARAMETER_CASH_FLOW_IN, "true");
-		if (_mapping != null)
-			cashFlowIn.setChecked(_mapping.getCashFlowIn());
+		if (this._mapping != null) {
+			cashFlowIn.setChecked(this._mapping.getCashFlowIn());
+		}
 		
 		table.setHeight(row++, 12);
 		table.mergeCells(1, row, 3, row);
@@ -184,8 +194,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		table.add(getSmallHeader(Text.NON_BREAKING_SPACE + localize("export.cash_flow_in", "Cash flow in")), 1, row++);
 		
 		CheckBox cashFlowOut = getCheckBox(PARAMETER_CASH_FLOW_OUT, "true");
-		if (_mapping != null)
-			cashFlowOut.setChecked(_mapping.getCashFlowOut());
+		if (this._mapping != null) {
+			cashFlowOut.setChecked(this._mapping.getCashFlowOut());
+		}
 		
 		table.setHeight(row++, 3);
 		table.mergeCells(1, row, 3, row);
@@ -193,8 +204,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		table.add(getSmallHeader(Text.NON_BREAKING_SPACE + localize("export.cash_flow_out", "Cash flow out")), 1, row++);
 		
 		CheckBox providerAuthorization = getCheckBox(PARAMETER_PROVIDER_AUTHORIZATION, "true");
-		if (_mapping != null)
-			providerAuthorization.setChecked(_mapping.getProviderAuthorization());
+		if (this._mapping != null) {
+			providerAuthorization.setChecked(this._mapping.getProviderAuthorization());
+		}
 		
 		table.setHeight(row++, 9);
 		table.mergeCells(1, row, 3, row);
@@ -202,8 +214,8 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		table.add(getSmallHeader(Text.NON_BREAKING_SPACE + localize("export.provider_authorization", "Provider authorization")), 1, row++);
 
 		CheckBox createPayments = getCheckBox(PARAMETER_CREATE_PAYMENT_OUTSIDE_COMMUNE, "true");
-		if (_mapping != null) {
-			createPayments.setChecked(_mapping.getCreatePaymentsForCommuneProvidersOutsideCommune());
+		if (this._mapping != null) {
+			createPayments.setChecked(this._mapping.getCreatePaymentsForCommuneProvidersOutsideCommune());
 		}
 
 		table.setHeight(row++, 9);
@@ -213,9 +225,9 @@ public class ExportDataMappingEditor extends AccountingBlock {
 
 		CheckBox useSpecifiedDays = getCheckBox(PARAMETER_USE_SPECIFIED_DAYS, "true");
 		IntegerInput specifiedDays = getIntegerInput(PARAMETER_SPECIFIED_DAYS, 0);
-		if (_mapping != null) {
-			useSpecifiedDays.setChecked(_mapping.getUseSpecifiedNumberOfDaysPrMonth());
-			specifiedDays.setValue(_mapping.getSpecifiedNumberOfDaysPrMonth());
+		if (this._mapping != null) {
+			useSpecifiedDays.setChecked(this._mapping.getUseSpecifiedNumberOfDaysPrMonth());
+			specifiedDays.setValue(this._mapping.getSpecifiedNumberOfDaysPrMonth());
 		}
 
 		table.setHeight(row++, 9);
@@ -231,18 +243,19 @@ public class ExportDataMappingEditor extends AccountingBlock {
 		String counterAccountString = "";
 		String payableAccountString = "";
 		String customerClaimAccountString = "";
-		if (_mapping != null) {
-			accountString = _mapping.getAccount();
-			counterAccountString = _mapping.getCounterAccount();
-			payableAccountString = _mapping.getPayableAccount();
-			customerClaimAccountString = _mapping.getCustomerClaimAccount();			
+		if (this._mapping != null) {
+			accountString = this._mapping.getAccount();
+			counterAccountString = this._mapping.getCounterAccount();
+			payableAccountString = this._mapping.getPayableAccount();
+			customerClaimAccountString = this._mapping.getCustomerClaimAccount();			
 		}
 		AccountBlock ab = new AccountBlock(accountString, counterAccountString, payableAccountString, customerClaimAccountString);
 		form.add(ab);
 
 		SubmitButton save = (SubmitButton) getButton(new SubmitButton(localize("save", "Save"), PARAMETER_SAVE, "true"));
-		if (_operationalField == null)
+		if (this._operationalField == null) {
 			save.setDisabled(true);
+		}
 		
 		form.add(Text.getBreak());
 		form.add(save);
@@ -267,7 +280,7 @@ public class ExportDataMappingEditor extends AccountingBlock {
 	
 	private void parseAction(IWContext iwc) {
 		if (iwc.isParameterSet(PARAMETER_OPERATIONAL_FIELD)) {
-			_operationalField = iwc.getParameter(PARAMETER_OPERATIONAL_FIELD);
+			this._operationalField = iwc.getParameter(PARAMETER_OPERATIONAL_FIELD);
 		}
 			
 		if (iwc.isParameterSet(PARAMETER_SAVE)) {
@@ -294,12 +307,15 @@ public class ExportDataMappingEditor extends AccountingBlock {
 			boolean cashFlowOut = false;
 			boolean providerAuthorization = false;
 			
-			if (iwc.isParameterSet(PARAMETER_CASH_FLOW_IN))
+			if (iwc.isParameterSet(PARAMETER_CASH_FLOW_IN)) {
 				cashFlowIn = true;
-			if (iwc.isParameterSet(PARAMETER_CASH_FLOW_OUT))
+			}
+			if (iwc.isParameterSet(PARAMETER_CASH_FLOW_OUT)) {
 				cashFlowOut = true;
-			if (iwc.isParameterSet(PARAMETER_PROVIDER_AUTHORIZATION))
+			}
+			if (iwc.isParameterSet(PARAMETER_PROVIDER_AUTHORIZATION)) {
 				providerAuthorization = true;
+			}
 			
 			boolean createForOutsideCommune = false;
 			boolean useSpecificDays = false;
@@ -318,7 +334,7 @@ public class ExportDataMappingEditor extends AccountingBlock {
 			
 			try {
 				getBusiness().getExportBusiness().storeExportDataMapping(
-						_operationalField, 
+						this._operationalField, 
 						iwc.getParameter(PARAMETER_JOURNAL_NUMBER), 
 						account, 
 						counterAccount, 
@@ -343,15 +359,15 @@ public class ExportDataMappingEditor extends AccountingBlock {
 			}
 		}
 		
-		if (_operationalField != null) {
+		if (this._operationalField != null) {
 			try {
-				_mapping = getBusiness().getExportBusiness().getExportDataMapping(_operationalField);
+				this._mapping = getBusiness().getExportBusiness().getExportDataMapping(this._operationalField);
 			}
 			catch (RemoteException e) {
-				_mapping = null;
+				this._mapping = null;
 			}
 			catch (FinderException e) {
-				_mapping = null;
+				this._mapping = null;
 			}
 		}
 	}
@@ -360,6 +376,6 @@ public class ExportDataMappingEditor extends AccountingBlock {
 	 * @param inputWidth
 	 */
 	public void setInputWidth(int inputWidth) {
-		_inputWidth = inputWidth;
+		this._inputWidth = inputWidth;
 	}
 }

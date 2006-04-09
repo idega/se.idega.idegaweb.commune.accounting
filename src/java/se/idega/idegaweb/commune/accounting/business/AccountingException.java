@@ -1,5 +1,5 @@
 /*
- * $Id: AccountingException.java,v 1.3 2004/01/06 14:03:15 tryggvil Exp $
+ * $Id: AccountingException.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -15,10 +15,10 @@ package se.idega.idegaweb.commune.accounting.business;
  * The exception encapsulates a text key and default text for
  * localization in the presentation layer.  
  * <p>
- * Last modified: $Date: 2004/01/06 14:03:15 $
+ * Last modified: $Date: 2006/04/09 11:53:32 $
  *
  * @author Anders Lindman
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class AccountingException extends Exception {
 
@@ -51,14 +51,14 @@ public class AccountingException extends Exception {
 	 * Returns the error message text key.
 	 */
 	public String getTextKey() {
-		return textKey; 
+		return this.textKey; 
 	}
 	
 	/**
 	 * Returns the default error message text.
 	 */
 	public String getDefaultText() {
-		return defaultText; 
+		return this.defaultText; 
 	}
 
 }

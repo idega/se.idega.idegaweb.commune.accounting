@@ -77,10 +77,10 @@ import com.idega.util.CalendarMonth;
  * base for invoicing  and payment data, that is sent to external finance
  * system.
  * <p>
- * Last modified: $Date: 2005/01/13 16:32:58 $ by $Author: laddi $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author <a href="mailto:joakim@idega.is">Joakim Johnson</a>
- * @version $Revision: 1.156 $
+ * @version $Revision: 1.157 $
  * 
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadElementarySchool
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadHighSchool
@@ -110,11 +110,11 @@ public class InvoiceChildcareThread extends BillingThread{
 	 */
 	public void run(){
 		try {
-			category = ((SchoolCategoryHome) IDOLookup.getHome(SchoolCategory.class)).findChildcareCategory();
-			categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(category.getPrimaryKey());
+			this.category = ((SchoolCategoryHome) IDOLookup.getHome(SchoolCategory.class)).findChildcareCategory();
+			this.categoryPosting = (ExportDataMapping) IDOLookup.getHome(ExportDataMapping.class).findByPrimaryKeyIDO(this.category.getPrimaryKey());
 			
-			createBatchRunLogger(category);
-			if(getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(month,category.getCategory()) == 0){
+			createBatchRunLogger(this.category);
+			if(getPaymentRecordHome().getCountForMonthCategoryAndStatusLH(this.month,this.category.getCategory()) == 0){
 				//Create all the billing info derrived from the contracts
 				createBillingFromContracts();
 				//Create all the billing info derrived from the regular invoices
@@ -133,8 +133,8 @@ public class InvoiceChildcareThread extends BillingThread{
 		} catch (Exception e) {
 			//This is a spawned off thread, so we cannot report back errors to the browser, just log them
 			e.printStackTrace();
-			if (null != errorRelated) {
-				errorRelated.append(e);
+			if (null != this.errorRelated) {
+				this.errorRelated.append(e);
 				createNewErrorMessage(getLocalizedString("invoice.severeError","Severe error"),getLocalizedString("invoice.DBSetupProblem","Database setup problem"));
 			}else{
 				StringBuffer message = new StringBuffer();
@@ -169,12 +169,12 @@ public class InvoiceChildcareThread extends BillingThread{
 				femaleKey = ((Integer)female.getPrimaryKey()).intValue();
 			} catch (Exception e2) {
 				e2.printStackTrace();
-				createNewErrorMessage(errorRelated,getLocalizedString("invoice.CouldNotFindPrimaryKeyForFemaleGender","Could not find primary key for female gender"));
+				createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CouldNotFindPrimaryKeyForFemaleGender","Could not find primary key for female gender"));
 			}
 			
 			try {
-				UserBusiness userBus = (UserBusiness) IBOLookup.getServiceInstance(iwc, UserBusiness.class);
-				FamilyLogic familyLogic = (FamilyLogic) IBOLookup.getServiceInstance(iwc, FamilyLogic.class);
+				UserBusiness userBus = (UserBusiness) IBOLookup.getServiceInstance(this.iwc, UserBusiness.class);
+				FamilyLogic familyLogic = (FamilyLogic) IBOLookup.getServiceInstance(this.iwc, FamilyLogic.class);
 				Collection custodians;		//Collection parents only hold the biological parents
 				custodians = familyLogic.getCustodiansFor(child);
 				Iterator custIter = custodians.iterator();
@@ -190,10 +190,10 @@ public class InvoiceChildcareThread extends BillingThread{
 						}
 					}else{
 						if(childAddress==null){
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.ChildAddressNotSet","Child address not set"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ChildAddressNotSet","Child address not set"));
 						}
 						if(custodianAddress==null){
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.CustodianAddressNotSet","Custodian address not set"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CustodianAddressNotSet","Custodian address not set"));
 						}
 					}
 				}
@@ -205,8 +205,8 @@ public class InvoiceChildcareThread extends BillingThread{
 				//Poor child
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				errorRelated.append(e);
-				createNewErrorMessage(errorRelated,getLocalizedString("invoice.RemoteExceptionFindingCustodianForChild","Remote Exception finding custodian for child"));
+				this.errorRelated.append(e);
+				createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.RemoteExceptionFindingCustodianForChild","Remote Exception finding custodian for child"));
 			}
 		}
 		//If no invoice receiver is set in contract and no fitting custodian found,  
@@ -214,10 +214,10 @@ public class InvoiceChildcareThread extends BillingThread{
 		if(invoiceReceiver == null){
 			contract.setInvoiceReceiver(contract.getApplication().getOwner());
 			contract.store();
-			createNewErrorMessage(errorRelated,getLocalizedString("invoice.InvoiceReceiverNotSetAndNoCustodianAtSameAddressFound_UsingContractOwner",
+			createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.InvoiceReceiverNotSetAndNoCustodianAtSameAddressFound_UsingContractOwner",
 					"Invoice receiver not set and no custodian at same address found. Using contract owner"));
 		}
-		errorRelated.append(getLocalizedString("invoice.InvoiceReceiver","Invoice receiver")+":"+invoiceReceiver);
+		this.errorRelated.append(getLocalizedString("invoice.InvoiceReceiver","Invoice receiver")+":"+invoiceReceiver);
 		return invoiceReceiver;
 	}
 	
@@ -242,14 +242,14 @@ public class InvoiceChildcareThread extends BillingThread{
 			}
 			Collection contractArray = null;
 			if(getSchool()!=null){
-				contractArray = getChildCareContractHome().findByDateRangeAndProviderWhereStatusActive(startPeriod.getDate(), endPeriod.getDate(),getSchool());
+				contractArray = getChildCareContractHome().findByDateRangeAndProviderWhereStatusActive(this.startPeriod.getDate(), this.endPeriod.getDate(),getSchool());
 			}
 			else{
-				contractArray = getChildCareContractHome().findByDateRangeWhereStatusActive(startPeriod.getDate(), endPeriod.getDate());
+				contractArray = getChildCareContractHome().findByDateRangeWhereStatusActive(this.startPeriod.getDate(), this.endPeriod.getDate());
 			}
-			log.info("# of contracts: "+contractArray.size());
+			this.log.info("# of contracts: "+contractArray.size());
 			Iterator contractIter = contractArray.iterator();
-			errorOrder = 0;
+			this.errorOrder = 0;
 			final Commune	homeCommune = getCommuneHome ().findDefaultCommune ();
 			final ProviderType communeProviderType
 					= getProviderTypeHome ().findCommuneType ();
@@ -257,32 +257,32 @@ public class InvoiceChildcareThread extends BillingThread{
 			while(contractIter.hasNext())
 			{
 				try{
-					contract = (ChildCareContract)contractIter.next();
+					this.contract = (ChildCareContract)contractIter.next();
 
-					errorRelated = new ErrorLogger();
+					this.errorRelated = new ErrorLogger();
 					try {
-						errorRelated.append(getLocalizedString("invoice.ChildcareContract","Childcare Contract")+":"+contract.getPrimaryKey());
-						errorRelated.append(getLocalizedString("invoice.ContractStart","Contract Start")+":"+contract.getValidFromDate()+"; Contract End: "+(null == contract.getTerminatedDate() ? "-" : ""+contract.getTerminatedDate()));
-						errorRelated.append(getLocalizedString("invoice.Child","Child")+":"+contract.getChild().getName()+"; P#: "+contract.getChild().getPersonalID());
+						this.errorRelated.append(getLocalizedString("invoice.ChildcareContract","Childcare Contract")+":"+this.contract.getPrimaryKey());
+						this.errorRelated.append(getLocalizedString("invoice.ContractStart","Contract Start")+":"+this.contract.getValidFromDate()+"; Contract End: "+(null == this.contract.getTerminatedDate() ? "-" : ""+this.contract.getTerminatedDate()));
+						this.errorRelated.append(getLocalizedString("invoice.Child","Child")+":"+this.contract.getChild().getName()+"; P#: "+this.contract.getChild().getPersonalID());
 					} catch (NullPointerException e) {
 						e.printStackTrace ();
 					}
 
 					//Moved up for better logging
 					//Get all the parameters needed to select the correct contract
-					SchoolClassMember schoolClassMember = contract.getSchoolClassMember();
+					SchoolClassMember schoolClassMember = this.contract.getSchoolClassMember();
 					User child = null;
 					try{
 						child = schoolClassMember.getStudent();
 					}catch (NullPointerException e){
-						errorRelated.append(getLocalizedString("invoice.PlacementIdInContract","Placement id in contract")+":"+ contract.getSchoolClassMemberId ());
+						this.errorRelated.append(getLocalizedString("invoice.PlacementIdInContract","Placement id in contract")+":"+ this.contract.getSchoolClassMemberId ());
 						throw new NoSchoolClassMemberException("");
 					}
 					//Fetch invoice receiver
-					custodian = getInvoiceReceiver(contract);
+					custodian = getInvoiceReceiver(this.contract);
 					//Get school
-					final School school = contract.getApplication ().getProvider ();
-					errorRelated.append(getLocalizedString("invoice.School","School")+":"+school.getName(),1);
+					final School school = this.contract.getApplication ().getProvider ();
+					this.errorRelated.append(getLocalizedString("invoice.School","School")+":"+school.getName(),1);
 					//Get school type
 					SchoolType schoolType = schoolClassMember.getSchoolType();
 					String childcareType = null;
@@ -291,7 +291,7 @@ public class InvoiceChildcareThread extends BillingThread{
 					}catch (NullPointerException e){
 						throw new NoSchoolTypeException("");
 					}
-					errorRelated.append(getLocalizedString("invoice.SchoolType","SchoolType")+":"+schoolType.getName());
+					this.errorRelated.append(getLocalizedString("invoice.SchoolType","SchoolType")+":"+schoolType.getName());
 					
 					// check if this is either inside commune or private childcare
 					final Provider provider = new Provider (school);
@@ -302,7 +302,7 @@ public class InvoiceChildcareThread extends BillingThread{
 						throw new CommuneChildcareOutsideHomeCommuneException ();
 					}
 					//Check if both provider and child is outside home commune
-					UserBusiness userBus = (UserBusiness) IBOLookup.getServiceInstance(iwc, UserBusiness.class);
+					UserBusiness userBus = (UserBusiness) IBOLookup.getServiceInstance(this.iwc, UserBusiness.class);
 					if(!commune.equals(homeCommune) && userBus.getUsersMainAddress(child).getCommuneID() != ((Integer)homeCommune.getPrimaryKey()).intValue()){
 						throw new NotDefaultCommuneException(getLocalizedString("invoice.School","School")+":"+provider.getSchool().getName()+
 								"; "+getLocalizedString("invoice.Student","Student")+":"+child.getName());
@@ -310,7 +310,7 @@ public class InvoiceChildcareThread extends BillingThread{
 					
 					// if provider has payment by invoice set, then ignore this silently
 					if (provider.getPaymentByInvoice ()) {
-						log.info ("Provider " + school.getName ()
+						this.log.info ("Provider " + school.getName ()
 								+ " has payment by invoice, school class member "
 								+ schoolClassMember.getPrimaryKey ()
 								+ " will be ignored in childcare batch.");
@@ -320,23 +320,23 @@ public class InvoiceChildcareThread extends BillingThread{
 					// **Get or create the invoice header
 					InvoiceHeader invoiceHeader;
 					try{
-						invoiceHeader = getInvoiceHeaderHome().findByCustodianAndMonth(custodian,month);
+						invoiceHeader = getInvoiceHeaderHome().findByCustodianAndMonth(custodian,this.month);
 					} catch (FinderException e) {
 						//No header was found so we have to create it
 						invoiceHeader = getInvoiceHeaderHome().create();
 						//Fill in all the field available at this times
-						invoiceHeader.setSchoolCategory(category);
-						invoiceHeader.setPeriod(startPeriod.getDate());
+						invoiceHeader.setSchoolCategory(this.category);
+						invoiceHeader.setPeriod(this.startPeriod.getDate());
 						//Custodian is not correct label. Should be invoice receiver
 						invoiceHeader.setCustodianId(((Integer)custodian.getPrimaryKey()).intValue());
-						invoiceHeader.setDateCreated(currentDate);
+						invoiceHeader.setDateCreated(this.currentDate);
 						invoiceHeader.setCreatedBy(BATCH_TEXT);
 						invoiceHeader.setStatus(ConstantStatus.PRELIMINARY);
 						invoiceHeader.store();
 					}
 					
 					// **Calculate how big part of time period this contract is valid for
-					placementTimes = calculateTime(contract.getValidFromDate(), contract.getTerminatedDate());
+					placementTimes = calculateTime(this.contract.getValidFromDate(), this.contract.getTerminatedDate());
 					
 					totalSum = 0;
 					subventionToReduce = null;
@@ -344,14 +344,14 @@ public class InvoiceChildcareThread extends BillingThread{
 					
 					//Get the check for the contract
 					RegulationsBusiness regBus = getRegulationsBusiness();
-					hours = contract.getCareTime();
+					hours = this.contract.getCareTime();
 					
-					AgeBusiness ageBusiness = (AgeBusiness) IBOLookup.getServiceInstance(iwc, AgeBusiness.class);
-					int ageInYears = ageBusiness.getChildAge(contract.getChild().getPersonalID(), startPeriod.getDate());
+					AgeBusiness ageBusiness = (AgeBusiness) IBOLookup.getServiceInstance(this.iwc, AgeBusiness.class);
+					int ageInYears = ageBusiness.getChildAge(this.contract.getChild().getPersonalID(), this.startPeriod.getDate());
 					
 					ArrayList conditions = new ArrayList();
-					errorRelated.append(getLocalizedString("invoice.Hours","Hours")+": "+hours);
-					errorRelated.append(getLocalizedString("invoice.Age","Age")+":"+ageInYears+" "+getLocalizedString("invoice.years","years"));
+					this.errorRelated.append(getLocalizedString("invoice.Hours","Hours")+": "+hours);
+					this.errorRelated.append(getLocalizedString("invoice.Age","Age")+":"+ageInYears+" "+getLocalizedString("invoice.years","years"));
 					
 					conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_OPERATION,childcareType));
 					try {
@@ -361,110 +361,110 @@ public class InvoiceChildcareThread extends BillingThread{
 						conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_HOURS,new Integer(-1)));
 					}
 					conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_AGE_INTERVAL,new Integer(ageInYears)));
-					EmploymentType employmentType = contract.getEmploymentType();
+					EmploymentType employmentType = this.contract.getEmploymentType();
 					if(employmentType!= null){
 						conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_EMPLOYMENT,employmentType.getPrimaryKey()));
-						errorRelated.append(getLocalizedString("invoice.EmploymentType","EmploymentType")+":"+employmentType.getLocalizationKey());
+						this.errorRelated.append(getLocalizedString("invoice.EmploymentType","EmploymentType")+":"+employmentType.getLocalizationKey());
 					}
 //					errorRelated.append("RuleTypeConstant.DERIVED:"+RuleTypeConstant.DERIVED);
 //					errorRelated.append("RegSpecConstant.CHECK:"+RegSpecConstant.CHECK);
 					
-					postingDetail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(
-							category.getCategory(),		//The ID that selects barnomsorg in the regulation
+					this.postingDetail = regBus.getPostingDetailByOperationFlowPeriodConditionTypeRegSpecType(
+							this.category.getCategory(),		//The ID that selects barnomsorg in the regulation
 							PaymentFlowConstant.OUT, 	//The payment flow is out
-							calculationDate,					//Current date to select the correct date range
+							this.calculationDate,					//Current date to select the correct date range
 							RuleTypeConstant.DERIVED,	//The conditiontype
 							RegSpecConstant.CHECK,		//The ruleSpecType shall be Check
 							conditions,						//The conditions that need to fulfilled
 							totalSum,						//Sent in to be used for "Specialutrakning"
-							contract, null);						//Sent in to be used for "Specialutrakning"
+							this.contract, null);						//Sent in to be used for "Specialutrakning"
 					
-					if(postingDetail == null){
+					if(this.postingDetail == null){
 						throw new RegulationException("reg_exp_no_results","No regulations found.");
 					}
 					
 					RegulationSpecType regSpecType = getRegulationSpecTypeHome().findByRegulationSpecType(RegSpecConstant.CHECK);
-					errorRelated.append(getLocalizedString("invoice.RegelSpecTyp","Regel Spec Typ")+": "+regSpecType);
+					this.errorRelated.append(getLocalizedString("invoice.RegelSpecTyp","Regel Spec Typ")+": "+regSpecType);
 					
 					String[] postings = getPostingBusiness().getPostingStrings(
-							category, schoolClassMember.getSchoolType(), ((Integer)regSpecType.getPrimaryKey()).intValue(), provider,calculationDate);
+							this.category, schoolClassMember.getSchoolType(), ((Integer)regSpecType.getPrimaryKey()).intValue(), provider,this.calculationDate);
 					String[] checkPost = getPostingBusiness().getPostingStrings(
-							category, schoolClassMember.getSchoolType(), ((Integer)getRegulationSpecTypeHome().findByRegulationSpecType(RegSpecConstant.CHECKTAXA).getPrimaryKey()).intValue(), provider,calculationDate);
-					PaymentRecord paymentRecord = createPaymentRecord(postingDetail, postings[0], postings[1], placementTimes.getMonths(), school);			//MUST create payment record first, since it is used in invoice record
-					createVATPaymentRecord(paymentRecord, postingDetail,placementTimes.getMonths(),school,schoolClassMember.getSchoolType(),schoolClassMember.getSchoolYear());
+							this.category, schoolClassMember.getSchoolType(), ((Integer)getRegulationSpecTypeHome().findByRegulationSpecType(RegSpecConstant.CHECKTAXA).getPrimaryKey()).intValue(), provider,this.calculationDate);
+					PaymentRecord paymentRecord = createPaymentRecord(this.postingDetail, postings[0], postings[1], placementTimes.getMonths(), school);			//MUST create payment record first, since it is used in invoice record
+					createVATPaymentRecord(paymentRecord, this.postingDetail,placementTimes.getMonths(),school,schoolClassMember.getSchoolType(),schoolClassMember.getSchoolYear());
 								
 					// **Create the invoice record
 					invoiceRecord = createInvoiceRecordForCheck(invoiceHeader, 
-							CHECK+school.getName(),contract.getChild().getFirstName()+", "+hours+" "+HOURS_PER_WEEK+ placementTimes.getDays()+DAYS, paymentRecord, 
-							checkPost[0], checkPost[1], placementTimes, school, contract);
+							CHECK+school.getName(),this.contract.getChild().getFirstName()+", "+hours+" "+HOURS_PER_WEEK+ placementTimes.getDays()+DAYS, paymentRecord, 
+							checkPost[0], checkPost[1], placementTimes, school, this.contract);
 						
- 					totalSum = AccountingUtil.roundAmount(postingDetail.getAmount()*placementTimes.getMonths());
+ 					totalSum = AccountingUtil.roundAmount(this.postingDetail.getAmount()*placementTimes.getMonths());
 					int siblingOrder;
  					try{
-						siblingOrder = getSiblingOrder(contract, siblingOrders);
+						siblingOrder = getSiblingOrder(this.contract, this.siblingOrders);
 					} catch (SiblingOrderException e) {
 						e.printStackTrace();
-						errorRelated.append(e.getMessage());
-						errorRelated.append(e);
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.CouldNotGetSiblingOrder","Could not get sibling Order"));
+						this.errorRelated.append(e.getMessage());
+						this.errorRelated.append(e);
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CouldNotGetSiblingOrder","Could not get sibling Order"));
 						siblingOrder = 1;
 					} catch (DateOfBirthMissingException e){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.CouldNotGetSiblingOrder","Could not get sibling Order")+
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CouldNotGetSiblingOrder","Could not get sibling Order")+
 								". "+getLocalizedString("invoice.MissingDateOfBirth","Missing date of birth"));
 						siblingOrder = 1;
 					}
 					conditions.add(new ConditionParameter(RuleTypeConstant.CONDITION_ID_SIBLING_NR,
 									new Integer(siblingOrder)));
-					errorRelated.append(getLocalizedString("invoice.SiblingOrderSetTo","Sibling order set to")+":"+siblingOrder+
+					this.errorRelated.append(getLocalizedString("invoice.SiblingOrderSetTo","Sibling order set to")+":"+siblingOrder+
 							" "+getLocalizedString("invoice.for","for")+" "+schoolClassMember.getStudent().getName());
 						
 					//Get all the rules for this contract
 					regulationArray = regBus.getAllRegulationsByOperationFlowPeriodConditionTypeRegSpecType(
-							category.getCategory(),//The ID that selects barnomsorg in the regulation
+							this.category.getCategory(),//The ID that selects barnomsorg in the regulation
 							PaymentFlowConstant.IN, 			//The payment flow is out
-							startPeriod.getDate(),							//Current date to select the correct date range
+							this.startPeriod.getDate(),							//Current date to select the correct date range
 							RuleTypeConstant.DERIVED,			//The conditiontype
 							null,
 							conditions								//The conditions that need to fulfilled
 							);
 						
-					ErrorLogger tmpErrorRelated = new ErrorLogger(errorRelated);
+					ErrorLogger tmpErrorRelated = new ErrorLogger(this.errorRelated);
 					Iterator regulationIter = regulationArray.iterator();
 					while(regulationIter.hasNext())
 					{
-						errorRelated = new ErrorLogger(tmpErrorRelated);
+						this.errorRelated = new ErrorLogger(tmpErrorRelated);
 						try {
 							Regulation regulation = (Regulation)regulationIter.next();
-							errorRelated.append(getLocalizedString("invoice.Regulation","Regulation")+":"+regulation.getName());
-							postingDetail = regBus.getPostingDetailForContract(
+							this.errorRelated.append(getLocalizedString("invoice.Regulation","Regulation")+":"+regulation.getName());
+							this.postingDetail = regBus.getPostingDetailForContract(
 									totalSum,
-									contract,
+									this.contract,
 									regulation,
-									startPeriod.getDate(),
+									this.startPeriod.getDate(),
 									conditions,
 									placementTimes);
-							if(postingDetail==null){
+							if(this.postingDetail==null){
 								throw new RegulationException("reg_exp_no_results", "No regulation match conditions");
 							}
 								
-							errorRelated.append(getLocalizedString("invoice.PostingDetail","Posting detail")+":"+postingDetail);
+							this.errorRelated.append(getLocalizedString("invoice.PostingDetail","Posting detail")+":"+this.postingDetail);
 							// **Create the invoice record
 							//maybe get these strings from the postingDetail instead.
-							postingDetail.setRuleSpecType(regulation.getRegSpecType().getLocalizationKey());		//This is a patch, Pallis func should probably return the right one in the first place.
-							errorRelated.append(getLocalizedString("invoice.InvoiceHeader","InvoiceHeader")+":"+invoiceHeader.getPrimaryKey());
+							this.postingDetail.setRuleSpecType(regulation.getRegSpecType().getLocalizationKey());		//This is a patch, Pallis func should probably return the right one in the first place.
+							this.errorRelated.append(getLocalizedString("invoice.InvoiceHeader","InvoiceHeader")+":"+invoiceHeader.getPrimaryKey());
 							//						RegulationSpecType regulationSpecType = getRegulationSpecTypeHome().findByRegulationSpecType(postingDetail.getRuleSpecType());
-							postings = getPostingBusiness().getPostingStrings(category, schoolClassMember.getSchoolType(), ((Integer)regulation.getRegSpecType().getPrimaryKey()).intValue(), provider,calculationDate);
+							postings = getPostingBusiness().getPostingStrings(this.category, schoolClassMember.getSchoolType(), ((Integer)regulation.getRegSpecType().getPrimaryKey()).intValue(), provider,this.calculationDate);
 
 							// if this is a discounted subvention, then amount is allready
 							// divided by the number of days
 							final boolean isDiscount = 0.0f != regulation.getDiscount ()
 									|| 0.0f != regulation.getMaxAmountDiscount();
-							invoiceRecord = createInvoiceRecord(invoiceHeader, postings[0], "", placementTimes, school, contract,isDiscount);
+							invoiceRecord = createInvoiceRecord(invoiceHeader, postings[0], "", placementTimes, school, this.contract,isDiscount);
 							
 							//Need to store the subvention row, so that it can be adjusted later if needed
 							//							if(postingDetail.getRuleSpecType().equalsIgnoreCase(RegSpecConstant.SUBVENTION) || regulation.getRegSpecType().getLocalizationKey().equalsIgnoreCase(RegSpecConstant.SUBVENTION)){
-							if(postingDetail.getOrderID()>highestOrderNr){
-								highestOrderNr = postingDetail.getOrderID();
+							if(this.postingDetail.getOrderID()>highestOrderNr){
+								highestOrderNr = this.postingDetail.getOrderID();
 								subventionToReduce = invoiceRecord;
 							}
 							totalSum += invoiceRecord.getAmount ();
@@ -477,38 +477,38 @@ public class InvoiceChildcareThread extends BillingThread{
 						}
 						catch (CreateException e1) {
 							e1.printStackTrace();
-							errorRelated.append(e1);
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.CreateException","Create exception"));
+							this.errorRelated.append(e1);
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CreateException","Create exception"));
 						}
 						catch (RegulationException e1) {
 							e1.printStackTrace();
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingRegulationWhenItWasExpected","Error finding regulation when it was expected"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingRegulationWhenItWasExpected","Error finding regulation when it was expected"));
 						}
 						catch (PostingException e1) {
 							e1.printStackTrace();
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.PostingException","PostingException"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.PostingException","PostingException"));
 						}
 						catch (RemoteException e1) {
 							e1.printStackTrace();
-							errorRelated.append(e1);
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.RemoteException","RemoteException"));
+							this.errorRelated.append(e1);
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.RemoteException","RemoteException"));
 						}
 						catch(MissingConditionTypeException e) {
 							e.printStackTrace();
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingConditionType","ErrorFindingConditionType"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingConditionType","ErrorFindingConditionType"));
 						}
 						catch (MissingFlowTypeException e) {
 							e.printStackTrace();
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingFlowType","ErrorFindingFlowType"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingFlowType","ErrorFindingFlowType"));
 						}
 						catch (MissingRegSpecTypeException e) {
 							e.printStackTrace();
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingRegSpecType","ErrorFindingRegSpecType"));
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingRegSpecType","ErrorFindingRegSpecType"));
 						}
 						catch (TooManyRegulationsException e) {
 							e.printStackTrace();
-							errorRelated.append(getLocalizedString("invoice.RegulationsFound","Regulations found")+":"+e.getRegulationNamesString());
-							createNewErrorMessage(errorRelated,getLocalizedString("invoice.TooManyRegulationsFoundForQuery","Too many regulations found for query"));
+							this.errorRelated.append(getLocalizedString("invoice.RegulationsFound","Regulations found")+":"+e.getRegulationNamesString());
+							createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.TooManyRegulationsFoundForQuery","Too many regulations found for query"));
 						}
 					}
 					//Make sure that the sum is not less than 0
@@ -530,83 +530,83 @@ public class InvoiceChildcareThread extends BillingThread{
 					
 				}catch (CommuneChildcareOutsideHomeCommuneException e1) {
 //					errorRelated.append(e1);
-					createNewErrorMessage(errorRelated,getLocalizedString("invoice.CommuneChildcareOutsideHomeCommune","Commune childcare outside home commune"));
+					createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CommuneChildcareOutsideHomeCommune","Commune childcare outside home commune"));
 				}catch (NoSchoolClassMemberException e1) {
-					errorRelated.append(e1);
-					createNewErrorMessage(errorRelated,getLocalizedString("invoice.SchoolClassMemberNotSetForContract","School class member not set for contract"));
+					this.errorRelated.append(e1);
+					createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.SchoolClassMemberNotSetForContract","School class member not set for contract"));
 				}catch (NoSchoolTypeException e1) {
-					errorRelated.append(e1);
-					createNewErrorMessage(errorRelated,getLocalizedString("invoice.NoSchooltypeFound","No schooltype found"));
+					this.errorRelated.append(e1);
+					createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.NoSchooltypeFound","No schooltype found"));
 				}catch (NullPointerException e1) {
 					e1.printStackTrace();
-					if(errorRelated != null){
-						errorRelated.append(e1);
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ReferenceErrorPossiblyNullInPrimaryKeyInDB","Reference error possibly null in primary key in DB"));
+					if(this.errorRelated != null){
+						this.errorRelated.append(e1);
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ReferenceErrorPossiblyNullInPrimaryKeyInDB","Reference error possibly null in primary key in DB"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ReferenceErrorPossiblyNullInPrimaryKeyInDB","Reference error possibly null in primary key in DB"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ReferenceErrorPossiblyNullInPrimaryKeyInDB","Reference error possibly null in primary key in DB"));
 					}
 				}catch (RegulationException e1) {
 					e1.printStackTrace();
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingCheckRegulation","Error finding check regulation"));
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingCheckRegulation","Error finding check regulation"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingCheckRegulation","Error finding check regulation"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingCheckRegulation","Error finding check regulation"));
 					}
 				} catch (PostingException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.PostingParameterIncorrectlyFormatted","Posting parameter incorrectly formatted"));
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.PostingParameterIncorrectlyFormatted","Posting parameter incorrectly formatted"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.PostingParameterIncorrectlyFormatted","Posting parameter incorrectly formatted"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.PostingParameterIncorrectlyFormatted","Posting parameter incorrectly formatted"));
 					}
 				} catch (CreateException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						errorRelated.append(e);
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.DBProblem","DB Problem"));
+					if(this.errorRelated != null){
+						this.errorRelated.append(e);
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.DBProblem","DB Problem"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.DBProblem","DB Problem"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.DBProblem","DB Problem"));
 					}
 				} catch (EJBException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						errorRelated.append(e);
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.EJBException","EJB Exception"));
+					if(this.errorRelated != null){
+						this.errorRelated.append(e);
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.EJBException","EJB Exception"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.EJBException","EJB Exception"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.EJBException","EJB Exception"));
 					}
 				}
 				catch (MissingFlowTypeException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingFlowType","Error finding flow type"));
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingFlowType","Error finding flow type"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingFlowType","Error finding flow type"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingFlowType","Error finding flow type"));
 					}
 				}
 				catch (MissingConditionTypeException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingConditionType","Error finding condition type"));
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingConditionType","Error finding condition type"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingConditionType","Error finding condition type"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingConditionType","Error finding condition type"));
 					}
 				}
 				catch (MissingRegSpecTypeException e) {
 					e.printStackTrace();
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingRegSpecType","Error finding reg spec type"));
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingRegSpecType","Error finding reg spec type"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingRegSpecType","Error finding reg spec type"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingRegSpecType","Error finding reg spec type"));
 					}
 				}
 				catch (TooManyRegulationsException e) {
 					e.printStackTrace();
-					errorRelated.append(getLocalizedString("invoice.RegulationsFound","Regulations found")+":"+e.getRegulationNamesString());
-					if(errorRelated != null){
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.ErrorFindingTooManyRegulations","Error finding too many regulations"));
+					this.errorRelated.append(getLocalizedString("invoice.RegulationsFound","Regulations found")+":"+e.getRegulationNamesString());
+					if(this.errorRelated != null){
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.ErrorFindingTooManyRegulations","Error finding too many regulations"));
 					} else{
-						createNewErrorMessage(contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingTooManyRegulations","Error finding too many regulations"));
+						createNewErrorMessage(this.contract.getChild().getName(),getLocalizedString("invoice.ErrorFindingTooManyRegulations","Error finding too many regulations"));
 					}
 				} catch (RemoteException e) {
 					e.printStackTrace();
@@ -616,9 +616,9 @@ public class InvoiceChildcareThread extends BillingThread{
 					createNewErrorMessage(getLocalizedString("invoice.severeError","Severe error"),getLocalizedString("invoice.NoContractsFound","No contracts found"));
 				} catch (NotDefaultCommuneException e) {
 					e.printStackTrace();
-					createNewErrorMessage(errorRelated, getLocalizedString("invoice.BothStudentAndSchoolOutsideDefaultCommmune","Both student and school outside default commmune"));
+					createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.BothStudentAndSchoolOutsideDefaultCommmune","Both student and school outside default commmune"));
 				}
-				if(!running){
+				if(!this.running){
 					return;
 				}
 			}
@@ -648,7 +648,7 @@ public class InvoiceChildcareThread extends BillingThread{
 		boolean hasBeenHandled = haveInvoiceEntriesBeenHandledForChild(child);
 		if(!hasBeenHandled){
 			try {
-				Collection regularInvoices = getRegularInvoiceBusiness().findRegularInvoicesForPeriodAndChildAndCategoryExceptLowincome(startPeriod.getDate(),endPeriod.getDate(),childId,category.getPrimaryKey().toString());
+				Collection regularInvoices = getRegularInvoiceBusiness().findRegularInvoicesForPeriodAndChildAndCategoryExceptLowincome(this.startPeriod.getDate(),this.endPeriod.getDate(),childId,this.category.getPrimaryKey().toString());
 				Iterator regularInvoiceIter = regularInvoices.iterator();
 				//Go through all the regular invoices
 				while(regularInvoiceIter.hasNext()){
@@ -685,10 +685,10 @@ public class InvoiceChildcareThread extends BillingThread{
 							//No header was found so we have to create it
 							invoiceHeader = getInvoiceHeaderHome().create();
 							//Fill in all the field available at this times
-							invoiceHeader.setSchoolCategory(category);
-							invoiceHeader.setPeriod(startPeriod.getDate());
+							invoiceHeader.setSchoolCategory(this.category);
+							invoiceHeader.setPeriod(this.startPeriod.getDate());
 							invoiceHeader.setCustodian(custodian);
-							invoiceHeader.setDateCreated(currentDate);
+							invoiceHeader.setDateCreated(this.currentDate);
 							invoiceHeader.setCreatedBy(BATCH_TEXT);
 							invoiceHeader.setStatus(ConstantStatus.PRELIMINARY);
 							invoiceHeader.store();
@@ -696,7 +696,7 @@ public class InvoiceChildcareThread extends BillingThread{
 						}
 						errorRelated.append(getLocalizedString("invoice.Note","Note")+":"+regularInvoiceEntry.getNote());
 						
-						PlacementTimes placementTimes = calculateTime(contract.getValidFromDate(), contract.getTerminatedDate());
+						PlacementTimes placementTimes = calculateTime(this.contract.getValidFromDate(), this.contract.getTerminatedDate());
 						
 						InvoiceRecord invoiceRecord = getInvoiceRecordHome().create();
 						invoiceRecord.setInvoiceHeader(invoiceHeader);
@@ -711,14 +711,14 @@ public class InvoiceChildcareThread extends BillingThread{
 						
 						invoiceRecord.setPeriodStartCheck(placementTimes.getFirstCheckDay().getDate());
 						invoiceRecord.setPeriodEndCheck(placementTimes.getLastCheckDay().getDate());
-						invoiceRecord.setPeriodStartPlacement(contract.getValidFromDate());
-						invoiceRecord.setPeriodEndPlacement(contract.getTerminatedDate());
+						invoiceRecord.setPeriodStartPlacement(this.contract.getValidFromDate());
+						invoiceRecord.setPeriodEndPlacement(this.contract.getTerminatedDate());
 						
 						invoiceRecord.setPeriodStartCheck(placementTimes.getFirstCheckDay().getDate());
 						invoiceRecord.setPeriodEndCheck(placementTimes.getLastCheckDay().getDate());
 						invoiceRecord.setPeriodStartPlacement(regularInvoiceEntry.getFrom());
 						invoiceRecord.setPeriodEndPlacement(regularInvoiceEntry.getTo());
-						invoiceRecord.setDateCreated(currentDate);
+						invoiceRecord.setDateCreated(this.currentDate);
 						invoiceRecord.setCreatedBy(BATCH_TEXT);
 						long amount = AccountingUtil.roundAmount(regularInvoiceEntry.getAmount());
 						float vat = regularInvoiceEntry.getVAT ();
@@ -747,12 +747,12 @@ public class InvoiceChildcareThread extends BillingThread{
 						
 					} catch (RemoteException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.RemoteException","Remote Exception"));
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.RemoteException","Remote Exception"));
 					} catch (CreateException e) {
 						e.printStackTrace();
-						createNewErrorMessage(errorRelated,getLocalizedString("invoice.CreateException","CreateException"));
+						createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.CreateException","CreateException"));
 					}
-					if(!running){
+					if(!this.running){
 						return;
 					}
 				}
@@ -788,10 +788,10 @@ public class InvoiceChildcareThread extends BillingThread{
 	}
 	
 	private Set getIncoiceEntryChildSet(){
-		if(incoiceEntryChildSet==null){
-			incoiceEntryChildSet=new HashSet();
+		if(this.incoiceEntryChildSet==null){
+			this.incoiceEntryChildSet=new HashSet();
 		}
-		return incoiceEntryChildSet;
+		return this.incoiceEntryChildSet;
 	}
 	
 	/**
@@ -806,10 +806,10 @@ public class InvoiceChildcareThread extends BillingThread{
 		try {
 			Iterator regularPaymentIter = null;
 			if(getSchool()!=null){
-				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndSchool(month.getFirstDateOfMonth(),month.getLastDateOfMonth(), getSchool()).iterator();
+				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndSchool(this.month.getFirstDateOfMonth(),this.month.getLastDateOfMonth(), getSchool()).iterator();
 			}
 			else{
-				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndCategory(startPeriod.getDate(), category).iterator();
+				regularPaymentIter = getRegularPaymentBusiness().findRegularPaymentsForPeriodeAndCategory(this.startPeriod.getDate(), this.category).iterator();
 			}
 			//Go through all the regular payments
 			while (regularPaymentIter.hasNext()) {
@@ -831,7 +831,7 @@ public class InvoiceChildcareThread extends BillingThread{
 					createNewErrorMessage(regularPaymentEntry.toString(), getLocalizedString("invoice.CreateException","Create Exception"));
 					e.printStackTrace();
 				}
-				if(!running){
+				if(!this.running){
 					return;
 				}
 			}
@@ -862,8 +862,8 @@ public class InvoiceChildcareThread extends BillingThread{
 	
 	private int getSiblingOrder(ChildCareContract contract, Map siblingOrders) throws EJBException, RemoteException, SiblingOrderException{
 		User contractChild = contract.getChild ();	
-		UserInfoService userInfo = (UserInfoService) IBOLookup.getServiceInstance(iwc, UserInfoService.class);
-		return userInfo.getSiblingOrder(contractChild, siblingOrders, new CalendarMonth (startPeriod));
+		UserInfoService userInfo = (UserInfoService) IBOLookup.getServiceInstance(this.iwc, UserInfoService.class);
+		return userInfo.getSiblingOrder(contractChild, siblingOrders, new CalendarMonth (this.startPeriod));
 	}
 	
 	/**
@@ -905,7 +905,7 @@ public class InvoiceChildcareThread extends BillingThread{
 		throws RemoteException, CreateException{
 		InvoiceRecord invoiceRecord = getInvoiceRecordHome().create();
 		invoiceRecord.setInvoiceHeader(invoiceHeader);
-		invoiceRecord.setInvoiceText(postingDetail.getTerm());
+		invoiceRecord.setInvoiceText(this.postingDetail.getTerm());
 		return createInvoiceRecordSub(invoiceRecord, ownPosting, doublePosting, placementTimes, school, contract, isDiscount);
 	}
 	
@@ -925,24 +925,24 @@ public class InvoiceChildcareThread extends BillingThread{
 		throws RemoteException{
 		invoiceRecord.setProvider(school);
 		invoiceRecord.setSchoolClassMember(contract.getSchoolClassMember());
-		invoiceRecord.setRuleText(postingDetail.getTerm());
+		invoiceRecord.setRuleText(this.postingDetail.getTerm());
 		invoiceRecord.setDays(placementTimes.getDays());
 		invoiceRecord.setPeriodStartCheck(placementTimes.getFirstCheckDay().getDate());
 		invoiceRecord.setPeriodEndCheck(placementTimes.getLastCheckDay().getDate());
 		invoiceRecord.setPeriodStartPlacement(contract.getValidFromDate());
 		invoiceRecord.setPeriodEndPlacement(contract.getTerminatedDate());
-		invoiceRecord.setDateCreated(currentDate);
+		invoiceRecord.setDateCreated(this.currentDate);
 		invoiceRecord.setCreatedBy(BATCH_TEXT);
-		invoiceRecord.setAmount(AccountingUtil.roundAmount(postingDetail.getAmount()*(isDiscount ? 1.0f : placementTimes.getMonths())));
+		invoiceRecord.setAmount(AccountingUtil.roundAmount(this.postingDetail.getAmount()*(isDiscount ? 1.0f : placementTimes.getMonths())));
 		//invoiceRecord.setAmountVAT(AccountingUtil.roundAmount(postingDetail.getVATPercent()*invoiceRecord.getAmount ()/100.0f));
 		invoiceRecord.setAmountVAT (0);
-		invoiceRecord.setVATRuleRegulation(postingDetail.getVatRuleRegulationId());
-		invoiceRecord.setOrderId(postingDetail.getOrderID());
+		invoiceRecord.setVATRuleRegulation(this.postingDetail.getVatRuleRegulationId());
+		invoiceRecord.setOrderId(this.postingDetail.getOrderID());
 		invoiceRecord.setSchoolType(contract.getSchoolClassMember().getSchoolType());
 		//		errorRelated.append("Order ID = "+postingDetail.getOrderID());
 		RegulationSpecTypeHome regSpecTypeHome = (RegulationSpecTypeHome) IDOLookup.getHome(RegulationSpecType.class);
 		try {
-			RegulationSpecType regSpecType = regSpecTypeHome.findByRegulationSpecType(postingDetail.getRuleSpecType());
+			RegulationSpecType regSpecType = regSpecTypeHome.findByRegulationSpecType(this.postingDetail.getRuleSpecType());
 			invoiceRecord.setRegSpecType(regSpecType);
 		} catch (Exception e) {
 			e.printStackTrace ();

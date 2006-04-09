@@ -1,5 +1,5 @@
 /*
- * $Id: PostingBusinessBean.java,v 1.64 2005/06/10 16:39:21 palli Exp $
+ * $Id: PostingBusinessBean.java,v 1.65 2006/04/09 11:53:33 laddi Exp $
  * 
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  * 
@@ -75,11 +75,11 @@ public class PostingBusinessBean extends com.idega.business.IBOServiceBean imple
 	private Date createdFieldsListDate;
 
 	private Date getCreatedFieldsListDate() {
-		return createdFieldsListDate;
+		return this.createdFieldsListDate;
 	}
 
 	private Collection getFieldsList() {
-		return fieldsList;
+		return this.fieldsList;
 	}
 
 	/**
@@ -156,16 +156,18 @@ public class PostingBusinessBean extends com.idega.business.IBOServiceBean imple
 		try {
 			if (getCreatedFieldsListDate() == null
 					|| getCreatedFieldsListDate().getTime() / SECONDS_IN_A_DAY != IWTimestamp.getTimestampRightNow().getTime()
-							/ SECONDS_IN_A_DAY)
+							/ SECONDS_IN_A_DAY) {
 				createFieldsList();
+			}
 			Iterator iter = getFieldsList().iterator();
 			while (iter.hasNext()) {
 				PostingField field = (PostingField) iter.next();
 				fieldLength = field.getLen();
 				temp = trim(postingString.substring(readPointer, readPointer + fieldLength), field);
 
-				if (field.getFieldTitle().equals(name))
+				if (field.getFieldTitle().equals(name)) {
 					return temp;
+				}
 
 				readPointer += fieldLength;
 			}
@@ -193,9 +195,9 @@ public class PostingBusinessBean extends com.idega.business.IBOServiceBean imple
 	private void createFieldsList() throws RemoteException, FinderException {
 		PostingStringHome ksHome = getPostingStringHome();
 		PostingFieldHome kfHome = getPostingFieldHome();
-		createdFieldsListDate = new Date(IWTimestamp.getTimestampRightNow().getTime());
-		PostingString posting = ksHome.findPostingStringByDate(createdFieldsListDate);
-		fieldsList = kfHome.findAllFieldsByPostingString(Integer.parseInt(posting.getPrimaryKey().toString()));
+		this.createdFieldsListDate = new Date(IWTimestamp.getTimestampRightNow().getTime());
+		PostingString posting = ksHome.findPostingStringByDate(this.createdFieldsListDate);
+		this.fieldsList = kfHome.findAllFieldsByPostingString(Integer.parseInt(posting.getPrimaryKey().toString()));
 	}
 
 	/**
@@ -534,20 +536,27 @@ public class PostingBusinessBean extends com.idega.business.IBOServiceBean imple
 		try {
 			home = (PostingParametersHome) IDOLookup.getHome(PostingParameters.class);
 
-			if (activityID == null)
+			if (activityID == null) {
 				activityID = "0";
-			if (regSpecTypeID == null)
+			}
+			if (regSpecTypeID == null) {
 				regSpecTypeID = "0";
-			if (companyTypeID == null)
+			}
+			if (companyTypeID == null) {
 				companyTypeID = "0";
-			if (communeBelongingID == null)
+			}
+			if (communeBelongingID == null) {
 				communeBelongingID = "0";
-			if (schoolYear1ID == null)
+			}
+			if (schoolYear1ID == null) {
 				schoolYear1ID = "0";
-			if (schoolYear2ID == null)
+			}
+			if (schoolYear2ID == null) {
 				schoolYear2ID = "0";
-			if (studyPathID == null)
+			}
+			if (studyPathID == null) {
 				studyPathID = "0";
+			}
 
 			parm1 = Integer.parseInt(activityID);
 			parm2 = Integer.parseInt(regSpecTypeID);

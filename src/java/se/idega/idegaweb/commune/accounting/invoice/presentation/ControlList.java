@@ -1,4 +1,4 @@
-/* $Id: ControlList.java,v 1.13 2004/05/05 09:36:10 sigtryggur Exp $
+/* $Id: ControlList.java,v 1.14 2006/04/09 11:53:32 laddi Exp $
 *
 * Copyright (C) 2003 Agura IT. All Rights Reserved.
 *
@@ -46,7 +46,7 @@ import se.idega.idegaweb.commune.accounting.invoice.business.ControlListExceptio
  * Amount paid this period
  * The list can also be presented as an Excel sheet
  * 
- * $Id: ControlList.java,v 1.13 2004/05/05 09:36:10 sigtryggur Exp $ 
+ * $Id: ControlList.java,v 1.14 2006/04/09 11:53:32 laddi Exp $ 
  * <p>
  *
  * @author <a href="http://www.lindman.se">Kelly Lindman</a>
@@ -129,13 +129,13 @@ public class ControlList extends AccountingBlock {
 	private void handleSearchAction(IWContext iwc) {
 		Date compareMonth = parseDate(iwc.getParameter(PARAMETER_SEARCH_PERIOD_COMPARE));
 		Date withMonth = parseDate(iwc.getParameter(PARAMETER_SEARCH_PERIOD_CURRENT));
-		_errorMessage = "";
+		this._errorMessage = "";
 
 		ApplicationForm app = new ApplicationForm(this);
 		app.setLocalizedTitle(KEY_TITLE, "Control list");
 		app.setSearchPanel(getSearchPanel(iwc));
 		app.setMainPanel(getControlList(iwc, compareMonth, withMonth));
-		if(_errorMessage.length() == 0) {
+		if(this._errorMessage.length() == 0) {
 			app.setButtonPanel(getButtonPanel(compareMonth, withMonth ));
 		}
 		add(app);
@@ -160,8 +160,8 @@ public class ControlList extends AccountingBlock {
 			collection = getControlListBusiness(iwc).getControlListValues(compareMonth, withMonth, operationalField);
 		} catch (RemoteException e) {
 		} catch (ControlListException e) {
-			_errorMessage = localize(e.getTextKey(), e.getDefaultText());
-			list.add(getErrorText(_errorMessage));
+			this._errorMessage = localize(e.getTextKey(), e.getDefaultText());
+			list.add(getErrorText(this._errorMessage));
 			return list;			
 		}
 				

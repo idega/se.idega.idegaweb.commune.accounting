@@ -52,8 +52,8 @@ public abstract class AccountingBlock extends CommuneBlock {
 	
 	public void _main(IWContext iwc) throws Exception{
 		setResourceBundle(getResourceBundle(iwc));
-		business = getAccountingBusiness(iwc);
-		session = getAccountingSession(iwc);
+		this.business = getAccountingBusiness(iwc);
+		this.session = getAccountingSession(iwc);
 		super._main(iwc);
 	}
 	
@@ -79,17 +79,17 @@ public abstract class AccountingBlock extends CommuneBlock {
 	 * @return AccountingBusiness
 	 */
 	public AccountingBusiness getBusiness() {
-		return business;
+		return this.business;
 	}
 
 	/**
 	 * @return AccountingSession
 	 */
 	public AccountingSession getSession() {
-		if(session==null){
+		if(this.session==null){
 			try
 			{
-				session = (AccountingSession)IBOLookup.getSessionInstance(IWContext.getInstance(),AccountingSession.class);
+				this.session = (AccountingSession)IBOLookup.getSessionInstance(IWContext.getInstance(),AccountingSession.class);
 			}
 			catch (IBOLookupException e)
 			{
@@ -102,7 +102,7 @@ public abstract class AccountingBlock extends CommuneBlock {
 				e.printStackTrace();
 			}
 		}
-		return session;
+		return this.session;
 	}
 
 	/**

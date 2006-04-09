@@ -45,7 +45,7 @@ public class InvoiceBatchStarter extends AccountingBlock{
 	private IWContext _iwc;
 
 	public void init(IWContext iwc){
-		_iwc = iwc;
+		this._iwc = iwc;
 		String schoolCategory=null;
 		OperationalFieldsMenu opFields = new OperationalFieldsMenu();
 		try {
@@ -71,39 +71,39 @@ public class InvoiceBatchStarter extends AccountingBlock{
 				if(exportDataMapping.getAccountSettlementType() ==
 					exportBusiness.getAccountSettlementTypeSpecificDate())
 				{
-					readDateInput = (DateInput) iwc.getApplicationAttribute(PARAM_READ_DATE+iwc.getCurrentUserId());
-					if (readDateInput == null){
-						readDateInput = new DateInput(PARAM_READ_DATE,true);
-						readDateInput.setToCurrentDate();	
-						readDateInput.setToDisplayDayLast(true);
+					this.readDateInput = (DateInput) iwc.getApplicationAttribute(PARAM_READ_DATE+iwc.getCurrentUserId());
+					if (this.readDateInput == null){
+						this.readDateInput = new DateInput(PARAM_READ_DATE,true);
+						this.readDateInput.setToCurrentDate();	
+						this.readDateInput.setToDisplayDayLast(true);
 						int currentYear = java.util.Calendar.getInstance ().get (java.util.Calendar.YEAR);
-						readDateInput.setYearRange(currentYear - 1, currentYear + 1);
-						iwc.setApplicationAttribute(PARAM_READ_DATE+iwc.getCurrentUserId(), readDateInput);						
+						this.readDateInput.setYearRange(currentYear - 1, currentYear + 1);
+						iwc.setApplicationAttribute(PARAM_READ_DATE+iwc.getCurrentUserId(), this.readDateInput);						
 					}
 					String date = iwc.getParameter(PARAM_READ_DATE);
 					if(date!=null){
-						readDateInput.setDate(new IWTimestamp(date).getDate());
+						this.readDateInput.setDate(new IWTimestamp(date).getDate());
 					}
 					
-					InputContainer readDate = getInputContainer(PARAM_READ_DATE,"Read date", readDateInput);
+					InputContainer readDate = getInputContainer(PARAM_READ_DATE,"Read date", this.readDateInput);
 					form.add(readDate);
 				}else{
-					monthInput = (DateInput) iwc.getApplicationAttribute(PARAM_MONTH+iwc.getCurrentUserId());
-					if (monthInput == null) {
-						monthInput = new DateInput(PARAM_MONTH,true);
-						monthInput.setToCurrentDate();	
-						monthInput.setToShowDay(false);
-						monthInput.setToDisplayDayLast(true);						
+					this.monthInput = (DateInput) iwc.getApplicationAttribute(PARAM_MONTH+iwc.getCurrentUserId());
+					if (this.monthInput == null) {
+						this.monthInput = new DateInput(PARAM_MONTH,true);
+						this.monthInput.setToCurrentDate();	
+						this.monthInput.setToShowDay(false);
+						this.monthInput.setToDisplayDayLast(true);						
 						int currentYear = java.util.Calendar.getInstance ().get (java.util.Calendar.YEAR);
-						monthInput.setYearRange(currentYear - 1, currentYear + 1);							
-						iwc.setApplicationAttribute(PARAM_MONTH+iwc.getCurrentUserId(), monthInput);						
+						this.monthInput.setYearRange(currentYear - 1, currentYear + 1);							
+						iwc.setApplicationAttribute(PARAM_MONTH+iwc.getCurrentUserId(), this.monthInput);						
 					}
 					String date = iwc.getParameter(PARAM_MONTH);
 					if(date!=null){
-						monthInput.setDate(new IWTimestamp(date).getDate());
+						this.monthInput.setDate(new IWTimestamp(date).getDate());
 					}
 
-					InputContainer month = getInputContainer(PARAM_MONTH,"Month", monthInput);
+					InputContainer month = getInputContainer(PARAM_MONTH,"Month", this.monthInput);
 					form.add(month);
 				}
 			} catch (IDOLookupException e) {
@@ -191,14 +191,14 @@ public class InvoiceBatchStarter extends AccountingBlock{
 	 * @return
 	 */
 	public String getLink() {
-		return link;
+		return this.link;
 	}
 
 	/**
 	 * @param string
 	 */
 	public void setLink(String page) {
-		link = page;
+		this.link = page;
 	}
 
 
@@ -207,7 +207,7 @@ public class InvoiceBatchStarter extends AccountingBlock{
 	}
 	
 	protected IWContext getIWContext() {
-		return _iwc;
+		return this._iwc;
 	}
 
 }

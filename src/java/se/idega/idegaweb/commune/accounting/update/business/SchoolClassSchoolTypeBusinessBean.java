@@ -115,10 +115,10 @@ implements SchoolClassSchoolTypeBusiness {
 	}
 	
 	private List getLinesList(){
-		if(ret==null){
-			ret = new ArrayList();
+		if(this.ret==null){
+			this.ret = new ArrayList();
 		}
-		return ret;
+		return this.ret;
 	}
 	
 	

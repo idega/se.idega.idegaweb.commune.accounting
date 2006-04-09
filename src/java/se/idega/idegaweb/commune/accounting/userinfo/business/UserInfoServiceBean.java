@@ -199,9 +199,10 @@ public class UserInfoServiceBean extends IBOServiceBean implements UserInfoServi
 					// is spouse the same person as cohabitant
 					//if(spouse!=null && !spouse.getPrimaryKey().toString().equals(cohabitant.getPrimaryKey().toString()) ){
 						addr = userService.getUserAddress1(((Integer)cohabitant.getPrimaryKey()).intValue());
-						if(isEqual(address,addr))
+						if(isEqual(address,addr)) {
 							family.setCohabitant(cohabitant);
 					//}
+						}
 				}
 				if(parentialChildren!=null && !parentialChildren.isEmpty()){
 					Collection childs = new Vector(parentialChildren.size());
@@ -212,8 +213,9 @@ public class UserInfoServiceBean extends IBOServiceBean implements UserInfoServi
 							childs.add(child);
 						}
 					}
-					if(!childs.isEmpty())
+					if(!childs.isEmpty()) {
 						family.setParentialChildren(childs);
+					}
 				}
 				if(custodyChildren!=null && !custodyChildren.isEmpty()){
 					Collection childs = new Vector(custodyChildren.size());
@@ -224,8 +226,9 @@ public class UserInfoServiceBean extends IBOServiceBean implements UserInfoServi
 							childs.add(child);
 						}
 					}
-					if(!childs.isEmpty())
+					if(!childs.isEmpty()) {
 						family.setCustodyChildren(childs);
+					}
 				}
 			
 			}

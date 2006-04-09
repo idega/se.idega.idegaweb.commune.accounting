@@ -84,7 +84,7 @@ public class SendIFSFiles extends AccountingBlock {
 					}
 					break;
 			}
-			if (null != _currentOperation && 0 < _currentOperation.length ()) {
+			if (null != this._currentOperation && 0 < this._currentOperation.length ()) {
 				showStatistics ();
 			}
 		}	catch (Exception e) {
@@ -94,9 +94,10 @@ public class SendIFSFiles extends AccountingBlock {
 
 	private int parseAction(IWContext iwc) {
 		try {
-			_currentOperation = getSession().getOperationalField();
-			if (_currentOperation == null)
-				_currentOperation = "";
+			this._currentOperation = getSession().getOperationalField();
+			if (this._currentOperation == null) {
+				this._currentOperation = "";
+			}
 		}
 		catch (RemoteException e) {
 		}
@@ -110,7 +111,7 @@ public class SendIFSFiles extends AccountingBlock {
 	private void showStatistics () {
 		try {
 			final CheckAmountBroadcast broadcastInfo = getCheckAmountBroadcastHome ()
-					.findLatestBySchoolCategoryId	(_currentOperation);
+					.findLatestBySchoolCategoryId	(this._currentOperation);
 			final CheckAmountReceivingSchoolHome receivingSchoolHome
 					= getCheckAmountReceivingSchoolHome ();
 			final Collection emailedProviders = receivingSchoolHome
@@ -127,7 +128,7 @@ public class SendIFSFiles extends AccountingBlock {
 			table.mergeCells (1, row, table.getColumns (), row);
 			table.setRowColor (row, getHeaderColor ());
 			table.setRowAlignment (row, Table.HORIZONTAL_ALIGN_CENTER) ;
-			table.add (getSmallHeader (localize (KEY_LAST_BROADCAST_FOR, KEY_LAST_BROADCAST_FOR) + ' ' + getSchoolCategoryName (_currentOperation)), 1, row++);
+			table.add (getSmallHeader (localize (KEY_LAST_BROADCAST_FOR, KEY_LAST_BROADCAST_FOR) + ' ' + getSchoolCategoryName (this._currentOperation)), 1, row++);
  			table.setColumnWidth (1, "33%");
 			table.add (getSmallHeader (localize (KEY_CREATED_BY, KEY_CREATED_BY) + ':'), 1, row);
 			table.add (getSmallText (getSignature (broadcastInfo.getCreatedBy ())), 2, row++);
@@ -149,7 +150,9 @@ public class SendIFSFiles extends AccountingBlock {
 	}
 
 	private String getSignature (final User user) {
-		if (null == user) return "";
+		if (null == user) {
+			return "";
+		}
 		final String firstName = user.getFirstName ();
 		final String lastName = user.getLastName ();
 		return (firstName != null ? firstName + " " : "")
@@ -216,9 +219,9 @@ public class SendIFSFiles extends AccountingBlock {
 			final CheckAmountBusiness business = getCheckAmountBusiness(context);
 			final IFSBusiness ifsBusiness = getIFSBusiness(context);
 			business.sendCheckAmountLists (context.getCurrentUser(),
-																		 _currentOperation);
-			business.deleteOldCheckAmountBroadcastInfo (_currentOperation, 90);
-			ifsBusiness.moveFiles(_currentOperation);
+																		 this._currentOperation);
+			business.deleteOldCheckAmountBroadcastInfo (this._currentOperation, 90);
+			ifsBusiness.moveFiles(this._currentOperation);
 		} catch (CreateException e) {
 			e.printStackTrace ();
 		} catch (FinderException e) {
@@ -252,7 +255,7 @@ public class SendIFSFiles extends AccountingBlock {
 	
 	private ButtonPanel getButtonPanel() {
 		ButtonPanel buttonPanel = new ButtonPanel(this);
-		if (null != _currentOperation && 0 < _currentOperation.length ()) {
+		if (null != this._currentOperation && 0 < this._currentOperation.length ()) {
 			buttonPanel.addLocalizedButton(PARAM_SEND_FILE, "true", KEY_SEND, KEY_SEND);
 			buttonPanel.addLocalizedButton(PARAM_UPDATE, "true", KEY_UPDATE_INFORMATION_BELOW, KEY_UPDATE_INFORMATION_BELOW);
 		}

@@ -1,5 +1,5 @@
 /*
- * $Id: ExtendedDropdownDouble.java,v 1.7 2004/02/26 09:10:01 laddi Exp $
+ * $Id: ExtendedDropdownDouble.java,v 1.8 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -65,26 +65,26 @@ public class ExtendedDropdownDouble extends InterfaceObject {
 		
     public ExtendedDropdownDouble(CommuneBlock parent)
     {
-        primaryName = "primary";
-        secondaryName = "secondary";
-        primary = null;
-        secondary = null;
-        _spaceBetween = 3;
-        _disabled = false;
-        _parent = parent;
+        this.primaryName = "primary";
+        this.secondaryName = "secondary";
+        this.primary = null;
+        this.secondary = null;
+        this._spaceBetween = 3;
+        this._disabled = false;
+        this._parent = parent;
     }
 
     public ExtendedDropdownDouble(CommuneBlock parent, String primaryName, String secondaryName)
     {
         this.primaryName = "primary";
         this.secondaryName = "secondary";
-        primary = null;
-        secondary = null;
-        _spaceBetween = 3;
-        _disabled = false;
+        this.primary = null;
+        this.secondary = null;
+        this._spaceBetween = 3;
+        this._disabled = false;
         this.primaryName = primaryName;
         this.secondaryName = secondaryName;
-		_parent = parent;
+		this._parent = parent;
     }
 
     public void main(IWContext iwc)
@@ -96,41 +96,43 @@ public class ExtendedDropdownDouble extends InterfaceObject {
             getSecondaryDropdown().setStyleAttribute(getStyleAttribute());
         }
         addElementsToPrimary();
-        getPrimaryDropdown().setOnChange("setDropdownOptions"+_nameCounter+"(this, findObj('" + secondaryName + "'), -1);");
-        if(_objectToDisable != null)
+        getPrimaryDropdown().setOnChange("setDropdownOptions"+_nameCounter+"(this, findObj('" + this.secondaryName + "'), -1);");
+        if(this._objectToDisable != null)
         {
-            getSecondaryDropdown().setToDisableWhenSelected(_objectToDisable.getPrimaryName(), _disableValue);
-            getSecondaryDropdown().setToDisableWhenSelected(_objectToDisable.getSecondaryName(), _disableValue);
+            getSecondaryDropdown().setToDisableWhenSelected(this._objectToDisable.getPrimaryName(), this._disableValue);
+            getSecondaryDropdown().setToDisableWhenSelected(this._objectToDisable.getSecondaryName(), this._disableValue);
         }
-        getPrimaryDropdown().setDisabled(_disabled);
-        getSecondaryDropdown().setDisabled(_disabled);
+        getPrimaryDropdown().setDisabled(this._disabled);
+        getSecondaryDropdown().setDisabled(this._disabled);
         Table table = new Table();
         table.setCellpadding(0);
         table.setCellspacing(0);
         add(table);
         int column = 1;
         table.add(getPrimaryDropdown(), column++, 1);
-        if(_spaceBetween > 0)
-            table.setWidth(column++, _spaceBetween);
+        if(this._spaceBetween > 0) {
+					table.setWidth(column++, this._spaceBetween);
+				}
         table.add(getSecondaryDropdown(), column, 1);
-        if(_styleClass != null)
+        if(this._styleClass != null)
         {
-            getPrimaryDropdown().setStyleClass(_styleClass);
-            getSecondaryDropdown().setStyleClass(_styleClass);
+            getPrimaryDropdown().setStyleClass(this._styleClass);
+            getSecondaryDropdown().setStyleClass(this._styleClass);
         }
         Script script = getParentPage().getAssociatedScript();
         script.addFunction("setDropdownOptions"+_nameCounter, getSelectorScript());
-        if(_secondarySelected == null)
-            _secondarySelected = "-1";
-        getParentPage().setOnLoad("setDropdownOptions"+_nameCounter+"(findObj('" + primaryName + "'),findObj('" + secondaryName + "'), '" + _secondarySelected + "')");
+        if(this._secondarySelected == null) {
+					this._secondarySelected = "-1";
+				}
+        getParentPage().setOnLoad("setDropdownOptions"+_nameCounter+"(findObj('" + this.primaryName + "'),findObj('" + this.secondaryName + "'), '" + this._secondarySelected + "')");
 		_nameCounter++;
     }
 
     private void addElementsToPrimary()
     {
-        if(_primaryCollection != null)
+        if(this._primaryCollection != null)
         {
-            Iterator iter = _primaryCollection.iterator();
+            Iterator iter = this._primaryCollection.iterator();
             boolean hasSelected = false;
             while(iter.hasNext()) 
             {
@@ -142,8 +144,9 @@ public class ExtendedDropdownDouble extends InterfaceObject {
                     hasSelected = true;
                 }
             }
-            if(_primarySelected != null)
-                getPrimaryDropdown().setSelectedElement(_primarySelected);
+            if(this._primarySelected != null) {
+							getPrimaryDropdown().setSelectedElement(this._primarySelected);
+						}
         }
     }
 
@@ -153,14 +156,14 @@ public class ExtendedDropdownDouble extends InterfaceObject {
         s.append("function setDropdownOptions"+_nameCounter+"(input, inputToChange, selected) {").append("\n\t");
         s.append("var dropdownValues = new Array();").append("\n\t");
         int column = 0;
-        if(_secondaryMap != null)
+        if(this._secondaryMap != null)
         {
-            for(Iterator iter = _secondaryMap.keySet().iterator(); iter.hasNext();)
+            for(Iterator iter = this._secondaryMap.keySet().iterator(); iter.hasNext();)
             {
                 column = 0;
                 String key = (String)iter.next();
-                Map map = (Map)_secondaryMap.get(key);
-				String methodName = (String)_methodNameMap.get(key);
+                Map map = (Map)this._secondaryMap.get(key);
+				String methodName = (String)this._methodNameMap.get(key);
                 s.append("\n\t").append("dropdownValues[\"" + key + "\"] = new Array();").append("\n\t");
                 String secondKey;
                 String value;
@@ -233,16 +236,17 @@ public class ExtendedDropdownDouble extends InterfaceObject {
 
     public void addMenuElement(String value, String nameKey, Map values, String dataMethodName)
     {
-        if(_primaryCollection == null)
-            _primaryCollection = new Vector();
-        if(_secondaryMap == null) {
-            _secondaryMap = new HashMap();
-			_methodNameMap = new HashMap();
+        if(this._primaryCollection == null) {
+					this._primaryCollection = new Vector();
+				}
+        if(this._secondaryMap == null) {
+            this._secondaryMap = new HashMap();
+			this._methodNameMap = new HashMap();
 		}
-        _primaryCollection.add(new SelectOption(localize(nameKey, nameKey), value));
+        this._primaryCollection.add(new SelectOption(localize(nameKey, nameKey), value));
         
-        _secondaryMap.put(value, values);
-		_methodNameMap.put(value, dataMethodName);
+        this._secondaryMap.put(value, values);
+		this._methodNameMap.put(value, dataMethodName);
     }
 
     public void addEmptyElement(String primaryDisplayString, String secondaryDisplayString)
@@ -254,74 +258,76 @@ public class ExtendedDropdownDouble extends InterfaceObject {
 
     public DropdownMenu getPrimaryDropdown()
     {
-        if(primary == null)
-            primary = new DropdownMenu(primaryName);
-        return primary;
+        if(this.primary == null) {
+					this.primary = new DropdownMenu(this.primaryName);
+				}
+        return this.primary;
     }
 
     public DropdownMenu getSecondaryDropdown()
     {
-        if(secondary == null)
-            secondary = new DropdownMenu(secondaryName);
-        return secondary;
+        if(this.secondary == null) {
+					this.secondary = new DropdownMenu(this.secondaryName);
+				}
+        return this.secondary;
     }
 
     public String getPrimaryName()
     {
-        return primaryName;
+        return this.primaryName;
     }
 
     public String getSecondaryName()
     {
-        return secondaryName;
+        return this.secondaryName;
     }
 
 
     public void setSpaceBetween(int spaceBetween)
     {
-        _spaceBetween = spaceBetween;
+        this._spaceBetween = spaceBetween;
     }
 
     public void setPrimaryName(String string)
     {
-        primaryName = string;
+        this.primaryName = string;
     }
 
     public void setSecondaryName(String string)
     {
-        secondaryName = string;
+        this.secondaryName = string;
     }
 
     public void setSelectedValues(String primaryValue, String secondaryValue)
     {
-        _primarySelected = primaryValue;
-        _secondarySelected = secondaryValue;
+        this._primarySelected = primaryValue;
+        this._secondarySelected = secondaryValue;
     }
 
     public void setToEnableWhenNotSelected(ExtendedDropdownDouble doubleDropdown, String disableValue)
     {
-        _objectToDisable = doubleDropdown;
-        _disableValue = disableValue;
+        this._objectToDisable = doubleDropdown;
+        this._disableValue = disableValue;
     }
 
     public void setDisabled(boolean disabled)
     {
-        _disabled = disabled;
+        this._disabled = disabled;
     }
 
     public void setStyleClass(String styleClass)
     {
-        _styleClass = styleClass;
+        this._styleClass = styleClass;
     }
 
     protected Map getSecondaryMap()
     {
-        return _secondaryMap;
+        return this._secondaryMap;
     }
 
 	public String localize(String textKey, String defaultText) {
-		if (_parent != null) {
-			return _parent.localize(textKey, defaultText);
+		if (this._parent != null) {
+			return this._parent.localize(textKey, defaultText);
 		} else {
 			return defaultText;
 		}

@@ -1,5 +1,5 @@
 /*
- * $Id: RegulationsBusinessBean.java,v 1.140 2005/10/13 08:09:38 palli Exp $
+ * $Id: RegulationsBusinessBean.java,v 1.141 2006/04/09 11:53:33 laddi Exp $
  * 
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  * 
@@ -223,23 +223,31 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 		try {
 			home = (RegulationHome) IDOLookup.getHome(Regulation.class);
 
-			if (amount == null)
+			if (amount == null) {
 				amount = "0";
-			if (discount == null)
+			}
+			if (discount == null) {
 				discount = "0";
-			if (maxAmountdiscount == null)
+			}
+			if (maxAmountdiscount == null) {
 				maxAmountdiscount = "0";
+			}
 
-			if (conditionOrder == null)
+			if (conditionOrder == null) {
 				conditionOrder = "";
-			if (regSpecType == null)
+			}
+			if (regSpecType == null) {
 				regSpecType = "";
-			if (conditionType == null)
+			}
+			if (conditionType == null) {
 				conditionType = "";
-			if (specialCalculation == null)
+			}
+			if (specialCalculation == null) {
 				specialCalculation = "";
-			if (vatRule == null)
+			}
+			if (vatRule == null) {
 				vatRule = "";
+			}
 
 			if (amount.length() != 0) {
 				try {
@@ -439,8 +447,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 	private int checkConditions(Regulation r, Collection c) {
 		// If there are no conditions then the rule of course is allowed
-		if (c == null || c.isEmpty())
+		if (c == null || c.isEmpty()) {
 			return 1;
+		}
 
 		// Find all the conditions on this rule
 		Collection cond = null;
@@ -459,8 +468,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 		// If there are no conditions on the rule then the rule does satisfies
 		// the
 		// conditions
-		if (cond == null || cond.isEmpty())
+		if (cond == null || cond.isEmpty()) {
 			return 1;
+		}
 
 		// Go through each condition sent in and try to see if the rule
 		// satisfies
@@ -481,8 +491,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 						int id = regCond.getIntervalID();
 						try {
 							SchoolType act = getSchoolTypeHome().findByPrimaryKey(new Integer(id));
-							if (!act.getLocalizationKey().equals(value))
+							if (!act.getLocalizationKey().equals(value)) {
 								match = false;
+							}
 						}
 						catch (RemoteException e1) {
 							e1.printStackTrace();
@@ -495,8 +506,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_RESOURCE)) {
 				String value = (String) param.getInterval();
@@ -508,8 +520,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 						int id = regCond.getIntervalID();
 						try {
 							int resourceKey = ((Integer) getResourceHome().findResourceByName(value).getPrimaryKey()).intValue();
-							if (id != resourceKey)
+							if (id != resourceKey) {
 								match = false;
+							}
 						}
 						catch (RemoteException e1) {
 							e1.printStackTrace();
@@ -522,8 +535,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_COMMUNE)) {
 				Integer value = (Integer) param.getInterval();
@@ -534,13 +548,15 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					if (regCond.getConditionID() == Integer.parseInt(RuleTypeConstant.CONDITION_ID_COMMUNE)) {
 						int id = regCond.getIntervalID();
 						int communeId = value.intValue();
-						if (id != communeId)
+						if (id != communeId) {
 							match = false;
+						}
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_AGE_INTERVAL)) {
 				Integer value = (Integer) param.getInterval();
@@ -553,47 +569,57 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 						switch (id) {
 							case 1:
-								if (1 > value.intValue() || value.intValue() > 2)
+								if (1 > value.intValue() || value.intValue() > 2) {
 									match = false;
+								}
 								break;
 							case 2:
-								if (3 > value.intValue() || value.intValue() > 5)
+								if (3 > value.intValue() || value.intValue() > 5) {
 									match = false;
+								}
 								break;
 							case 3:
-								if (4 > value.intValue() || value.intValue() > 5)
+								if (4 > value.intValue() || value.intValue() > 5) {
 									match = false;
+								}
 								break;
 							case 4:
-								if (6 != value.intValue())
+								if (6 != value.intValue()) {
 									match = false;
+								}
 								break;
 							case 5:
-								if (value.intValue() < 7)
+								if (value.intValue() < 7) {
 									match = false;
+								}
 								break;
 							case 6:
-								if (5 > value.intValue() || value.intValue() > 8)
+								if (5 > value.intValue() || value.intValue() > 8) {
 									match = false;
+								}
 								break;
 							case 7:
-								if (6 > value.intValue() || value.intValue() > 13)
+								if (6 > value.intValue() || value.intValue() > 13) {
 									match = false;
+								}
 								break;
 							case 8:
-								if (1 > value.intValue() || value.intValue() > 3)
+								if (1 > value.intValue() || value.intValue() > 3) {
 									match = false;
+								}
 								break;
 							case 9:
-								if (value.intValue() != 3)
+								if (value.intValue() != 3) {
 									match = false;
+								}
 								break;
 						}
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_HOURS)) {
 				Integer value = (Integer) param.getInterval();
@@ -606,75 +632,92 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 						// I'll just use the fact that this is hardcoded.
 						switch (id) {
 							case 1:
-								if (1 > value.intValue() || value.intValue() > 25)
+								if (1 > value.intValue() || value.intValue() > 25) {
 									match = false;
+								}
 								break;
 							case 2:
-								if (26 > value.intValue() || value.intValue() > 35)
+								if (26 > value.intValue() || value.intValue() > 35) {
 									match = false;
+								}
 								break;
 							case 3:
-								if (value.intValue() < 36)
+								if (value.intValue() < 36) {
 									match = false;
+								}
 								break;
 							case 4:
-								if (value.intValue() > 24)
+								if (value.intValue() > 24) {
 									match = false;
+								}
 								break;
 							case 5:
-								if (value.intValue() < 25)
+								if (value.intValue() < 25) {
 									match = false;
+								}
 								break;
 							case 6:
-								if (value.intValue() > 13)
+								if (value.intValue() > 13) {
 									match = false;
+								}
 								break;
 							case 7:
-								if (value.intValue() < 14)
+								if (value.intValue() < 14) {
 									match = false;
+								}
 								break;
 							case 8:
-								if (1 > value.intValue() || value.intValue() > 15)
+								if (1 > value.intValue() || value.intValue() > 15) {
 									match = false;
+								}
 								break;
 							case 9:
-								if (16 > value.intValue() || value.intValue() > 25)
+								if (16 > value.intValue() || value.intValue() > 25) {
 									match = false;
+								}
 								break;
 							case 10:
-								if (1 > value.intValue())
+								if (1 > value.intValue()) {
 									match = false;
+								}
 								break;
 							case 11:
-								if (1 > value.intValue() || value.intValue() > 19)
+								if (1 > value.intValue() || value.intValue() > 19) {
 									match = false;
+								}
 								break;
 							case 12:
-								if (20 > value.intValue() || value.intValue() > 24)
+								if (20 > value.intValue() || value.intValue() > 24) {
 									match = false;
+								}
 								break;
 							case 13:
-								if (25 > value.intValue() || value.intValue() > 29)
+								if (25 > value.intValue() || value.intValue() > 29) {
 									match = false;
+								}
 								break;
 							case 14:
-								if (30 > value.intValue() || value.intValue() > 34)
+								if (30 > value.intValue() || value.intValue() > 34) {
 									match = false;
+								}
 								break;
 							case 15:
-								if (35 > value.intValue() || value.intValue() > 39)
+								if (35 > value.intValue() || value.intValue() > 39) {
 									match = false;
+								}
 								break;
 							case 16:
-								if (40 > value.intValue())
+								if (40 > value.intValue()) {
 									match = false;
+								}
 								break;
 						}
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_SIBLING_NR)) {
 				Integer value = (Integer) param.getInterval();
@@ -687,27 +730,32 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 						// I'll just use the fact that this is hardcoded.
 						switch (id) {
 							case 1:
-								if (1 != value.intValue())
+								if (1 != value.intValue()) {
 									match = false;
+								}
 								break;
 							case 2:
-								if (2 != value.intValue())
+								if (2 != value.intValue()) {
 									match = false;
+								}
 								break;
 							case 3:
-								if (3 != value.intValue())
+								if (3 != value.intValue()) {
 									match = false;
+								}
 								break;
 							case 4:
-								if (value.intValue() < 4)
+								if (value.intValue() < 4) {
 									match = false;
+								}
 								break;
 						}
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_EMPLOYMENT)) {
 				Integer value = (Integer) param.getInterval();
@@ -717,13 +765,15 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					Condition regCond = (Condition) i.next();
 					if (regCond.getConditionID() == Integer.parseInt(RuleTypeConstant.CONDITION_ID_EMPLOYMENT)) {
 						int id = regCond.getIntervalID();
-						if (value.intValue() != id)
+						if (value.intValue() != id) {
 							match = false;
+						}
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_STADSBIDRAG)) {
 				Boolean value = (Boolean) param.getInterval();
@@ -735,8 +785,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 						int id = regCond.getIntervalID();
 						try {
 							YesNo yesNo = getYesNoHome().findYesNoValue(id);
-							if (yesNo.getIsYes() != value.booleanValue())
+							if (yesNo.getIsYes() != value.booleanValue()) {
 								match = false;
+							}
 						}
 						catch (RemoteException e1) {
 							match = false;
@@ -747,8 +798,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_STUDY_PATH)) {
 				Integer value = (Integer) param.getInterval();
@@ -764,8 +816,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_MANAGEMENT_TYPE)) {
 				String value = (String) param.getInterval(); // The
@@ -799,8 +852,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 			else if (condition.equals(RuleTypeConstant.CONDITION_ID_SCHOOL_YEAR)) {
 				String value = (String) param.getInterval();
@@ -815,8 +869,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 							case 1:
 								try {
 									int intValue = Integer.parseInt(value);
-									if (1 > intValue || intValue > 3)
+									if (1 > intValue || intValue > 3) {
 										match = false;
+									}
 								}
 								catch (Exception e) {
 								}
@@ -824,8 +879,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 							case 2:
 								try {
 									int intValue = Integer.parseInt(value);
-									if (1 > intValue || intValue > 6)
+									if (1 > intValue || intValue > 6) {
 										match = false;
+									}
 								}
 								catch (Exception e) {
 								}
@@ -833,8 +889,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 							case 3:
 								try {
 									int intValue = Integer.parseInt(value);
-									if (4 > intValue || intValue > 6)
+									if (4 > intValue || intValue > 6) {
 										match = false;
+									}
 								}
 								catch (Exception e) {
 								}
@@ -842,70 +899,85 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 							case 4:
 								try {
 									int intValue = Integer.parseInt(value);
-									if (7 > intValue || intValue > 9)
+									if (7 > intValue || intValue > 9) {
 										match = false;
+									}
 								}
 								catch (Exception e) {
 								}
 								break;
 							case 5:
-								if (!"S1".equals(value) && !"S2".equals(value) && !"S3".equals(value))
+								if (!"S1".equals(value) && !"S2".equals(value) && !"S3".equals(value)) {
 									match = false;
+								}
 								break;
 							case 6:
-								if (!"S4".equals(value) && !"S5".equals(value) && !"S6".equals(value))
+								if (!"S4".equals(value) && !"S5".equals(value) && !"S6".equals(value)) {
 									match = false;
+								}
 								break;
 							case 7:
 								if (!"S7".equals(value) && !"S8".equals(value) && !"S9".equals(value)
-										&& !"S10".equals(value))
+										&& !"S10".equals(value)) {
 									match = false;
+								}
 								break;
 							case 8:
-								if (!"G1".equals(value) && !"G2".equals(value) && !"G3".equals(value))
+								if (!"G1".equals(value) && !"G2".equals(value) && !"G3".equals(value)) {
 									match = false;
+								}
 								break;
 							case 9:
-								if (!"G1".equals(value))
+								if (!"G1".equals(value)) {
 									match = false;
+								}
 								break;
 							case 10:
-								if (!"G2".equals(value))
+								if (!"G2".equals(value)) {
 									match = false;
+								}
 								break;
 							case 11:
-								if (!"G3".equals(value))
+								if (!"G3".equals(value)) {
 									match = false;
+								}
 								break;
 							case 12:
-								if (!"G4".equals(value))
+								if (!"G4".equals(value)) {
 									match = false;
+								}
 								break;
 							case 13:
 								if (!"G1".equals(value) && !"G2".equals(value) && !"G3".equals(value)
-										&& !"G4".equals(value))
+										&& !"G4".equals(value)) {
 									match = false;
+								}
 								break;
 							case 14:
 								if (!"GS1".equals(value) && !"GS2".equals(value) && !"GS3".equals(value)
-										&& !"GS4".equals(value))
+										&& !"GS4".equals(value)) {
 									match = false;
+								}
 								break;
 							case 15:
-								if (!"GS1".equals(value))
+								if (!"GS1".equals(value)) {
 									match = false;
+								}
 								break;
 							case 16:
-								if (!"GS2".equals(value))
+								if (!"GS2".equals(value)) {
 									match = false;
+								}
 								break;
 							case 17:
-								if (!"GS3".equals(value))
+								if (!"GS3".equals(value)) {
 									match = false;
+								}
 								break;
 							case 18:
-								if (!"GS4".equals(value))
+								if (!"GS4".equals(value)) {
 									match = false;
+								}
 								break;
 							case 19:
 								try {
@@ -931,8 +1003,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 					}
 				}
 
-				if (!match)
+				if (!match) {
 					return 0;
+				}
 			}
 		}
 
@@ -1736,8 +1809,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 			if (flow != null) {
 				try {
 					PaymentFlowType pfType = getPaymentFlowTypeHome().findByLocalizationKey(flow);
-					if (pfType != null)
+					if (pfType != null) {
 						flowID = ((Integer) pfType.getPrimaryKey()).intValue();
+					}
 				}
 				catch (Exception e) {
 					throw new MissingFlowTypeException("reg_exp_missing_flow_type", "Could not find flow type " + flow);
@@ -1747,8 +1821,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 			if (conditionType != null) {
 				try {
 					ConditionType cType = getConditionTypeHome().findByConditionType(conditionType);
-					if (cType != null)
+					if (cType != null) {
 						condTypeID = ((Integer) cType.getPrimaryKey()).intValue();
+					}
 				}
 				catch (Exception e) {
 					throw new MissingConditionTypeException("reg_exp_missing_condition_type",
@@ -1759,8 +1834,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 			if (regSpecType != null) {
 				try {
 					RegulationSpecType sType = getRegulationSpecTypeHome().findByRegulationSpecType(regSpecType);
-					if (sType != null)
+					if (sType != null) {
 						regSpecTypeID = ((Integer) sType.getPrimaryKey()).intValue();
+					}
 				}
 				catch (Exception e) {
 					throw new MissingRegSpecTypeException("reg_exp_missing_regspec_type",
@@ -1859,8 +1935,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 				if (d != null) {
 					ret = new PostingDetail();
-					if (placementTimes != null && placementTimes.getMonths() != 0.0f)
+					if (placementTimes != null && placementTimes.getMonths() != 0.0f) {
 						total_sum /= placementTimes.getMonths();
+					}
 					ret.setAmount(d.getAmount() - total_sum);
 					ret.setRuleSpecType(d.getRuleSpecType());
 					ret.setTerm(reg.getName());
@@ -1969,8 +2046,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 							Iterator lowIt = low.iterator();
 							if (lowIt.hasNext()) {
 								RegularInvoiceEntry entry = (RegularInvoiceEntry) lowIt.next();
-								if (placementTimes != null && placementTimes.getMonths() != 0.0f)
+								if (placementTimes != null && placementTimes.getMonths() != 0.0f) {
 									total_sum /= placementTimes.getMonths();
+								}
 								if (entry.getAmount() < total_sum) {
 									ret = new PostingDetail();
 									ret.setAmount(entry.getAmount() - total_sum);
@@ -2087,8 +2165,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 			try {
 				PaymentFlowType pfType = getPaymentFlowTypeHome().findByLocalizationKey(flow);
-				if (pfType != null)
+				if (pfType != null) {
 					flowID = ((Integer) pfType.getPrimaryKey()).intValue();
+				}
 			}
 			catch (Exception e) {
 				flowID = -1;
@@ -2096,8 +2175,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 			try {
 				ConditionType cType = getConditionTypeHome().findByConditionType(conditionType);
-				if (cType != null)
+				if (cType != null) {
 					condTypeID = ((Integer) cType.getPrimaryKey()).intValue();
+				}
 			}
 			catch (Exception e) {
 				condTypeID = -1;
@@ -2105,8 +2185,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 
 			try {
 				MainRule mRule = getMainRuleHome().findMainRuleByName(mainRule);
-				if (mRule != null)
+				if (mRule != null) {
 					mainRuleId = ((Integer) mRule.getPrimaryKey()).intValue();
+				}
 			}
 			catch (Exception e) {
 				mainRuleId = -1;
@@ -2119,8 +2200,9 @@ public class RegulationsBusinessBean extends com.idega.business.IBOServiceBean i
 				while (it.hasNext()) {
 					Regulation regulation = (Regulation) it.next();
 					int i = checkConditions(regulation, condition);
-					if (i == 1)
+					if (i == 1) {
 						match.add(regulation);
+					}
 				}
 			}
 		}

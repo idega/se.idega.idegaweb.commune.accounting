@@ -34,8 +34,8 @@ public class SetSchoolClassSchoolTypeRelation extends AccountingBlock {
 		GenericButton saveButton = this.getSaveButton();
 		form.add(saveButton);
 
-		if(list!=null){
-			Iterator iter = list.iterator();
+		if(this.list!=null){
+			Iterator iter = this.list.iterator();
 			while (iter.hasNext()) {
 				String element = (String) iter.next();
 				add(element+"<br>");
@@ -59,7 +59,7 @@ public class SetSchoolClassSchoolTypeRelation extends AccountingBlock {
 	private void handleSave(IWContext iwc) {
 		try {
 			SchoolClassSchoolTypeBusiness ctBusiness = (SchoolClassSchoolTypeBusiness)IBOLookup.getServiceInstance(iwc, SchoolClassSchoolTypeBusiness.class);
-			list = ctBusiness.setSchoolClassSchoolTypeAndContractPlacementRelations();
+			this.list = ctBusiness.setSchoolClassSchoolTypeAndContractPlacementRelations();
 		} catch (Exception e) {
 			add(new ExceptionWrapper(e));
 		}

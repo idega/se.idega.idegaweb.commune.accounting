@@ -81,11 +81,11 @@ import com.lowagie.text.DocumentException;
  * PaymentRecordMaintenance is an IdegaWeb block were the user can search, view
  * and edit payment records.
  * <p>
- * Last modified: $Date: 2004/11/03 10:07:14 $ by $Author: gimmi $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  * 
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg </a>
  * @author <a href="mailto:joakim@idega.is">Joakim Johnson </a>
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  * @see com.idega.presentation.IWContext
  * @see se.idega.idegaweb.commune.accounting.invoice.business.InvoiceBusiness
  * @see se.idega.idegaweb.commune.accounting.invoice.data
@@ -264,20 +264,35 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
         final PaymentRecord record = getPaymentRecord(context);
 
         // set updated values
-        if (null != amount) record.setTotalAmount(amount.floatValue());
-        if (null != placementCount)
-                record.setPlacements(placementCount.intValue());
-        if (null != pieceAmount)
-                record.setPieceAmount(pieceAmount.floatValue());
-        if (null != vatAmount)
-                record.setTotalAmountVAT(vatAmount.floatValue());
+        if (null != amount) {
+					record.setTotalAmount(amount.floatValue());
+				}
+        if (null != placementCount) {
+					record.setPlacements(placementCount.intValue());
+				}
+        if (null != pieceAmount) {
+					record.setPieceAmount(pieceAmount.floatValue());
+				}
+        if (null != vatAmount) {
+					record.setTotalAmountVAT(vatAmount.floatValue());
+				}
         record.setChangedBy(getSignature(currentUser));
         record.setDateChanged(new Date(System.currentTimeMillis()));
-        if (null != period) record.setPeriod(period);
-        if (null != doublePosting) record.setDoublePosting(doublePosting);
-        if (null != ownPosting) record.setOwnPosting(ownPosting);
-        if (null != paymentText) record.setPaymentText(paymentText);
-        if (null != note) record.setNotes(note);
+        if (null != period) {
+					record.setPeriod(period);
+				}
+        if (null != doublePosting) {
+					record.setDoublePosting(doublePosting);
+				}
+        if (null != ownPosting) {
+					record.setOwnPosting(ownPosting);
+				}
+        if (null != paymentText) {
+					record.setPaymentText(paymentText);
+				}
+        if (null != note) {
+					record.setNotes(note);
+				}
         record.setRuleSpecType(regulationSpecType);
         if (null != vatRule && vatRule.intValue() > 0) {
             record.setVATRuleRegulationId(vatRule.intValue());
@@ -528,13 +543,13 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
                                 row++);
                 table.mergeCells(1, row, columnCount, row);
                 table.add(getPaymentSummaryTable(records), 1, row++);
-                if (null != providerAuthorizationPage) {
+                if (null != this.providerAuthorizationPage) {
 //                    buttonPanel.addLocalizedButton("no_param",
 //                            PROVIDER_CONFIRM_KEY, PROVIDER_CONFIRM_DEFAULT,
 //                            providerAuthorizationPage);
 					GenericButton button = new GenericButton("no_param",
 							localize(PROVIDER_CONFIRM_KEY, PROVIDER_CONFIRM_DEFAULT));
-					button.setPageToOpen(providerAuthorizationPage);
+					button.setPageToOpen(this.providerAuthorizationPage);
 					button.addParameterToPage(
 							ManuallyPaymentEntriesList.PAR_SELECTED_PROVIDER,
 							providerId + "");                            
@@ -547,10 +562,10 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
             table.setHeight(row++, 12);
             table.mergeCells(1, row, columnCount, row);
             table.add(buttonPanel, 1, row);
-            if (null != createPaymentPage) {
+            if (null != this.createPaymentPage) {
                 final GenericButton button = new GenericButton("no_param",
                         localize(NEW_KEY, NEW_DEFAULT));
-                button.setPageToOpen(createPaymentPage);
+                button.setPageToOpen(this.createPaymentPage);
                 button.addParameterToPage(
                         ManuallyPaymentEntriesList.PAR_SELECTED_PROVIDER,
                         providerId + "");
@@ -570,10 +585,14 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
     private boolean hasCurrentSchoolCategoryFlowInAndFlowOut()
             throws RemoteException, FinderException {
         final String schoolCategory = getSession().getOperationalField();
-        if (null == schoolCategory) return false;
+        if (null == schoolCategory) {
+					return false;
+				}
         final ExportDataMapping mapping = getExportBusiness()
                 .getExportDataMapping(schoolCategory);
-        if (null == mapping) return false;
+        if (null == mapping) {
+					return false;
+				}
         return mapping.getCashFlowIn() && mapping.getCashFlowOut();
     }
 
@@ -1086,7 +1105,9 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
     }
 
     private String getSignature(final User user) {
-        if (null == user) return "";
+        if (null == user) {
+					return "";
+				}
         final String firstName = user.getFirstName();
         final String lastName = user.getLastName();
         return (firstName != null ? firstName + " " : "")
@@ -1604,7 +1625,9 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
     private static Integer getIntegerParameter(final IWContext context,
             final String key) {
         final String rawString = context.getParameter(key);
-        if (null == rawString) return null;
+        if (null == rawString) {
+					return null;
+				}
         try {
             final Integer result = new Integer(rawString);
             return result;
@@ -1684,19 +1707,19 @@ public class PaymentRecordMaintenance extends AccountingBlock implements
     }
 
     public ICPage getProviderAuthorizationPage() {
-        return providerAuthorizationPage;
+        return this.providerAuthorizationPage;
     }
 
     public void setProviderAuthorizationPage(final ICPage page) {
-        providerAuthorizationPage = page;
+        this.providerAuthorizationPage = page;
     }
 
     public ICPage getCreatePaymentPage() {
-        return createPaymentPage;
+        return this.createPaymentPage;
     }
 
     public void setCreatePaymentPage(final ICPage page) {
-        createPaymentPage = page;
+        this.createPaymentPage = page;
     }
 
     private UserBusiness getUserBusiness() throws RemoteException {

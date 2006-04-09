@@ -89,12 +89,12 @@ public abstract class BillingThread extends Thread{
 	private static String IW_BUNDLE_IDENTIFIER="se.idega.idegaweb.commune.accounting";
 	
 	public BillingThread(Date dateInMonth, IWApplicationContext iwc, School school, boolean testRun){
-		month = new CalendarMonth(dateInMonth);
-		startPeriod = month.getFirstTimestamp();
-		endPeriod = month.getLastTimestamp();
-		calculationDate=dateInMonth;
+		this.month = new CalendarMonth(dateInMonth);
+		this.startPeriod = this.month.getFirstTimestamp();
+		this.endPeriod = this.month.getLastTimestamp();
+		this.calculationDate=dateInMonth;
 		this.iwc = iwc;
-		running = true;
+		this.running = true;
 		this.testRun = testRun;
 		this.school = school;
 	}
@@ -108,15 +108,15 @@ public abstract class BillingThread extends Thread{
 	}
 	
 	public void terminate(){
-		running = false;
+		this.running = false;
 	}
 	
 	public IWBundle getBundle(){
-		return iwc.getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
+		return this.iwc.getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER);
 	}
 	
 	public IWResourceBundle getResourceBundle(){
-		Locale locale = iwc.getApplicationSettings().getDefaultLocale();
+		Locale locale = this.iwc.getApplicationSettings().getDefaultLocale();
 		return getBundle().getResourceBundle(locale);
 	}
 	
@@ -128,14 +128,14 @@ public abstract class BillingThread extends Thread{
 		PaymentHeader paymentHeader=null;
 		try {
 			paymentHeader = ((PaymentHeaderHome) IDOLookup.getHome(PaymentHeader.class)).
-			findBySchoolCategorySchoolPeriod(school,category,calculationDate);
+			findBySchoolCategorySchoolPeriod(school,this.category,this.calculationDate);
 		} catch (FinderException e) {
 			//If No header found, create it	
 			paymentHeader = (PaymentHeader) IDOLookup.create(PaymentHeader.class);
 			paymentHeader.setSchool (school);
-			paymentHeader.setSchoolCategory(category);
+			paymentHeader.setSchoolCategory(this.category);
 			paymentHeader.setStatus(getStatus());
-			IWTimestamp period = new IWTimestamp(startPeriod);
+			IWTimestamp period = new IWTimestamp(this.startPeriod);
 			period.setAsDate();
 			paymentHeader.setPeriod(period.getDate());
 			paymentHeader.store();
@@ -182,7 +182,7 @@ public abstract class BillingThread extends Thread{
 		
 		try {
 			PaymentRecordHome prechome = (PaymentRecordHome) IDOLookup.getHome(PaymentRecord.class);
-			paymentRecord = prechome.findByPaymentHeaderAndPostingStringsAndRuleSpecTypeAndPaymentTextAndMonth(paymentHeader,ownPosting,doublePosting,ruleSpecType,paymentText,month);
+			paymentRecord = prechome.findByPaymentHeaderAndPostingStringsAndRuleSpecTypeAndPaymentTextAndMonth(paymentHeader,ownPosting,doublePosting,ruleSpecType,paymentText,this.month);
 			
 			//If it already exists, just update the changes needed.
 			paymentRecord.setPlacements(paymentRecord.getPlacements()+1);
@@ -196,9 +196,9 @@ public abstract class BillingThread extends Thread{
 			//Set all the values for the payment record
 			paymentRecord.setPaymentHeaderId(((Integer)paymentHeader.getPrimaryKey()).intValue());
 			paymentRecord.setStatus(getStatus());
-			paymentRecord.setPeriod(startPeriod.getDate());
+			paymentRecord.setPeriod(this.startPeriod.getDate());
 			paymentRecord.setPaymentText(paymentText);
-			paymentRecord.setDateCreated(currentDate);
+			paymentRecord.setDateCreated(this.currentDate);
 			paymentRecord.setCreatedBy(BATCH_TEXT);
 			paymentRecord.setPlacements(1);
 			paymentRecord.setPieceAmount(postingDetail.getAmount());
@@ -246,19 +246,19 @@ public abstract class BillingThread extends Thread{
 					if(sYear!=null){
 						schoolYearId = ((Number)sYear.getPrimaryKey()).intValue();
 					}
-					postingStrings = this.getPostingBusiness().getPostingStrings(category,sType,regSpecTypeId,provider,startPeriod.getDate(),schoolYearId);
+					postingStrings = this.getPostingBusiness().getPostingStrings(this.category,sType,regSpecTypeId,provider,this.startPeriod.getDate(),schoolYearId);
 				}
 				catch (RemoteException e) {
-					createNewErrorMessage(errorRelated,getLocalizedString("invoice.RemoteException","RemoteException"));
+					createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.RemoteException","RemoteException"));
 					e.printStackTrace();
 				}
 				catch (PostingException e) {
-					errorRelated.append(getLocalizedString("billingthread_category","Category")+": "+category);
-					errorRelated.append(getLocalizedString("billingthread_school_type","School Type")+":"+sType);
-					errorRelated.append(getLocalizedString("billingthread_provider","Provider")+":"+provider);
-					errorRelated.append(getLocalizedString("billingthread_period","Period")+":"+startPeriod.getDate());
-					errorRelated.append(getLocalizedString("invoice.schoolyear","Schoolyear")+":"+sYear.getName());
-					createNewErrorMessage(errorRelated,getLocalizedString("invoice.PostingException","PostingException"));
+					this.errorRelated.append(getLocalizedString("billingthread_category","Category")+": "+this.category);
+					this.errorRelated.append(getLocalizedString("billingthread_school_type","School Type")+":"+sType);
+					this.errorRelated.append(getLocalizedString("billingthread_provider","Provider")+":"+provider);
+					this.errorRelated.append(getLocalizedString("billingthread_period","Period")+":"+this.startPeriod.getDate());
+					this.errorRelated.append(getLocalizedString("invoice.schoolyear","Schoolyear")+":"+sYear.getName());
+					createNewErrorMessage(this.errorRelated,getLocalizedString("invoice.PostingException","PostingException"));
 					e.printStackTrace();
 				}	
 				
@@ -276,7 +276,7 @@ public abstract class BillingThread extends Thread{
 				
 				try {
 					PaymentRecordHome prechome = (PaymentRecordHome) IDOLookup.getHome(PaymentRecord.class);
-					paymentRecord = prechome.findByPaymentHeaderAndPostingStringsAndVATRuleRegulationAndPaymentTextAndMonth(paymentHeader,ownPosting,doublePosting,null,paymentText,month);
+					paymentRecord = prechome.findByPaymentHeaderAndPostingStringsAndVATRuleRegulationAndPaymentTextAndMonth(paymentHeader,ownPosting,doublePosting,null,paymentText,this.month);
 					
 					//paymentRecord.setPlacements(paymentRecord.getPlacements()+1);
 		
@@ -289,9 +289,9 @@ public abstract class BillingThread extends Thread{
 					//Set all the values for the payment record
 					paymentRecord.setPaymentHeaderId(((Integer)paymentHeader.getPrimaryKey()).intValue());
 					paymentRecord.setStatus(getStatus());
-					paymentRecord.setPeriod(startPeriod.getDate());
+					paymentRecord.setPeriod(this.startPeriod.getDate());
 					paymentRecord.setPaymentText(paymentText);
-					paymentRecord.setDateCreated(currentDate);
+					paymentRecord.setDateCreated(this.currentDate);
 					paymentRecord.setCreatedBy(BATCH_TEXT);
 					paymentRecord.setPlacements(0);
 					paymentRecord.setPieceAmount(0);
@@ -388,12 +388,12 @@ public abstract class BillingThread extends Thread{
 	protected PlacementTimes calculateTime(Date start, Date end, boolean displayWarning){
 		IWTimestamp firstCheckDay = new IWTimestamp(start);
 		firstCheckDay.setAsDate();
-		IWTimestamp time = new IWTimestamp(startPeriod);
+		IWTimestamp time = new IWTimestamp(this.startPeriod);
 		time.setAsDate();
 		if(!firstCheckDay.isLaterThan(time)){
 			firstCheckDay = time;
 		}
-		IWTimestamp lastCheckDay = new IWTimestamp(endPeriod);
+		IWTimestamp lastCheckDay = new IWTimestamp(this.endPeriod);
 		lastCheckDay.setAsDate();
 		if(end!=null){
 			time = new IWTimestamp(end.getTime ());
@@ -403,15 +403,15 @@ public abstract class BillingThread extends Thread{
 		}
 		
 		PlacementTimes placementTimes;
-		if (categoryPosting.getUseSpecifiedNumberOfDaysPrMonth()) {
-			placementTimes = new PlacementTimes (firstCheckDay, lastCheckDay, categoryPosting.getSpecifiedNumberOfDaysPrMonth());
+		if (this.categoryPosting.getUseSpecifiedNumberOfDaysPrMonth()) {
+			placementTimes = new PlacementTimes (firstCheckDay, lastCheckDay, this.categoryPosting.getSpecifiedNumberOfDaysPrMonth());
 		}
 		else {
 			placementTimes = new PlacementTimes (firstCheckDay, lastCheckDay, -1);			
 		}
 		if(placementTimes.getDays()<0f && displayWarning){
-			errorRelated.append(getLocalizedString("invoice.PlacementDays","Placement days")+":"+placementTimes.getDays());
-			createNewErrorMessage(errorRelated, getLocalizedString("invoice.WarningNegativePlacementTimeFound","Warning. Negative placement time found"));
+			this.errorRelated.append(getLocalizedString("invoice.PlacementDays","Placement days")+":"+placementTimes.getDays());
+			createNewErrorMessage(this.errorRelated, getLocalizedString("invoice.WarningNegativePlacementTimeFound","Warning. Negative placement time found"));
 		}
 		return placementTimes;
 	}
@@ -431,15 +431,19 @@ public abstract class BillingThread extends Thread{
 		try {
 //			System.out.println("About to enter a batch run error to header "+batchRunLogger.getPrimaryKey()+"  "+related+"  "+desc+"  "+errorOrder);
 			BatchRunError error = (BatchRunError) IDOLookup.create(BatchRunError.class);
-			error.setBatchRunID(((Integer)batchRunLogger.getPrimaryKey()).intValue());
-			if (related.length () > 990) related = related.substring (0, 990);
-			if (desc.length () > 990) desc = desc.substring (0, 990);
+			error.setBatchRunID(((Integer)this.batchRunLogger.getPrimaryKey()).intValue());
+			if (related.length () > 990) {
+				related = related.substring (0, 990);
+			}
+			if (desc.length () > 990) {
+				desc = desc.substring (0, 990);
+			}
 			error.setRelated(related);
 			error.setDescription(desc);
-			error.setOrder(errorOrder);
-			error.setTest(testRun);
+			error.setOrder(this.errorOrder);
+			error.setTest(this.testRun);
 			error.store();
-			errorOrder++;
+			this.errorOrder++;
 		} catch (Exception e) {
 			System.out.println("Exception so complicated that it wasn't even possible to create an error message in the log!");
 			e.printStackTrace();
@@ -448,19 +452,19 @@ public abstract class BillingThread extends Thread{
 	
 	protected void createNewErrorMessage(ErrorLogger errorLogger, String desc){
 		try {
-			log.info("About to enter a batch run error to header "+batchRunLogger.getPrimaryKey()+"  "+errorLogger.toString()+"  "+desc+"  "+errorOrder);
+			this.log.info("About to enter a batch run error to header "+this.batchRunLogger.getPrimaryKey()+"  "+errorLogger.toString()+"  "+desc+"  "+this.errorOrder);
 			BatchRunError error = (BatchRunError) IDOLookup.create(BatchRunError.class);
-			error.setBatchRunID(((Integer)batchRunLogger.getPrimaryKey()).intValue());
+			error.setBatchRunID(((Integer)this.batchRunLogger.getPrimaryKey()).intValue());
 			String related = errorLogger.toStringForWeb();
 			if(related.length()>=1000){
 				related = related.substring(0,999);
 			}
 			error.setRelated(related);
 			error.setDescription(desc);
-			error.setOrder(errorOrder);
-			error.setTest(testRun);			
+			error.setOrder(this.errorOrder);
+			error.setTest(this.testRun);			
 			error.store();
-			errorOrder++;
+			this.errorOrder++;
 		} catch (Exception e) {
 			System.out.println("Exception so complicated that it wasn't even possible to create an error message in the log!");
 			e.printStackTrace();
@@ -478,10 +482,10 @@ public abstract class BillingThread extends Thread{
 	protected void createBatchRunLogger(SchoolCategory category) throws IDOLookupException, CreateException{
 		//First delete all old logging for this category
 		try {
-			batchRunLogger = ((BatchRunHome) IDOLookup.getHome(BatchRun.class)).findBySchoolCategory(category, testRun);
+			this.batchRunLogger = ((BatchRunHome) IDOLookup.getHome(BatchRun.class)).findBySchoolCategory(category, this.testRun);
 			
 			try{
-				Iterator errorIter = ((BatchRunErrorHome) IDOLookup.getHome(BatchRunError.class)).findByBatchRun(batchRunLogger, testRun).iterator();
+				Iterator errorIter = ((BatchRunErrorHome) IDOLookup.getHome(BatchRunError.class)).findByBatchRun(this.batchRunLogger, this.testRun).iterator();
 				while (errorIter.hasNext()) {
 					BatchRunError error = (BatchRunError) errorIter.next();
 					try {
@@ -505,19 +509,19 @@ public abstract class BillingThread extends Thread{
 			
 		} catch (FinderException e1) {
 			//Excepiton OK We just create it instead
-			batchRunLogger = (BatchRun) IDOLookup.create(BatchRun.class);
-			batchRunLogger.setSchoolCategoryID(category);
+			this.batchRunLogger = (BatchRun) IDOLookup.create(BatchRun.class);
+			this.batchRunLogger.setSchoolCategoryID(category);
 		}
-		batchRunLogger.setPeriod(startPeriod.getDate());
-		batchRunLogger.setStart(IWTimestamp.getTimestampRightNow());
-		batchRunLogger.setTest(testRun);
-		batchRunLogger.setEnd(null);
-		batchRunLogger.store();
+		this.batchRunLogger.setPeriod(this.startPeriod.getDate());
+		this.batchRunLogger.setStart(IWTimestamp.getTimestampRightNow());
+		this.batchRunLogger.setTest(this.testRun);
+		this.batchRunLogger.setEnd(null);
+		this.batchRunLogger.store();
 		
 		// Added by aron@idega.is 01.11.2004
 		try {
             BatchDeadline deadline = ((BatchDeadlineHome)(IDOLookup.getHome(BatchDeadline.class))).findCurrent();
-            deadline.addBatch(batchRunLogger);
+            deadline.addBatch(this.batchRunLogger);
         } catch (IDOLookupException e) {
             e.printStackTrace();
         } catch (FinderException e) {
@@ -532,7 +536,7 @@ public abstract class BillingThread extends Thread{
 		if (isTestRun()){
 			return false;
 		}
-		return getPaymentRecordHome().getPlacementCountForSchoolCategoryAndMonth((String) category.getPrimaryKey(), month) > 0;
+		return getPaymentRecordHome().getPlacementCountForSchoolCategoryAndMonth((String) this.category.getPrimaryKey(), this.month) > 0;
 	}
 	
 	protected void removePreliminaryInformation(CalendarMonth month, String schoolCategory) throws IDOLookupException, RemoteException, RemoveException {
@@ -540,20 +544,20 @@ public abstract class BillingThread extends Thread{
 //		This schools test record will be deleted in TestPosts.handleSave().
 		
 		if (! isTestRun()){ 
-			InvoiceBusiness invoiceBusiness = (InvoiceBusiness)IBOLookup.getServiceInstance(iwc, InvoiceBusiness.class);
+			InvoiceBusiness invoiceBusiness = (InvoiceBusiness)IBOLookup.getServiceInstance(this.iwc, InvoiceBusiness.class);
 	//		invoiceBusiness.removePreliminaryInvoice(month, schoolCategory);
 			invoiceBusiness.removePreliminaryPayment(month, schoolCategory);
 		}
 	}
 
 	protected void batchRunLoggerDone(){
-		if(batchRunLogger!=null){
-			if(!running){
+		if(this.batchRunLogger!=null){
+			if(!this.running){
 				createNewErrorMessage(getLocalizedString("invoice.batchrun","batchrun"),
 						getLocalizedString("invoice.Run_terminated_by_user","Run terminated by user"));
 			}
-			batchRunLogger.setEnd(IWTimestamp.getTimestampRightNow());
-			batchRunLogger.store();
+			this.batchRunLogger.setEnd(IWTimestamp.getTimestampRightNow());
+			this.batchRunLogger.store();
 		}
 	}
 
@@ -567,11 +571,11 @@ public abstract class BillingThread extends Thread{
 	abstract protected void setStudyPath(SchoolClassMember schoolClassMember, ArrayList conditions);
 	
 	protected void finalizeBatchRunLogger(){
-		batchRunLogger.setEnd(IWTimestamp.getTimestampRightNow());
+		this.batchRunLogger.setEnd(IWTimestamp.getTimestampRightNow());
 	}
 
 	protected RegulationsBusiness getRegulationsBusiness() throws RemoteException {
-		return (RegulationsBusiness) IBOLookup.getServiceInstance(iwc, RegulationsBusiness.class);
+		return (RegulationsBusiness) IBOLookup.getServiceInstance(this.iwc, RegulationsBusiness.class);
 	}
 	
 	protected ChildCareContractHome getChildCareContractHome() throws RemoteException {
@@ -579,19 +583,19 @@ public abstract class BillingThread extends Thread{
 	}
 
 	protected RegularInvoiceBusiness getRegularInvoiceBusiness() throws RemoteException {
-		return (RegularInvoiceBusiness) IBOLookup.getServiceInstance(iwc, RegularInvoiceBusiness.class);
+		return (RegularInvoiceBusiness) IBOLookup.getServiceInstance(this.iwc, RegularInvoiceBusiness.class);
 	}
 
 	protected RegularPaymentBusiness getRegularPaymentBusiness() throws RemoteException {
-		return (RegularPaymentBusiness) IBOLookup.getServiceInstance(iwc, RegularPaymentBusiness.class);
+		return (RegularPaymentBusiness) IBOLookup.getServiceInstance(this.iwc, RegularPaymentBusiness.class);
 	}
 
 	protected PostingBusiness getPostingBusiness() throws RemoteException {
-		return (PostingBusiness) IBOLookup.getServiceInstance(iwc, PostingBusiness.class);
+		return (PostingBusiness) IBOLookup.getServiceInstance(this.iwc, PostingBusiness.class);
 	}
 
 	protected InvoiceBusiness getInvoiceBusiness() throws RemoteException {
-		return (InvoiceBusiness) IBOLookup.getServiceInstance(iwc, InvoiceBusiness.class);
+		return (InvoiceBusiness) IBOLookup.getServiceInstance(this.iwc, InvoiceBusiness.class);
 	}
 
 	protected InvoiceHeaderHome getInvoiceHeaderHome() throws RemoteException {
@@ -611,7 +615,7 @@ public abstract class BillingThread extends Thread{
 	}
 
 	protected VATBusiness getVATBusiness() throws RemoteException {
-		return (VATBusiness) IBOLookup.getServiceInstance(iwc, VATBusiness.class);
+		return (VATBusiness) IBOLookup.getServiceInstance(this.iwc, VATBusiness.class);
 	}
 
 	protected RegulationSpecTypeHome getRegulationSpecTypeHome() throws RemoteException {
@@ -619,18 +623,18 @@ public abstract class BillingThread extends Thread{
 	}
 	
 	public School getSchool(){
-		return school; 
+		return this.school; 
 	}
 	
 	public boolean isTestRun(){
-		return testRun;
+		return this.testRun;
 	}
 	
 	private char getStatus(){
 		if (isTestRun()) {
 			return ConstantStatus.TEST;			
 		} else {
-			if(categoryPosting.getProviderAuthorization()){
+			if(this.categoryPosting.getProviderAuthorization()){
 				return ConstantStatus.BASE;
 			} else {
 				return ConstantStatus.PRELIMINARY;

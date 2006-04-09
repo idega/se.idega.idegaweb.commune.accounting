@@ -100,15 +100,15 @@ public class IFSFileCreationThread extends Thread {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		excelFileUtil = new IFSCreateExcelFileUtil(iwac, paymentDate);
+		this.excelFileUtil = new IFSCreateExcelFileUtil(this.iwac, this.paymentDate);
 		IWTimestamp now = IWTimestamp.RightNow();
 		JournalLog log;
 		try {
 			log = ((JournalLogHome) IDOLookup.getHome(JournalLog.class)).create();
-			log.setSchoolCategoryString(schoolCategory);
+			log.setSchoolCategoryString(this.schoolCategory);
 			log.setEventFileCreated();
 			log.setEventDate(now.getTimestamp());
-			log.setUser(user);
+			log.setUser(this.user);
 			log.store();
 		}
 		catch (IDOLookupException e) {
@@ -120,7 +120,7 @@ public class IFSFileCreationThread extends Thread {
 		
 		IFSCheckHeader header = null;
 		try {
-			header = getIFSBusiness().getIFSCheckHeaderBySchoolCategory(schoolCategory);
+			header = getIFSBusiness().getIFSCheckHeaderBySchoolCategory(this.schoolCategory);
 		}
 		catch (RemoteException e) {
 		}
@@ -163,7 +163,7 @@ public class IFSFileCreationThread extends Thread {
 				}
 			}
 		}
-		header.setSchoolCategoryString(schoolCategory);
+		header.setSchoolCategoryString(this.schoolCategory);
 		header.setStatusFileCreated();
 		header.setEventDate(now.getTimestamp());
 		header.setEventStartTime(now.getTimestamp());
@@ -174,7 +174,7 @@ public class IFSFileCreationThread extends Thread {
 		String fileFolder = null;
 		String listFolder = null;
 		try {
-			mapping = getIFSBusiness().getExportBusiness().getExportDataMapping(schoolCategory);
+			mapping = getIFSBusiness().getExportBusiness().getExportDataMapping(this.schoolCategory);
 			fileFolder = mapping.getFileCreationFolder();
 			listFolder = mapping.getListCreationFolder();
 		}
@@ -184,8 +184,9 @@ public class IFSFileCreationThread extends Thread {
 		catch (FinderException e1) {
 			e1.printStackTrace();
 		}
-		if (listFolder == null)
+		if (listFolder == null) {
 			listFolder = fileFolder;
+		}
 		SchoolCategory childCare = null;
 		try {
 			childCare = getIFSBusiness().getSchoolBusiness().getCategoryChildcare();
@@ -217,7 +218,7 @@ public class IFSFileCreationThread extends Thread {
 		StringBuffer fileName8 = null;
 		StringBuffer fileName9 = null;
 		if (childCare != null && (fileFolder != null || listFolder != null) && school != null && highSchool != null) {
-			if (schoolCategory.equals(childCare.getPrimaryKey())) {
+			if (this.schoolCategory.equals(childCare.getPrimaryKey())) {
 				if (fileFolder != null) {
 					fileName1 = new StringBuffer(fileFolder);
 					fileName1.append("n24_ifs_hvd_bom_");
@@ -251,21 +252,21 @@ public class IFSFileCreationThread extends Thread {
 				}
 				try {
 					createPaymentFiles(fileName1.toString(), fileName2.toString(), fileName4.toString(),
-							fileName5.toString(), fileName6.toString(), fileName9.toString(), schoolCategory, now,
-							paymentDate);
+							fileName5.toString(), fileName6.toString(), fileName9.toString(), this.schoolCategory, now,
+							this.paymentDate);
 				}
 				catch (IOException e5) {
 					e5.printStackTrace();
 				}
 				try {
 					createInvoiceFiles(fileName3.toString(), fileName7.toString(), fileName8.toString(),
-							schoolCategory, now, currentLocale, header);
+							this.schoolCategory, now, this.currentLocale, header);
 				}
 				catch (IOException e6) {
 					e6.printStackTrace();
 				}
 			}
-			else if (schoolCategory.equals(school.getPrimaryKey())) {
+			else if (this.schoolCategory.equals(school.getPrimaryKey())) {
 				if (fileFolder != null) {
 					fileName1 = new StringBuffer(fileFolder);
 					fileName1.append("n24_ifs_hvd_gsk_");
@@ -290,14 +291,14 @@ public class IFSFileCreationThread extends Thread {
 				}
 				try {
 					createPaymentFiles(fileName1.toString(), fileName2.toString(), fileName4.toString(),
-							fileName5.toString(), fileName6.toString(), fileName9.toString(), schoolCategory, now,
-							paymentDate);
+							fileName5.toString(), fileName6.toString(), fileName9.toString(), this.schoolCategory, now,
+							this.paymentDate);
 				}
 				catch (IOException e5) {
 					e5.printStackTrace();
 				}
 			}
-			else if (schoolCategory.equals(highSchool.getPrimaryKey())) {
+			else if (this.schoolCategory.equals(highSchool.getPrimaryKey())) {
 				if (fileFolder != null) {
 					fileName1 = new StringBuffer(fileFolder);
 					fileName1.append("n24_ifs_hvd_gym_");
@@ -322,8 +323,8 @@ public class IFSFileCreationThread extends Thread {
 				}
 				try {
 					createPaymentFiles(fileName1.toString(), fileName2.toString(), fileName4.toString(),
-							fileName5.toString(), fileName6.toString(), fileName9.toString(), schoolCategory, now,
-							paymentDate);
+							fileName5.toString(), fileName6.toString(), fileName9.toString(), this.schoolCategory, now,
+							this.paymentDate);
 				}
 				catch (IOException e5) {
 					e5.printStackTrace();
@@ -338,8 +339,8 @@ public class IFSFileCreationThread extends Thread {
 	private void createPaymentFiles(String fileName1, String fileName2, String fileName3, String fileName4,
 			String fileName5, String fileName6, String schoolCategory, IWTimestamp executionDate,
 			IWTimestamp paymentDate) throws IOException {
-		String localizedSchoolCategoryName = iwac.getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER).getResourceBundle(
-				currentLocale).getLocalizedString("school_category." + schoolCategory);
+		String localizedSchoolCategoryName = this.iwac.getIWMainApplication().getBundle(IW_BUNDLE_IDENTIFIER).getResourceBundle(
+				this.currentLocale).getLocalizedString("school_category." + schoolCategory);
 		Collection phInCommune = null;
 		try {
 			phInCommune = ((PaymentHeaderHome) IDOLookup.getHome(PaymentHeader.class)).findBySchoolCategoryStatusInCommuneWithCommunalManagement(
@@ -374,10 +375,10 @@ public class IFSFileCreationThread extends Thread {
 				e2.printStackTrace();
 			}
 			try {
-				excelFileUtil.createPaymentFilesExcel(rec, fileName3 + ".xls", "Checkutbetalning " + localizedSchoolCategoryName
+				this.excelFileUtil.createPaymentFilesExcel(rec, fileName3 + ".xls", "Checkutbetalning " + localizedSchoolCategoryName
 						+ ", egna kommunala anordnare, " + executionDate.getDateString("yyyy-MM-dd"),
 						IFSCreateExcelFileUtil.FILE_TYPE_DOUBLE_POSTING);
-				excelFileUtil.createPaymentFilesExcel(rec, fileName6 + ".xls", "Utbetalningsattestlista "
+				this.excelFileUtil.createPaymentFilesExcel(rec, fileName6 + ".xls", "Utbetalningsattestlista "
 						+ localizedSchoolCategoryName + ", egna kommunala anordnare, "
 						+ executionDate.getDateString("yyyy-MM-dd"), IFSCreateExcelFileUtil.FILE_TYPE_KOMMUN);
 			}
@@ -388,7 +389,7 @@ public class IFSFileCreationThread extends Thread {
 			phAll.addAll(phOutsideCommune);
 			phAll.addAll(phInCommune);
 			try {
-				excelFileUtil.createPaymentSigningFilesExcel(phAll, fileName5 + ".xls", "Utbetalningsattestlista "
+				this.excelFileUtil.createPaymentSigningFilesExcel(phAll, fileName5 + ".xls", "Utbetalningsattestlista "
 						+ localizedSchoolCategoryName + ", " + executionDate.getDateString("yyyy-MM-dd"));
 			}
 			catch (IOException e3) {
@@ -555,7 +556,7 @@ public class IFSFileCreationThread extends Thread {
 			}
 		}
 		if (phOutsideCommune != null && !phOutsideCommune.isEmpty()) {
-			NumberFormat format = NumberFormat.getInstance(currentLocale);
+			NumberFormat format = NumberFormat.getInstance(this.currentLocale);
 			format.setMaximumFractionDigits(2);
 			format.setMinimumFractionDigits(2);
 			format.setMinimumIntegerDigits(1);
@@ -572,7 +573,7 @@ public class IFSFileCreationThread extends Thread {
 				e2.printStackTrace();
 			}
 			try {
-				excelFileUtil.createPaymentFilesExcel(recOutside, fileName4 + ".xls", "Checkutbetalning "
+				this.excelFileUtil.createPaymentFilesExcel(recOutside, fileName4 + ".xls", "Checkutbetalning "
 						+ localizedSchoolCategoryName + ", övriga anordnare, "
 						+ executionDate.getDateString("yyyy-MM-dd"), IFSCreateExcelFileUtil.FILE_TYPE_OWN_POSTING);
 			}
@@ -616,10 +617,12 @@ public class IFSFileCreationThread extends Thread {
 						sum += AccountingUtil.roundAmount(r.getTotalAmount());
 					}
 					String giro = prov.getAccountingProperties().getBankgiro();
-					if (giro == null)
+					if (giro == null) {
 						giro = prov.getAccountingProperties().getPostgiro();
-					if (giro == null)
+					}
+					if (giro == null) {
 						giro = "";
+					}
 					bWriter.write("H");
 					bWriter.write(";");
 					bWriter.write(giro);
@@ -645,8 +648,9 @@ public class IFSFileCreationThread extends Thread {
 					bWriter.write(";");
 					bWriter.write("*");
 					bWriter.write(";");
-					for (int i = 13; i < 55; i++)
+					for (int i = 13; i < 55; i++) {
 						bWriter.write("-;");
+					}
 					bWriter.write("-");
 					bWriter.newLine();
 					bWriter.write("I");
@@ -668,8 +672,9 @@ public class IFSFileCreationThread extends Thread {
 					bWriter.write(";");
 					bWriter.write("0,00");
 					bWriter.write(";");
-					for (int i = 10; i < 23; i++)
+					for (int i = 10; i < 23; i++) {
 						bWriter.write("-;");
+					}
 					bWriter.write("-");
 					bWriter.newLine();
 					int row = 1;
@@ -688,52 +693,68 @@ public class IFSFileCreationThread extends Thread {
 							row++;
 							bWriter.write(";");
 							String tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Konto");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Ansvar");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Resurs");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Verksamhet");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Aktivitet");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Projekt");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Objekt");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							tmp = pb.findFieldInStringByName(pRec.getOwnPosting(), "Motpart");
-							if ("".equals(tmp))
+							if ("".equals(tmp)) {
 								bWriter.write("-");
-							else
+							}
+							else {
 								bWriter.write(tmp);
+							}
 							bWriter.write(";");
 							// anlaggningsnummer
 							bWriter.write("-");
@@ -784,7 +805,7 @@ public class IFSFileCreationThread extends Thread {
 			e2.printStackTrace();
 		}
 		try {
-			excelFileUtil.createInvoiceSigningFilesExcel(fileName2 + ".xls", "Faktureringsattestlista Barnomsorg, "
+			this.excelFileUtil.createInvoiceSigningFilesExcel(fileName2 + ".xls", "Faktureringsattestlista Barnomsorg, "
 					+ executionDate.getDateString("yyyy-MM-dd"), true);
 		}
 		catch (IOException e3) {
@@ -794,7 +815,7 @@ public class IFSFileCreationThread extends Thread {
 			e3.printStackTrace();
 		}
 		try {
-			excelFileUtil.createDeviationFileExcel(iHeaders, fileName3 + ".xls", "Faktureringsavvikelselista Barnomsorg, "
+			this.excelFileUtil.createDeviationFileExcel(iHeaders, fileName3 + ".xls", "Faktureringsavvikelselista Barnomsorg, "
 					+ executionDate.getDateString("yyyy-MM-dd"));
 		}
 		catch (IOException e4) {
@@ -888,8 +909,9 @@ public class IFSFileCreationThread extends Thread {
 						String pnr = custodian.getPersonalID();
 						if (pnr.length() < 10) {
 							StringBuffer p = new StringBuffer(pnr);
-							while (p.length() < 10)
+							while (p.length() < 10) {
 								p.insert(0, ' ');
+							}
 							pnr = p.toString();
 						}
 						else if (pnr.length() > 10) {
@@ -900,8 +922,9 @@ public class IFSFileCreationThread extends Thread {
 						String name = custodian.getLastName() + " " + custodian.getFirstName();
 						if (name.length() < 25) {
 							StringBuffer p = new StringBuffer(name);
-							while (p.length() < 25)
+							while (p.length() < 25) {
 								p.append(' ');
+							}
 							name = p.toString();
 						}
 						else if (name.length() > 25) {
@@ -912,8 +935,9 @@ public class IFSFileCreationThread extends Thread {
 						String address = mainAddress.getStreetAddress();
 						if (address.length() < 27) {
 							StringBuffer p = new StringBuffer(address);
-							while (p.length() < 27)
+							while (p.length() < 27) {
 								p.append(' ');
+							}
 							address = p.toString();
 						}
 						else if (address.length() > 27) {
@@ -924,8 +948,9 @@ public class IFSFileCreationThread extends Thread {
 						String po = poCode.getPostalCode();
 						if (po.length() < 5) {
 							StringBuffer p = new StringBuffer(po);
-							while (p.length() < 5)
+							while (p.length() < 5) {
 								p.insert(0, ' ');
+							}
 							po = p.toString();
 						}
 						else if (po.length() > 5) {
@@ -936,8 +961,9 @@ public class IFSFileCreationThread extends Thread {
 						String poName = poCode.getName();
 						if (poName.length() < 13) {
 							StringBuffer p = new StringBuffer(poName);
-							while (p.length() < 13)
+							while (p.length() < 13) {
 								p.append(' ');
+							}
 							poName = p.toString();
 						}
 						else if (poName.length() > 13) {
@@ -952,8 +978,9 @@ public class IFSFileCreationThread extends Thread {
 						}
 						if (co.length() < 25) {
 							StringBuffer p = new StringBuffer(co);
-							while (p.length() < 25)
+							while (p.length() < 25) {
 								p.append(' ');
+							}
 							co = p.toString();
 						}
 						else if (co.length() > 25) {
@@ -997,16 +1024,17 @@ public class IFSFileCreationThread extends Thread {
 						//Avser period t.o.m
 						bWriter.write("00000000");
 						//Faktura text 1 + Filler
-						if (periodText.length() < 36) {
-						    StringBuffer p = new StringBuffer(periodText);
-						    while (p.length() < 36)
-						        p.append(' ');
+						if (this.periodText.length() < 36) {
+						    StringBuffer p = new StringBuffer(this.periodText);
+						    while (p.length() < 36) {
+									p.append(' ');
+								}
 						
-						    periodText = p.toString();
-						} else if (periodText.length() > 36) {
-						    periodText = periodText.substring(0, 36);
+						    this.periodText = p.toString();
+						} else if (this.periodText.length() > 36) {
+						    this.periodText = this.periodText.substring(0, 36);
 						}
-						bWriter.write(periodText);
+						bWriter.write(this.periodText);
 						//Faktura text 2
 						bWriter.write("--------------------");
 						//Faktura text 2, 3 and 4
@@ -1055,8 +1083,9 @@ public class IFSFileCreationThread extends Thread {
 								boolean insertLRow = false;
 								String LText = null;
 								String text = iRec.getInvoiceText();
-								if (text == null)
+								if (text == null) {
 									text = "";
+								}
 								if (text.length() < 25) {
 									StringBuffer t = new StringBuffer(text);
 									while (t.length() < 25) {
@@ -1068,8 +1097,9 @@ public class IFSFileCreationThread extends Thread {
 									text = text.substring(0, 25);
 								}
 								LText = iRec.getInvoiceText2();
-								if (LText != null && !"".equals(LText))
+								if (LText != null && !"".equals(LText)) {
 									insertLRow = true;
+								}
 								bWriter.write(text);
 								// Filler
 								bWriter.write(empty.substring(0, 11));
@@ -1080,10 +1110,12 @@ public class IFSFileCreationThread extends Thread {
 								// Filler
 								bWriter.write(empty.substring(0, 33));
 								numberOf62Lines++;
-								if (!isNegative)
+								if (!isNegative) {
 									sum62Lines += am;
-								else
+								}
+								else {
 									sum62Lines -= am;
+								}
 								bWriter.newLine();
 								if (insertLRow) {
 									// Posttype
@@ -1139,8 +1171,9 @@ public class IFSFileCreationThread extends Thread {
 								String tmp = pb.findFieldInStringByName(posting, "Konto");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1151,8 +1184,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Ansvar");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1165,8 +1199,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Verksamhet");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1177,8 +1212,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Aktivitet");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1189,8 +1225,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Projekt");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1201,8 +1238,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Objekt");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1213,8 +1251,9 @@ public class IFSFileCreationThread extends Thread {
 								tmp = pb.findFieldInStringByName(posting, "Motpart");
 								if (tmp.length() < 10) {
 									StringBuffer post = new StringBuffer(tmp);
-									while (post.length() < 10)
+									while (post.length() < 10) {
 										post.append(' ');
+									}
 									tmp = post.toString();
 								}
 								else if (tmp.length() > 10) {
@@ -1228,10 +1267,12 @@ public class IFSFileCreationThread extends Thread {
 								// Filler
 								bWriter.write(empty.substring(0, 100));
 								numberOf63Lines++;
-								if (!isNegative)
+								if (!isNegative) {
 									sum63Lines += am;
-								else
+								}
+								else {
 									sum63Lines -= am;
+								}
 								bWriter.newLine();
 							}
 						}
@@ -1326,7 +1367,7 @@ public class IFSFileCreationThread extends Thread {
 
 	private IFSBusiness getIFSBusiness() {
 		try {
-			return (IFSBusiness) IBOLookup.getServiceInstance(iwac, IFSBusiness.class);
+			return (IFSBusiness) IBOLookup.getServiceInstance(this.iwac, IFSBusiness.class);
 		}
 		catch (RemoteException e) {
 			throw new IBORuntimeException(e.getMessage());

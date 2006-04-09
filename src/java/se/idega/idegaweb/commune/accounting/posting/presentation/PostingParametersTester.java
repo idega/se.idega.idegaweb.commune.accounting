@@ -1,5 +1,5 @@
 /*
- * $Id: PostingParametersTester.java,v 1.9 2003/11/26 16:21:06 kjell Exp $
+ * $Id: PostingParametersTester.java,v 1.10 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -26,7 +26,7 @@ import se.idega.idegaweb.commune.accounting.posting.business.PostingParametersEx
  * PostingParametersTest is an idegaWeb block that is used to test the Posting parameters retrieval 
  *  
  * <p>
- * $Id: PostingParametersTester.java,v 1.9 2003/11/26 16:21:06 kjell Exp $
+ * $Id: PostingParametersTester.java,v 1.10 2006/04/09 11:53:32 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
  * @version $Version$
@@ -58,12 +58,12 @@ public class PostingParametersTester extends AccountingBlock {
 					viewMainForm(iwc);
 					break;
 				case ACTION_SEARCH :
-					_errorMessage = "";
+					this._errorMessage = "";
 					viewMainForm(iwc);
 					viewSearchedResults(iwc);
 					break;
 			}
-			add(mainForm);
+			add(this.mainForm);
 		}
 		catch (Exception e) {
 			super.add(new ExceptionWrapper(e, this));
@@ -85,11 +85,11 @@ public class PostingParametersTester extends AccountingBlock {
 		PostingParameters pp = searchPostingParameter(iwc);
 
 		if (pp == null) {
-			_errorMessage = "Hittades ej";
+			this._errorMessage = "Hittades ej";
 		}
-		if (_errorMessage.length() != 0) {
-			table.add(getSmallErrorText(_errorMessage), 1, row);
-			mainForm.add(table);
+		if (this._errorMessage.length() != 0) {
+			table.add(getSmallErrorText(this._errorMessage), 1, row);
+			this.mainForm.add(table);
 			return;
 		}
 
@@ -101,7 +101,7 @@ public class PostingParametersTester extends AccountingBlock {
 		table.add(getSmallText("Motkonteringsträng"), 1, row);
 		table.add(getSmallText(pp.getDoublePostingString()), 2, row++);
 
-		mainForm.add(table);
+		this.mainForm.add(table);
 	}
 
 	private void viewMainForm(IWContext iwc) {
@@ -139,11 +139,11 @@ public class PostingParametersTester extends AccountingBlock {
 			table.add(getLocalizedButton(PARAM_BUTTON_SEARCH, "posting_test_search", "Sök"), 2, 6);
 		}
 		catch (Exception e) {
-			_errorMessage = e.getMessage();
+			this._errorMessage = e.getMessage();
 			return;
 		}
 
-		mainForm.add(table);
+		this.mainForm.add(table);
 	}
 
 	private PostingParameters searchPostingParameter(IWContext iwc) {
@@ -177,7 +177,7 @@ public class PostingParametersTester extends AccountingBlock {
 			Integer.parseInt(iwc.getParameter(PARAM_FIELD_SCHOOL_YEAR2).length() != 0 ? iwc.getParameter(PARAM_FIELD_SCHOOL_YEAR2) : "0"));
 		}
 		catch (PostingParametersException e) {
-			_errorMessage = localize(e.getTextKey(), e.getDefaultText());
+			this._errorMessage = localize(e.getTextKey(), e.getDefaultText());
 		}
 		catch (RemoteException e) {
 		}
@@ -185,7 +185,7 @@ public class PostingParametersTester extends AccountingBlock {
 	}
 
 	private void prepareMainTable() {
-		mainForm = new Form();
+		this.mainForm = new Form();
 	}
 
 	private PostingBusiness getPostingBusiness(IWContext iwc) throws RemoteException {

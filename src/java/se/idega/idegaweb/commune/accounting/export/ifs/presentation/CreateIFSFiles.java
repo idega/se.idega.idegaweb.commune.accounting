@@ -71,9 +71,10 @@ public class CreateIFSFiles extends AccountingBlock {
 
 	private int parseAction(IWContext iwc) {
 		try {
-			_currentOperation = getSession().getOperationalField();
-			if (_currentOperation == null)
-				_currentOperation = "";
+			this._currentOperation = getSession().getOperationalField();
+			if (this._currentOperation == null) {
+				this._currentOperation = "";
+			}
 		}
 		catch (RemoteException e) {
 		}
@@ -89,11 +90,12 @@ public class CreateIFSFiles extends AccountingBlock {
 		IWTimestamp pDate = new IWTimestamp(date);
 		String period = iwc.getParameter(PARAM_PERIOD_TEXT);
 		Locale currentLocale = iwc.getCurrentLocale();
-		if (currentLocale == null)
+		if (currentLocale == null) {
 			currentLocale = Locale.getDefault();
+		}
 		
 		try {
-			getIFSBusiness(iwc).createFiles(_currentOperation,pDate,period,iwc.getCurrentUser(),currentLocale);
+			getIFSBusiness(iwc).createFiles(this._currentOperation,pDate,period,iwc.getCurrentUser(),currentLocale);
 		}
 		catch (RemoteException e1) {
 			e1.printStackTrace();
@@ -127,7 +129,7 @@ public class CreateIFSFiles extends AccountingBlock {
 
 		int paymentDate = -1;
 		try {
-			paymentDate = getExportBusiness(iwc).getExportDataMapping(_currentOperation).getStandardPaymentDay();
+			paymentDate = getExportBusiness(iwc).getExportDataMapping(this._currentOperation).getStandardPaymentDay();
 		}
 		catch (RemoteException e) {
 			paymentDate = -1;		
@@ -138,8 +140,9 @@ public class CreateIFSFiles extends AccountingBlock {
 
 		DateInput date = new DateInput(PARAM_PAYMENT_DATE);
 		date.setToCurrentDate();
-		if (paymentDate != -1)
+		if (paymentDate != -1) {
 			date.setDay(paymentDate);
+		}
 		int currentYear = java.util.Calendar.getInstance ().get (java.util.Calendar.YEAR);
 		date.setYearRange(currentYear - 1, currentYear + 1);
 		TextInput period = getTextInput(PARAM_PERIOD_TEXT,"");

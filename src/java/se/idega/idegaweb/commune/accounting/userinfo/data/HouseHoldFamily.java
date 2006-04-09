@@ -37,57 +37,57 @@ public class HouseHoldFamily {
 	}
 	
 	public User getHeadOfFamily(){
-		return head;
+		return this.head;
 	}
 	
 	public void setHeadOfFamily(User head){
 		this.head = head;
 	}
 	public User getSpouse(){
-		return spouse;
+		return this.spouse;
 	}
 	public void setSpouse(User spouse){
 		this.spouse = spouse;
 	}
 	public User getCohabitant(){
-		return cohabitant;
+		return this.cohabitant;
 	}
 	public void setCohabitant(User cohabitant){
 		this.cohabitant = cohabitant;
 	}
 	public Collection getParentialChildren(){
-		return parentialChildren;
+		return this.parentialChildren;
 	}
 	public void setParentialChildren(Collection children){
 		this.parentialChildren = children;
 	}
 	public Collection getCustodyChildren(){
-		return custodyChildren;
+		return this.custodyChildren;
 	}
 	public void setCustodyChildren(Collection children){
 		this.custodyChildren = children;
 	}
 	public Address getAddress(){
-		return address;
+		return this.address;
 	}
 	public void setAddress(Address address){
 		this.address = address;
 	}
 	
 	public boolean hasSpouse(){
-		return spouse!=null;
+		return this.spouse!=null;
 	}
 	public boolean hasCohabitant(){
-		return cohabitant!=null;
+		return this.cohabitant!=null;
 	}
 	public boolean hasAddress(){
-		return address!=null;
+		return this.address!=null;
 	}
 	public boolean  hasParentialChildren(){
-		return parentialChildren!=null && !parentialChildren.isEmpty();
+		return this.parentialChildren!=null && !this.parentialChildren.isEmpty();
 	}
 	public boolean  hasCustodyChildren(){
-		return custodyChildren!=null && !custodyChildren.isEmpty();
+		return this.custodyChildren!=null && !this.custodyChildren.isEmpty();
 	}
 	
 	public boolean hasChildren(){
@@ -98,7 +98,7 @@ public class HouseHoldFamily {
 		Collection children = new Vector();
 		Map childMap = new Hashtable();
 		if(hasParentialChildren()){
-			for (Iterator iter = parentialChildren.iterator(); iter.hasNext();) {
+			for (Iterator iter = this.parentialChildren.iterator(); iter.hasNext();) {
 				User child = (User) iter.next();
 				if(!childMap.containsKey(child.getPrimaryKey())){
 					children.add(child);
@@ -107,7 +107,7 @@ public class HouseHoldFamily {
 			}
 		}
 		if(hasCustodyChildren()){
-			for (Iterator iter = custodyChildren.iterator(); iter.hasNext();) {
+			for (Iterator iter = this.custodyChildren.iterator(); iter.hasNext();) {
 				User child = (User) iter.next();
 				if(!childMap.containsKey(child.getPrimaryKey())){
 					children.add(child);

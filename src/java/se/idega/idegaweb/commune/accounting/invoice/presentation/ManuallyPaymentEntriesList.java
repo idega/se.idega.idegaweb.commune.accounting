@@ -58,11 +58,11 @@ import se.idega.idegaweb.commune.accounting.regulations.data.RegulationSpecTypeH
 import se.idega.idegaweb.commune.accounting.school.presentation.PostingBlock;
 
 /**
- * Last modified: $Date: 2006/02/21 16:16:59 $ by $Author: laddi $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author <a href="mailto:roar@idega.is">Roar Skullestad</a>
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class ManuallyPaymentEntriesList extends AccountingBlock {
 
@@ -159,7 +159,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 					handleCancelAction();
 					break;
 				default:
-					newPayment = true;
+					this.newPayment = true;
 					handleEditAction(iwc);			
 			}
 		}
@@ -220,13 +220,13 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		Map errorMessages = new HashMap();
 
 		if (iwc.getCurrentUser() == null){
-			errorMessages.put(ERROR_NO_USER_SESSION, localize(ERROR_NO_USER_SESSION, "Not logged in."));
+			errorMessages.put(this.ERROR_NO_USER_SESSION, localize(this.ERROR_NO_USER_SESSION, "Not logged in."));
 		}
 				
-		checkNotNull(iwc, PAR_AMOUNT_TOTAL, errorMessages, ERROR_AMOUNT_TOTAL_NULL, "Amount must be set");
-		checkNotNull(iwc, PAR_AMOUNT_PR_ITEM, errorMessages, ERROR_AMOUNT_ITEM_NULL, "Amount must be set");
-		checkNotNull(iwc, RegulationSearchPanel.PAR_VALID_DATE, errorMessages, ERROR_PERIODE_NULL, "Periode must be set");
-		checkNotNull(iwc, RegulationSearchPanel.PAR_PLACING, errorMessages, ERROR_PLACING_NULL, "Placing must be set");
+		checkNotNull(iwc, PAR_AMOUNT_TOTAL, errorMessages, this.ERROR_AMOUNT_TOTAL_NULL, "Amount must be set");
+		checkNotNull(iwc, PAR_AMOUNT_PR_ITEM, errorMessages, this.ERROR_AMOUNT_ITEM_NULL, "Amount must be set");
+		checkNotNull(iwc, RegulationSearchPanel.PAR_VALID_DATE, errorMessages, this.ERROR_PERIODE_NULL, "Periode must be set");
+		checkNotNull(iwc, RegulationSearchPanel.PAR_PLACING, errorMessages, this.ERROR_PLACING_NULL, "Placing must be set");
 		
 
 		PaymentRecord pay = null;
@@ -270,7 +270,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 					RegulationSpecType regSpecType = ((RegulationSpecTypeHome) IDOLookup.getHome(RegulationSpecType.class)).findByPrimaryKey(getValue(iwc, PAR_REG_SPEC_TYPE));
 					
 					if (expMapping.getCashFlowOut() && regSpecType.getRegSpecType().equals(RegSpecConstant.CHECK)){
-						errorMessages.put(ERROR_CHECK, localize(ERROR_CHECK, "Checks must be created/changed in invoice"));
+						errorMessages.put(this.ERROR_CHECK, localize(this.ERROR_CHECK, "Checks must be created/changed in invoice"));
 					}
 					
 				} catch (EJBException e) {
@@ -315,7 +315,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 				amountTotal = AccountingUtil.roundAmount(new Float(iwc.getParameter(PAR_AMOUNT_TOTAL)).floatValue());
 			}catch(NumberFormatException ex){
 				ex.printStackTrace();
-				errorMessages.put(ERROR_AMOUNT_FORMAT, localize(ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
+				errorMessages.put(this.ERROR_AMOUNT_FORMAT, localize(this.ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
 			}
 			pay.setTotalAmount(amountTotal);
 			
@@ -324,7 +324,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 				amountPrItem = AccountingUtil.roundAmount(new Float(iwc.getParameter(PAR_AMOUNT_PR_ITEM)).floatValue());
 			}catch(NumberFormatException ex){
 				ex.printStackTrace();
-				errorMessages.put(ERROR_AMOUNT_FORMAT, localize(ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
+				errorMessages.put(this.ERROR_AMOUNT_FORMAT, localize(this.ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
 			}
 			pay.setPieceAmount(amountPrItem);			
 
@@ -355,7 +355,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 			try{
 				vatType = new Integer(iwc.getParameter(PAR_VAT_TYPE)).intValue();
 			}catch(NumberFormatException ex){
-				errorMessages.put(ERROR_NO_VAT, localize(ERROR_NO_VAT, "No Vat type specified"));
+				errorMessages.put(this.ERROR_NO_VAT, localize(this.ERROR_NO_VAT, "No Vat type specified"));
 			}
 			pay.setVATRuleRegulationId(vatType);
 	//		inv.setVATType(vatType);
@@ -387,13 +387,13 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 				String ownPosting = p.getOwnPosting();
 				String doublePosting = p.getDoublePosting();
 				if (ownPosting == null || ownPosting.trim().length() == 0){	
-					errorMessages.put(ERROR_OWN_POSTING_NULL, localize(ERROR_OWN_POSTING_NULL, "Own posting must be given"));			
+					errorMessages.put(this.ERROR_OWN_POSTING_NULL, localize(this.ERROR_OWN_POSTING_NULL, "Own posting must be given"));			
 				}
 	
 				pay.setOwnPosting(ownPosting);
 				pay.setDoublePosting(doublePosting);
 			} catch (PostingParametersException e) {
-				errorMessages.put(ERROR_POSTING, localize(e.getTextKey(), e.getDefaultText()));
+				errorMessages.put(this.ERROR_POSTING, localize(e.getTextKey(), e.getDefaultText()));
 			}	
 		}// END: if(errorMessages.isEmpty())
 
@@ -434,7 +434,9 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 	}
 
 	private static String getSignature (final User user) {
-		if (null == user) return "not logged in user";
+		if (null == user) {
+			return "not logged in user";
+		}
 		final String firstName = user.getFirstName ();
 		final String lastName = user.getLastName ();
 		return (firstName != null ? firstName + " " : "")
@@ -520,23 +522,23 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 
 	private UserSearcher getUserSearcher(IWContext iwc, User user){
 		
-		searcher = new UserSearcher();
-		searcher.setPersonalIDLength(15);
-		searcher.setFirstNameLength(25);
-		searcher.setLastNameLength(25);
-		searcher.setShowMiddleNameInSearch(false);
-		searcher.setOwnFormContainer(false);
-		searcher.setUniqueIdentifier("");
-		searcher.setBelongsToParent(true);
-		searcher.setConstrainToUniqueSearch(false);
-		searcher.maintainParameter(new Parameter(PAR_EDIT_FROM_SCREEN, " "));
-		searcher.setToFormSubmit(true);
-		searcher.setHeaderFontStyle (getSmallHeaderFontStyle ());		
+		this.searcher = new UserSearcher();
+		this.searcher.setPersonalIDLength(15);
+		this.searcher.setFirstNameLength(25);
+		this.searcher.setLastNameLength(25);
+		this.searcher.setShowMiddleNameInSearch(false);
+		this.searcher.setOwnFormContainer(false);
+		this.searcher.setUniqueIdentifier("");
+		this.searcher.setBelongsToParent(true);
+		this.searcher.setConstrainToUniqueSearch(false);
+		this.searcher.maintainParameter(new Parameter(PAR_EDIT_FROM_SCREEN, " "));
+		this.searcher.setToFormSubmit(true);
+		this.searcher.setHeaderFontStyle (getSmallHeaderFontStyle ());		
 
 		try{
-			searcher.process(iwc);	
-			if (searcher.getUser() == null && ! searcher.isHasManyUsers() && ! searcher.isClearedButtonPushed(iwc)){
-				searcher.setUser(user);
+			this.searcher.process(iwc);	
+			if (this.searcher.getUser() == null && ! this.searcher.isHasManyUsers() && ! this.searcher.isClearedButtonPushed(iwc)){
+				this.searcher.setUser(user);
 			}			
 		} catch (FinderException ex){
 			
@@ -545,7 +547,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 			ex.printStackTrace();			
 		}
 		
-		return searcher;
+		return this.searcher;
 	}
 	
 	
@@ -560,17 +562,17 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		Table table = new Table();
 		int row = 1;
 
-		if (errorMessages.get(ERROR_NO_USER_SESSION) != null){
-			table.add(getErrorText((String) errorMessages.get(ERROR_NO_USER_SESSION)), 1, row++);			
+		if (errorMessages.get(this.ERROR_NO_USER_SESSION) != null){
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_NO_USER_SESSION)), 1, row++);			
 		}			
-		if (errorMessages.get(ERROR_CHECK) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_CHECK)), 2, row++);	
+		if (errorMessages.get(this.ERROR_CHECK) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_CHECK)), 2, row++);	
 		}			
-		if (errorMessages.get(ERROR_PLACING_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_PLACING_NULL)), 2, row++);	
+		if (errorMessages.get(this.ERROR_PLACING_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_PLACING_NULL)), 2, row++);	
 		}	
-		if (errorMessages.get(ERROR_PERIODE_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_PERIODE_NULL)), 2, row++);	
+		if (errorMessages.get(this.ERROR_PERIODE_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_PERIODE_NULL)), 2, row++);	
 		}	
 				
 		
@@ -606,12 +608,12 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
 
-		if (errorMessages.get(ERROR_AMOUNT_TOTAL_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_AMOUNT_TOTAL_NULL)), 2, row++);	
+		if (errorMessages.get(this.ERROR_AMOUNT_TOTAL_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_AMOUNT_TOTAL_NULL)), 2, row++);	
 		}		
 
-		if (errorMessages.get(ERROR_AMOUNT_FORMAT) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_AMOUNT_FORMAT)), 2, row++);	
+		if (errorMessages.get(this.ERROR_AMOUNT_FORMAT) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_AMOUNT_FORMAT)), 2, row++);	
 		}
 		
 		long amountPrItem = reg != null ? reg.getAmount().intValue() : AccountingUtil.roundAmount(getFloatValue(iwc, PAR_AMOUNT_PR_ITEM));
@@ -627,8 +629,8 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		
 		//Amount, vat, remark
 		long amount =(reg != null) ? reg.getAmount().intValue() : AccountingUtil.roundAmount(getFloatValue(iwc, PAR_AMOUNT_TOTAL));
-		if (reg != null && errorMessages.get(ERROR_AMOUNT_ITEM_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_AMOUNT_ITEM_NULL)), 2, row++);	
+		if (reg != null && errorMessages.get(this.ERROR_AMOUNT_ITEM_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_AMOUNT_ITEM_NULL)), 2, row++);	
 		}			
 		addIntField(table, PAR_AMOUNT_TOTAL, KEY_AMOUNT_TOTAL, ""+amount, 1, row++);
 		
@@ -654,11 +656,11 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
 		
-		if (errorMessages.get(ERROR_POSTING) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_POSTING)), 2, row++);			
+		if (errorMessages.get(this.ERROR_POSTING) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_POSTING)), 2, row++);			
 		} 
-		if (errorMessages.get(ERROR_OWN_POSTING_NULL) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_OWN_POSTING_NULL)), 2, row++);			
+		if (errorMessages.get(this.ERROR_OWN_POSTING_NULL) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_OWN_POSTING_NULL)), 2, row++);			
 		} 
 		if (postingError != null){
 			table.add(getErrorText(postingError), 2, row++);				
@@ -674,7 +676,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 			} else {
 				//When searching for user, the posting info is lost
 				postingBlock = new PostingBlock(); 
-				if (newPayment){
+				if (this.newPayment){
 //					Need to separate construction of object from generation of Strings, so that the object exists even if errors in generation
 					postingBlock.setToEmpty();
 				}else{					
@@ -690,18 +692,18 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		}
 		table.add(postingBlock, 1, row++);
 								
-		if (errorMessages.get(ERROR_NO_VAT) != null) {
+		if (errorMessages.get(this.ERROR_NO_VAT) != null) {
 			table.mergeCells(2, row, 10, row);
-			table.add(getErrorText((String) errorMessages.get(ERROR_NO_VAT)), 2, row++);			
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_NO_VAT)), 2, row++);			
 		}		
 		addDropDownLocalized(table, PAR_VAT_TYPE, KEY_VAT_TYPE, vatTypes, getVatRuleRegulationId(iwc, PAR_VAT_TYPE, reg),  "getVATRule", 1, row++);
 		
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
 
 		//user search		
-		if (errorMessages.get(ERROR_USER) != null) {
+		if (errorMessages.get(this.ERROR_USER) != null) {
 			table.mergeCells(2, row, 10, row);
-			table.add(getErrorText((String) errorMessages.get(ERROR_USER)), 2, row++);			
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_USER)), 2, row++);			
 		}
 				
 		table.mergeCells(1, row, 10, row);
@@ -872,7 +874,7 @@ public class ManuallyPaymentEntriesList extends AccountingBlock {
 		
 	private Table addIntField(Table table, String parameter, String key, String value, int col, int row){
 		TextInput input = getTextInput(parameter, value);
-		input.setAsPosNegIntegers(localize(LOCALIZER_PREFIX + "int_format_error", "Format-error: Expecting integer:" )+ " " + localize(key, "")); 
+		input.setAsPosNegIntegers(localize(this.LOCALIZER_PREFIX + "int_format_error", "Format-error: Expecting integer:" )+ " " + localize(key, "")); 
 		return addWidget(table, key, input, col, row);
 	}	
 			

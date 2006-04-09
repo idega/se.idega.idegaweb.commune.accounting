@@ -1,5 +1,5 @@
 /*
- * $Id: BatchDeadlinePlacementHelper.java,v 1.3 2005/03/09 20:16:39 laddi Exp $
+ * $Id: BatchDeadlinePlacementHelper.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
  * Created on 26.11.2004
  *
  * Copyright (C) 2004 Idega Software hf. All Rights Reserved.
@@ -27,10 +27,10 @@ import se.idega.idegaweb.commune.care.business.PlacementHelper;
 
 /**
  * 
- *  Last modified: $Date: 2005/03/09 20:16:39 $ by $Author: laddi $
+ *  Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  * 
  * @author <a href="mailto:aron@idega.com">aron</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BatchDeadlinePlacementHelper extends DefaultPlacementHelper implements PlacementHelper {
     
@@ -80,8 +80,8 @@ public class BatchDeadlinePlacementHelper extends DefaultPlacementHelper impleme
     public BatchDeadline getCurrentDeadline(){
         try {
             BatchDeadlineHome deadlineHome = (BatchDeadlineHome)IDOLookup.getHome(BatchDeadline.class);
-            deadline = deadlineHome.findCurrent();
-            return deadline;
+            this.deadline = deadlineHome.findCurrent();
+            return this.deadline;
         } catch (IDOLookupException e) {
            
         } catch (FinderException e) {
@@ -91,32 +91,33 @@ public class BatchDeadlinePlacementHelper extends DefaultPlacementHelper impleme
     }
     
     public TimePeriod getValidPeriod(){
-        if(validPeriod==null){
+        if(this.validPeriod==null){
 	        BatchDeadline deadline = getCurrentDeadline();
 	        if(deadline!=null){
 	            IWCalendar cal = new IWCalendar();
 	            int today = cal.getDay();
 	            int deadlineDay = deadline.getDeadlineDay();
 	            if(today<deadlineDay ){
-	                validPeriod =  new TimePeriod(new IWTimestamp(1,cal.getMonth(),cal.getYear()),new IWTimestamp(deadlineDay,cal.getMonth(),cal.getYear()));
+	                this.validPeriod =  new TimePeriod(new IWTimestamp(1,cal.getMonth(),cal.getYear()),new IWTimestamp(deadlineDay,cal.getMonth(),cal.getYear()));
 	            }
 	            else{
 	              IWTimestamp stamp = new IWTimestamp();
 	              stamp.addMonths(1);
-	              validPeriod =  new TimePeriod(new IWTimestamp(1,stamp.getMonth(),stamp.getYear()),new IWTimestamp(cal.getLengthOfMonth(stamp.getMonth(),stamp.getYear()),stamp.getMonth(),stamp.getYear()));
+	              this.validPeriod =  new TimePeriod(new IWTimestamp(1,stamp.getMonth(),stamp.getYear()),new IWTimestamp(cal.getLengthOfMonth(stamp.getMonth(),stamp.getYear()),stamp.getMonth(),stamp.getYear()));
 	                
 	            }
 	            
 	        }
         }
-        return validPeriod;
+        return this.validPeriod;
     }
     
     public boolean hasDeadlinePassed(){
         BatchDeadline deadline = getCurrentDeadline();
         IWTimestamp today = new IWTimestamp();
-        if(deadline!=null && today.getDay()<=deadline.getDeadlineDay())
-            return false;
+        if(deadline!=null && today.getDay()<=deadline.getDeadlineDay()) {
+					return false;
+				}
         return true;
     }
     

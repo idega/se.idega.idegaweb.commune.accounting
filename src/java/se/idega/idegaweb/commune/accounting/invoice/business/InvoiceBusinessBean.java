@@ -79,11 +79,11 @@ import com.idega.util.IWTimestamp;
  * base for invoicing and payment data, that is sent to external finance system.
  * Now moved to InvoiceThread
  * <p>
- * Last modified: $Date: 2005/10/13 08:09:38 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author <a href="mailto:joakim@idega.is">Joakim Johnson</a>
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.136 $
+ * @version $Revision: 1.137 $
  * @see se.idega.idegaweb.commune.accounting.invoice.business.InvoiceThread
  */
 public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusiness, CareInvoiceBusiness {
@@ -569,15 +569,19 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 		throws CreateException {
 		try {
 			final InvoiceHeader header = getInvoiceHeaderHome ().create ();
-			if (null != schoolCategoryKey) header.setSchoolCategoryID
-																				 (schoolCategoryKey);
+			if (null != schoolCategoryKey) {
+				header.setSchoolCategoryID
+																					 (schoolCategoryKey);
+			}
 			if (null != createdBy) {
 				final String createdBySignature = getSignature (createdBy);
 				header.setCreatedBy (createdBySignature);
 			}
 			header.setCustodianId (custodianId);
 			header.setDateCreated (new Date (new java.util.Date ().getTime ()));
-			if (null != period) header.setPeriod (period);
+			if (null != period) {
+				header.setPeriod (period);
+			}
 			header.setStatus(ConstantStatus.PRELIMINARY);
 			header.store();
 			return header;
@@ -588,7 +592,9 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 	}
 	
 	private String getSignature (final User user) {
-		if (null == user) return "not logged in user";
+		if (null == user) {
+			return "not logged in user";
+		}
 		final String firstName = user.getFirstName ();
 		final String lastName = user.getLastName ();
 		return (firstName != null ? firstName + " " : "")
@@ -640,7 +646,9 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 		if (null != placement) {
 			result.setSchoolClassMember (placement);
 			final SchoolType schoolType = placement.getSchoolType ();
-			if (null != schoolType) result.setSchoolType (schoolType);
+			if (null != schoolType) {
+				result.setSchoolType (schoolType);
+			}
 		}
 		if (null != startPlacementDate) {
 			result.setPeriodStartPlacement (startPlacementDate);
@@ -700,16 +708,30 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 		record.setRuleText (ruleText);
 		record.setNotes (note);
 		record.setOwnPosting (ownPosting);
-		if (null != checkEndPeriod) record.setPeriodEndCheck(checkEndPeriod);
-		if (null != placementEndPeriod) record.setPeriodEndPlacement(placementEndPeriod);
-		if (null != checkStartPeriod) record.setPeriodStartCheck(checkStartPeriod);
-		if (null != placementStartPeriod) record.setPeriodStartPlacement(placementStartPeriod);
+		if (null != checkEndPeriod) {
+			record.setPeriodEndCheck(checkEndPeriod);
+		}
+		if (null != placementEndPeriod) {
+			record.setPeriodEndPlacement(placementEndPeriod);
+		}
+		if (null != checkStartPeriod) {
+			record.setPeriodStartCheck(checkStartPeriod);
+		}
+		if (null != placementStartPeriod) {
+			record.setPeriodStartPlacement(placementStartPeriod);
+		}
 		if (null != regSpecTypeId) {
 			record.setRegSpecTypeId (regSpecTypeId.intValue ());
 		}
-		if (null != vatRule)  record.setVATRuleRegulation (vatRule.intValue ());
-		if (null != providerId) record.setProviderId(providerId.intValue ());
-		if (null != orderId) record.setOrderId(orderId.intValue ());
+		if (null != vatRule) {
+			record.setVATRuleRegulation (vatRule.intValue ());
+		}
+		if (null != providerId) {
+			record.setProviderId(providerId.intValue ());
+		}
+		if (null != orderId) {
+			record.setOrderId(orderId.intValue ());
+		}
 		try {
 			record.setSchoolClassMemberId (placementId.intValue ());
 			final SchoolClassMember placement = record.getSchoolClassMember ();
@@ -760,11 +782,15 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 		// is school vat eligible?
 		final PaymentHeader paymentHeader = paymentRecord.getPaymentHeader ();
 		final School school = paymentHeader.getSchool ();
-		if (!getVATBusiness ().isSchoolVATEligible (school)) return null;
+		if (!getVATBusiness ().isSchoolVATEligible (school)) {
+			return null;
+		}
 
 		// get vat regulation, if exists
 		final Regulation vatRuleRegulation = paymentRecord.getVATRuleRegulation();
-		if (null == vatRuleRegulation) return null;
+		if (null == vatRuleRegulation) {
+			return null;
+		}
 
 		// init some multiply used values
 		final RegulationSpecType regSpecType = vatRuleRegulation.getRegSpecType ();
@@ -853,7 +879,9 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 																	: 0);
 		paymentRecord.setPieceAmount (null != pieceAmount ? pieceAmount.intValue ()
 																	: 0);
-		if (null != orderId) paymentRecord.setOrderId (orderId.intValue ());
+		if (null != orderId) {
+			paymentRecord.setOrderId (orderId.intValue ());
+		}
 		if (null != vatType) {
 			paymentRecord.setVATRuleRegulationId(vatType.intValue ());
 		}
@@ -909,31 +937,51 @@ public class InvoiceBusinessBean extends IBOServiceBean implements InvoiceBusine
 
 		// set updated values in record
 		final float oldAmount = record.getAmount ();
-		if (null != amount) record.setAmount (amount.floatValue ());
+		if (null != amount) {
+			record.setAmount (amount.floatValue ());
+		}
 		final float oldAmountVat = record.getAmountVAT ();
-		if (null != vatAmount) record.setAmountVAT (vatAmount.floatValue ());
+		if (null != vatAmount) {
+			record.setAmountVAT (vatAmount.floatValue ());
+		}
 		final String changedBy = getSignature (currentUser);
 		record.setChangedBy (changedBy);
 		record.setDateChanged (dateChanged);
-		if (null != numberOfDays) record.setDays (numberOfDays.intValue ());
+		if (null != numberOfDays) {
+			record.setDays (numberOfDays.intValue ());
+		}
 		record.setInvoiceText (null != invoiceText && 0 < invoiceText.length ()
 													 ? invoiceText : ruleText);
 		record.setInvoiceText2
 				(null != invoiceText2 && 0 < invoiceText2.length ()
 				 ? invoiceText2 : "");
-		if (null != note) record.setNotes (note);
-		if (null != ownPosting) record.setOwnPosting (ownPosting);
-		if (null != doublePosting) record.setDoublePosting (doublePosting);
+		if (null != note) {
+			record.setNotes (note);
+		}
+		if (null != ownPosting) {
+			record.setOwnPosting (ownPosting);
+		}
+		if (null != doublePosting) {
+			record.setDoublePosting (doublePosting);
+		}
 		record.setPeriodStartCheck (checkStartPeriod);
 		record.setPeriodEndCheck (checkEndPeriod);
 		record.setPeriodStartPlacement (placementStartPeriod);
 		record.setPeriodEndPlacement (placementEndPeriod);
-		if (null != providerId) record.setProviderId (providerId.intValue ());
-		if (null != placementId) record.setSchoolClassMemberId
-																 (placementId.intValue ());
-		if (null != regSpecTypeId) record.setRegSpecTypeId
-																	 (regSpecTypeId.intValue ());
-		if (null != vatRule) record.setVATRuleRegulation(vatRule.intValue ());
+		if (null != providerId) {
+			record.setProviderId (providerId.intValue ());
+		}
+		if (null != placementId) {
+			record.setSchoolClassMemberId
+																	 (placementId.intValue ());
+		}
+		if (null != regSpecTypeId) {
+			record.setRegSpecTypeId
+																		 (regSpecTypeId.intValue ());
+		}
+		if (null != vatRule) {
+			record.setVATRuleRegulation(vatRule.intValue ());
+		}
 		record.setRuleText (ruleText);
 		
 		// store updated record

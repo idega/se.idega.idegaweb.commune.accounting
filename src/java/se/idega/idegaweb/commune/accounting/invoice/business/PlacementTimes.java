@@ -21,40 +21,40 @@ public class PlacementTimes {
 	public PlacementTimes(final IWTimestamp firstCheckDay, final IWTimestamp lastCheckDay, int specificNumberOfDays) {
 		this.firstCheckDay = firstCheckDay;
 		this.lastCheckDay = lastCheckDay;
-		specificNumberOfDaysPrMonth = specificNumberOfDays;
+		this.specificNumberOfDaysPrMonth = specificNumberOfDays;
 	}
 
 	public int getDays() {
-		return 1 + AccountingUtil.getDayDiff(firstCheckDay, lastCheckDay);
+		return 1 + AccountingUtil.getDayDiff(this.firstCheckDay, this.lastCheckDay);
 	}
 
 	public float getMonths() {
 		if (isWholeNumberOfMonths()) {
-			return getNumberOfMonths(daysInMonth(firstCheckDay), daysInMonth(lastCheckDay));
+			return getNumberOfMonths(daysInMonth(this.firstCheckDay), daysInMonth(this.lastCheckDay));
 		}
 
-		int daysInMonthFirstCheckDay = (specificNumberOfDaysPrMonth > 0) ? specificNumberOfDaysPrMonth : daysInMonth(firstCheckDay);
-		int daysInMonthLastCheckDay = (specificNumberOfDaysPrMonth > 0) ? specificNumberOfDaysPrMonth : daysInMonth(lastCheckDay);
+		int daysInMonthFirstCheckDay = (this.specificNumberOfDaysPrMonth > 0) ? this.specificNumberOfDaysPrMonth : daysInMonth(this.firstCheckDay);
+		int daysInMonthLastCheckDay = (this.specificNumberOfDaysPrMonth > 0) ? this.specificNumberOfDaysPrMonth : daysInMonth(this.lastCheckDay);
 		
 		return getNumberOfMonths(daysInMonthFirstCheckDay, daysInMonthLastCheckDay);
 	}
 
 	public IWTimestamp getLastCheckDay() {
-		return lastCheckDay;
+		return this.lastCheckDay;
 	}
 
 	public IWTimestamp getFirstCheckDay() {
-		return firstCheckDay;
+		return this.firstCheckDay;
 	}
 
 	private float getNumberOfMonths(int daysInMonthFirstCheckDay, int daysInMonthLastCheckDay) {
-		float months = 1.0f + (lastCheckDay.getYear() * 12 + lastCheckDay.getMonth())
-				- (firstCheckDay.getYear() * 12 + firstCheckDay.getMonth());
+		float months = 1.0f + (this.lastCheckDay.getYear() * 12 + this.lastCheckDay.getMonth())
+				- (this.firstCheckDay.getYear() * 12 + this.firstCheckDay.getMonth());
 
 		// decrease with days before start date
-		months -= (float) (firstCheckDay.getDay() - 1) / (float) daysInMonthFirstCheckDay;
+		months -= (float) (this.firstCheckDay.getDay() - 1) / (float) daysInMonthFirstCheckDay;
 		// decrease with days after end date
-		months -= 1.0f - (float) lastCheckDay.getDay() / (float) daysInMonthLastCheckDay;
+		months -= 1.0f - (float) this.lastCheckDay.getDay() / (float) daysInMonthLastCheckDay;
 
 		return months;
 	}
@@ -70,12 +70,12 @@ public class PlacementTimes {
 	 * 
 	 */
 	private boolean isWholeNumberOfMonths() {
-		int days = lastCheckDay.getDay() - firstCheckDay.getDay() + 1;
-		if (days == 0 || days == daysInMonth(firstCheckDay)) {
+		int days = this.lastCheckDay.getDay() - this.firstCheckDay.getDay() + 1;
+		if (days == 0 || days == daysInMonth(this.firstCheckDay)) {
 			return true;
 		}
 
-		if (firstCheckDay.getDay() == 1 && (lastCheckDay.getDay() == daysInMonth(lastCheckDay))) {
+		if (this.firstCheckDay.getDay() == 1 && (this.lastCheckDay.getDay() == daysInMonth(this.lastCheckDay))) {
 			return true;
 		}
 

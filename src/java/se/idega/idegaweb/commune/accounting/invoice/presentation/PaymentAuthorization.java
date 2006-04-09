@@ -1,6 +1,6 @@
 
 /*
- * $Id: PaymentAuthorization.java,v 1.3 2004/05/12 16:00:58 roar Exp $
+ * $Id: PaymentAuthorization.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -33,10 +33,10 @@ import com.idega.user.data.User;
  * PaymentAuthorization is an idegaWeb block that handles Authorization of
  * payment to providers
  * <p>
- * $Id: PaymentAuthorization.java,v 1.3 2004/05/12 16:00:58 roar Exp $
+ * $Id: PaymentAuthorization.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kelly</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PaymentAuthorization extends AccountingBlock {
 
@@ -112,7 +112,7 @@ public class PaymentAuthorization extends AccountingBlock {
 	private void viewDefaultForm(IWContext iwc) {
 		boolean hasPayments = false;
 		try{
-			hasPayments = getPaymentAuthorizationBusiness(iwc).hasAuthorizablePayments(iwc, _user);		
+			hasPayments = getPaymentAuthorizationBusiness(iwc).hasAuthorizablePayments(iwc, this._user);		
 		}catch(RemoteException ex){
 			ex.printStackTrace();
 		}
@@ -148,7 +148,7 @@ public class PaymentAuthorization extends AccountingBlock {
 	private void getErrorForm() {
 		ApplicationForm app = new ApplicationForm(this);
 		app.setLocalizedTitle(KEY_TITLE, "Payment authorization");
-		if(_userName.length() == 0) {
+		if(this._userName.length() == 0) {
 			app.setMainPanel(getLocalizedText(KEY_NOT_LOGGED_IN, "Not logged in"));
 		} else {
 			app.setMainPanel(getLocalizedText(KEY_NOT_AUTHORIZED, "Not authorized"));
@@ -174,9 +174,9 @@ public class PaymentAuthorization extends AccountingBlock {
 		table.add(getLocalizedLabel(KEY_AUTH_DATE, "Authorization date"), 1, 4);
 			
 		table.add(getSmallText(""), 2, 1);
-		table.add(getSmallText(""+_providerName), 2, 2);
-		table.add(getSmallText(""+_userName), 2, 3);
-		table.add(getSmallText(""+_authDate.toString()), 2, 4);
+		table.add(getSmallText(""+this._providerName), 2, 2);
+		table.add(getSmallText(""+this._userName), 2, 3);
+		table.add(getSmallText(""+this._authDate.toString()), 2, 4);
 		
 
 
@@ -190,30 +190,30 @@ public class PaymentAuthorization extends AccountingBlock {
 	private boolean loadUserVariables(IWContext iwc) {
 		
 		try {
-			_user = getUserBusiness(iwc).getUser(iwc.getCurrentUserId());
-			if (_user != null) {
-				_providerName = getPaymentAuthorizationBusiness(iwc).getProviderNameForUser(_user);
+			this._user = getUserBusiness(iwc).getUser(iwc.getCurrentUserId());
+			if (this._user != null) {
+				this._providerName = getPaymentAuthorizationBusiness(iwc).getProviderNameForUser(this._user);
 				
 				//If no provider for current user, read from the parameter set in the PaymentRecordMaintenance class
-				if (_providerName.length() == 0){
+				if (this._providerName.length() == 0){
 					String providerID = iwc.getParameter(ManuallyPaymentEntriesList.PAR_SELECTED_PROVIDER);
 					School school = null;
 					try{
 						SchoolHome sh = (SchoolHome) IDOLookup.getHome(School.class);
 						school = sh.findByPrimaryKey(providerID);
-						_providerName = school.getName();
+						this._providerName = school.getName();
 					}catch(IDOLookupException ex){
 						ex.printStackTrace(); 
 					}catch(FinderException ex){
 						ex.printStackTrace(); 
 					}
 				}
-				_userName = _user.getName();
+				this._userName = this._user.getName();
 			}
-			_authDate = new Date(System.currentTimeMillis());
+			this._authDate = new Date(System.currentTimeMillis());
 		} catch (Exception e) {
 		}
-		return (_userName.length() != 0 ); 
+		return (this._userName.length() != 0 ); 
 //		return (_userName.length() != 0 && _providerName.length() != 0) ? true : false; 
 	}
 		
@@ -236,7 +236,7 @@ public class PaymentAuthorization extends AccountingBlock {
 
 	private void updatePayments(IWContext iwc) {
 		try {
-			getPaymentAuthorizationBusiness(iwc).authorizePayments(iwc, _user);
+			getPaymentAuthorizationBusiness(iwc).authorizePayments(iwc, this._user);
 		} catch (Exception e) {	
 		}
 	}

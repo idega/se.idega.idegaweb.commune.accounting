@@ -1,5 +1,5 @@
 /*
- * $Id: ListTable.java,v 1.18 2003/10/10 11:56:07 kjell Exp $
+ * $Id: ListTable.java,v 1.19 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -18,10 +18,10 @@ import com.idega.presentation.text.Text;
  * This class generates a list that uses the layout 
  * guide rules for Check & Peng.
  * <p>
- * Last modified: $Date: 2003/10/10 11:56:07 $
+ * Last modified: $Date: 2006/04/09 11:53:33 $
  *
  * @author <a href="http://www.ncmedia.com">Anders Lindman</a>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class ListTable extends AccountingBlock {
 
@@ -38,10 +38,10 @@ public class ListTable extends AccountingBlock {
 		this.parent = parent;
 		this.cols = cols;
 		this.table = new Table();
-		table.setWidth(getWidth());
-		table.setCellpadding(getCellpadding());
-		table.setCellspacing(getCellspacing());
-		super.add(table);
+		this.table.setWidth(getWidth());
+		this.table.setCellpadding(getCellpadding());
+		this.table.setCellspacing(getCellspacing());
+		super.add(this.table);
 	}
 
 	/**
@@ -53,9 +53,9 @@ public class ListTable extends AccountingBlock {
 	public void setLocalizedHeader(String textKey, String defaultText, int col) {
 		// Check boundaries, null?
 		Text t = getSmallHeader(localize(textKey, defaultText));
-		table.add(t, col, 1);
-		table.setRowColor(1, getHeaderColor());
-		table.setNoWrap(col, 1);
+		this.table.add(t, col, 1);
+		this.table.setRowColor(1, getHeaderColor());
+		this.table.setNoWrap(col, 1);
 	}
 
 	/**
@@ -66,9 +66,9 @@ public class ListTable extends AccountingBlock {
 	public void setHeader(String defaultText, int col) {
 		// Check boundaries, null?
 		Text t = getSmallHeader(defaultText);
-		table.add(t, col, 1);
-		table.setRowColor(1, getHeaderColor());
-		table.setNoWrap(col, 1);
+		this.table.add(t, col, 1);
+		this.table.setRowColor(1, getHeaderColor());
+		this.table.setNoWrap(col, 1);
 	}
 
 
@@ -79,9 +79,9 @@ public class ListTable extends AccountingBlock {
 	 */
 	public void setHeader(PresentationObject po, int col) {
 		// Check boundaries, null?
-		table.add(po, col, 1);
-		table.setRowColor(1, getHeaderColor());
-		table.setNoWrap(col, 1);
+		this.table.add(po, col, 1);
+		this.table.setRowColor(1, getHeaderColor());
+		this.table.setNoWrap(col, 1);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class ListTable extends AccountingBlock {
 	 * @param width the width in pixels or percent
 	 */
 	public void setColumnWidth(int column, String width) {
-		table.setColumnWidth(column, width);
+		this.table.setColumnWidth(column, width);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class ListTable extends AccountingBlock {
 	 * @param alignment code
 	 */
 	public void setColumnAlignment(int column, String align) {
-		table.setColumnAlignment(column, align);
+		this.table.setColumnAlignment(column, align);
 	}
 	
 	/**
@@ -154,15 +154,15 @@ public class ListTable extends AccountingBlock {
 	 * are automatically wrapped when the current row is full.
 	 */
 	public void skip(){
-		col++;
-		if (col > cols) {
-			col = 1;
-			if(row%2==0){
-				table.setRowColor(row, getZebraColor1());
+		this.col++;
+		if (this.col > this.cols) {
+			this.col = 1;
+			if(this.row%2==0){
+				this.table.setRowColor(this.row, getZebraColor1());
 			} else {
-				table.setRowColor(row, getZebraColor2());
+				this.table.setRowColor(this.row, getZebraColor2());
 			}
-			row++;
+			this.row++;
 		}
 	}
 
@@ -179,14 +179,14 @@ public class ListTable extends AccountingBlock {
 	}
 	
 	private void _add(PresentationObject po) {
-		table.add(po, col, row);
-		table.setNoWrap(col, row);
+		this.table.add(po, this.col, this.row);
+		this.table.setNoWrap(this.col, this.row);
 		skip();
 	}
 	
 	public String localize(String textKey, String defaultText) {
-		if (parent != null) {
-			return parent.localize(textKey, defaultText);
+		if (this.parent != null) {
+			return this.parent.localize(textKey, defaultText);
 		} else {
 			return defaultText;
 		}

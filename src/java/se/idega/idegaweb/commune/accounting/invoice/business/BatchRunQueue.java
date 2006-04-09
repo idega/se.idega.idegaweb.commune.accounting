@@ -196,20 +196,20 @@ public class BatchRunQueue {
 		
 		public String toString(){
 			IWTimestamp m=null;
-			if(month!=null){
-				m = new IWTimestamp(month);
-			}else if(readDate!=null){
-				m = new IWTimestamp(readDate);
+			if(this.month!=null){
+				m = new IWTimestamp(this.month);
+			}else if(this.readDate!=null){
+				m = new IWTimestamp(this.readDate);
 			}
 
-			String s = schoolCategory;
+			String s = this.schoolCategory;
 			if(m!=null){
 				s += " "+m.getDateString("MMM yyyy");
 			}
-			if (school != null){
-				s += " "+school;
+			if (this.school != null){
+				s += " "+this.school;
 			}			
-			if (testRun){
+			if (this.testRun){
 				s += " [TEST]";
 			}
 			return s;

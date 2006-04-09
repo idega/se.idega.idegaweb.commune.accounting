@@ -31,36 +31,37 @@ public class OperationalFieldsMenu extends AccountingBlock {
 		DropdownMenu operationalField = getDropdownMenuLocalized(getSession().getParameterOperationalField(), getBusiness().getExportBusiness().getAllOperationalFields(), "getLocalizedKey");
 		operationalField.addMenuElementFirst("", localize("export.select_operational_field", "Select operational field"));
 		operationalField.setToSubmit();
-		if (getSession().getOperationalField() != null)
+		if (getSession().getOperationalField() != null) {
 			operationalField.setSelectedElement(getSession().getOperationalField());
+		}
 		
 		if (getParentForm() == null) {
-			_form = new Form();
-			_form.setEventListener(AccountingEventListener.class);
-			_form.add(operationalField);
-			add(_form);
+			this._form = new Form();
+			this._form.setEventListener(AccountingEventListener.class);
+			this._form.add(operationalField);
+			add(this._form);
 		}
 		else {
-			_form = getParentForm();
-			_form.setEventListener(AccountingEventListener.class);
+			this._form = getParentForm();
+			this._form.setEventListener(AccountingEventListener.class);
 			add(operationalField);
 		}
 		
-		_form.maintainParameters(_maintainParameters);
-		Iterator i = _setParameters.iterator();
+		this._form.maintainParameters(this._maintainParameters);
+		Iterator i = this._setParameters.iterator();
 		while (i.hasNext()){
 			Parameter par = (Parameter) i.next();
-			_form.add(new HiddenInput(par.getName(), par.getValueAsString()));
+			this._form.add(new HiddenInput(par.getName(), par.getValueAsString()));
 		}
 				
 	}
 	
 	public void maintainParameter(String par){
-		_maintainParameters.add(par);
+		this._maintainParameters.add(par);
 	}
 	
 	public void setParameter(String name, String value){
-		_setParameters.add(new Parameter(name, value));
+		this._setParameters.add(new Parameter(name, value));
 	}
 		
 }

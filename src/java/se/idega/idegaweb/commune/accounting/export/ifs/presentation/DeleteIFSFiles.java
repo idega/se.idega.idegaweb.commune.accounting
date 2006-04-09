@@ -59,9 +59,10 @@ public class DeleteIFSFiles extends AccountingBlock {
 
 	private int parseAction(IWContext iwc) {
 		try {
-			_currentOperation = getSession().getOperationalField();
-			if (_currentOperation == null)
-				_currentOperation = "";
+			this._currentOperation = getSession().getOperationalField();
+			if (this._currentOperation == null) {
+				this._currentOperation = "";
+			}
 		}
 		catch (RemoteException e) {
 		}
@@ -74,7 +75,7 @@ public class DeleteIFSFiles extends AccountingBlock {
 
 	private void deleteFiles(IWContext iwc) {
 		try {
-			getIFSBusiness(iwc).deleteFiles(_currentOperation,iwc.getCurrentUser());
+			getIFSBusiness(iwc).deleteFiles(this._currentOperation,iwc.getCurrentUser());
 		}
 		catch (RemoteException e1) {
 			e1.printStackTrace();

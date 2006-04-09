@@ -21,13 +21,13 @@ public class InvoiceComparator implements Comparator {
 	 */
 	
 	public int compare(Object o1, Object o2) {		
-		collator = Collator.getInstance(LocaleUtil.getSwedishLocale());
+		this.collator = Collator.getInstance(LocaleUtil.getSwedishLocale());
 
 
 		if (o1 instanceof InvoiceRecord){
-			compareString1 = String.valueOf(((InvoiceRecord) o1).getOrderId());
-			compareString2 = String.valueOf(((InvoiceRecord) o2).getOrderId());
+			this.compareString1 = String.valueOf(((InvoiceRecord) o1).getOrderId());
+			this.compareString2 = String.valueOf(((InvoiceRecord) o2).getOrderId());
 		}
-		return collator.compare(compareString1, compareString2);
+		return this.collator.compare(this.compareString1, this.compareString2);
 	}
 }

@@ -54,9 +54,10 @@ public class FileCreationCheckList extends AccountingBlock {
 		ApplicationForm form = new ApplicationForm(this);
 
 		try {
-			_currentOperation = getSession().getOperationalField();
-			if (_currentOperation == null)
-				_currentOperation = "";
+			this._currentOperation = getSession().getOperationalField();
+			if (this._currentOperation == null) {
+				this._currentOperation = "";
+			}
 		}
 		catch (RemoteException e) {
 		}
@@ -80,14 +81,15 @@ public class FileCreationCheckList extends AccountingBlock {
 		
 		IFSCheckHeader header = null;
 		try {
-			header = getIFSBusiness(iwc).getIFSCheckHeaderBySchoolCategory(_currentOperation);
-			if (header != null)
-				_headerId = ((Integer)header.getPrimaryKey()).intValue();
+			header = getIFSBusiness(iwc).getIFSCheckHeaderBySchoolCategory(this._currentOperation);
+			if (header != null) {
+				this._headerId = ((Integer)header.getPrimaryKey()).intValue();
+			}
 		}
 		catch (RemoteException e) {
 			e.printStackTrace();
 			header = null;
-			_headerId = -1;
+			this._headerId = -1;
 		}
 
 		table.add(getLocalizedLabel(KEY_HEADER_OPERATION, "School category"), 1, 1);
@@ -95,22 +97,28 @@ public class FileCreationCheckList extends AccountingBlock {
 		table.add(getLocalizedButton(PARAM_EXCEL,KEY_HEADER_EXCEL,"Excel"),3,1);
 
 		table.add(getLocalizedLabel(KEY_HEADER_STATUS, "Status"), 1, 2);
-		if (header != null)
+		if (header != null) {
 			table.add(getLocalizedText(header.getStatus(),header.getStatus()), 2, 2);
+		}
 
 		table.add(getLocalizedLabel(KEY_HEADER_EVENT_DATE, "Event date"), 1, 3);
-		if (header != null)
+		if (header != null) {
 			table.add(header.getEventDate().toString(), 2, 3);
+		}
 
 		table.add(getLocalizedLabel(KEY_HEADER_START_TIME, "Start time"), 1, 4);
-		if (header != null)
-			if (header.getEventStartTime() != null)
+		if (header != null) {
+			if (header.getEventStartTime() != null) {
 				table.add(header.getEventStartTime().toString(), 2, 4);
+			}
+		}
 
 		table.add(getLocalizedLabel(KEY_HEADER_END_TIME, "End time"), 1, 5);
-		if (header != null)
-			if (header.getEventEndTime() != null)
+		if (header != null) {
+			if (header.getEventEndTime() != null) {
 				table.add(header.getEventEndTime().toString(), 2, 5);
+			}
+		}
 		
 		return table;
 	}
@@ -123,7 +131,7 @@ public class FileCreationCheckList extends AccountingBlock {
 		table.setCellspacing(getCellspacing());
 
 		table.add(getLocalizedLabel(KEY_BOTTON_TOTAL, "Total number of suspected errors"), 1, 1);
-		table.add(Integer.toString(_numberOfErrors), 2, 1);
+		table.add(Integer.toString(this._numberOfErrors), 2, 1);
 
 		return table;
 	}
@@ -142,12 +150,12 @@ public class FileCreationCheckList extends AccountingBlock {
 		try {
 			biz = getIFSBusiness(iwc);
 
-			Collection items = biz.getIFSCheckRecordByHeaderId(_headerId);
+			Collection items = biz.getIFSCheckRecordByHeaderId(this._headerId);
 			if (items != null && !items.isEmpty()) {
 				Iterator iter = items.iterator();
 				while (iter.hasNext()) {
 					IFSCheckRecord rec = (IFSCheckRecord) iter.next();
-					list.add(++_numberOfErrors);
+					list.add(++this._numberOfErrors);
 					list.add(rec.getErrorConcerns());
 					list.add(localize(rec.getError(),rec.getError()));
 				}

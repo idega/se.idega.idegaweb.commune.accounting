@@ -16,10 +16,10 @@ import se.idega.idegaweb.commune.accounting.regulations.data.RegulationSpecType;
 import se.idega.idegaweb.commune.accounting.regulations.data.RegulationSpecTypeHome;
 
 /**
- * Last modified: $Date: 2004/05/05 09:42:16 $ by $Author: sigtryggur $
+ * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
  *
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class PaymentSummary {
 	private int placementCount = 0;
@@ -42,19 +42,21 @@ public class PaymentSummary {
 		// count values
 		for (int i = 0; i < records.length; i++) {
 			final PaymentRecord paymentRecord = records [i];
-			placementCount += paymentRecord.getPlacements ();
+			this.placementCount += paymentRecord.getPlacements ();
 			final String regSpecTypeName = paymentRecord.getRuleSpecType ();
 			String mainRuleName = "";
-			if (mainRuleStringValues != null && mainRuleStringValues.containsKey(regSpecTypeName))
+			if (mainRuleStringValues != null && mainRuleStringValues.containsKey(regSpecTypeName)) {
 				mainRuleName = (String)mainRuleStringValues.get(regSpecTypeName);
+			}
 			else if (regSpecTypeName != null){
 				try {
 					final	RegulationSpecType regSpecType
 							= regSpecTypeHome.findByRegulationSpecType (regSpecTypeName);
 					final MainRule mainRule = regSpecType.getMainRule ();
 					mainRuleName = mainRule.getMainRule ();
-					if (mainRuleStringValues != null)
+					if (mainRuleStringValues != null) {
 						mainRuleStringValues.put(regSpecTypeName, mainRuleName);
+					}
 				} catch (FinderException e) {
 					System.err.println ("PaymentRecord id with incorrect reg spec type = "
 															+ paymentRecord.getPrimaryKey ());
@@ -63,14 +65,14 @@ public class PaymentSummary {
 			}
 			final long amountExcl = se.idega.idegaweb.commune.accounting.business.AccountingUtil.roundAmount (paymentRecord.getTotalAmount ());
 			if (mainRuleName.equals (RegSpecConstant.MAIN_RULE_VAT)) {
-				totalAmountVat += amountExcl;
+				this.totalAmountVat += amountExcl;
 			} else {
-				totalAmountVatExcluded += amountExcl;
+				this.totalAmountVatExcluded += amountExcl;
 			}
 		}		
 
 		try {
-			individualCount
+			this.individualCount
 					= invoiceRecordHome.getIndividualCountByPaymentRecords (records);
 		} catch (IDOException e) {
 			e.printStackTrace ();
@@ -104,18 +106,18 @@ public class PaymentSummary {
 	*/
 
 	public long getPlacementCount () {
-		return placementCount;
+		return this.placementCount;
 	}
 
 	public long getIndividualsCount () {
-		return individualCount; 
+		return this.individualCount; 
 	}
 
 	public long getTotalAmountVatExcluded () {
-		return totalAmountVatExcluded;
+		return this.totalAmountVatExcluded;
 	}
 	
 	public long getTotalAmountVat () {
-		 return totalAmountVat;
+		 return this.totalAmountVat;
 	}
 }

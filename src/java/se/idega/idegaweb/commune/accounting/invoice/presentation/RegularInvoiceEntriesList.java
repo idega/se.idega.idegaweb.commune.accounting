@@ -180,8 +180,8 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 			return;	
 		}
 		
-		_userSearcher = getUserSearcherForm(iwc, getUser(iwc));
-		User user = _userSearcher.getUser();
+		this._userSearcher = getUserSearcherForm(iwc, getUser(iwc));
+		User user = this._userSearcher.getUser();
 
 
 		String parFrom = iwc.getParameter(PAR_SEEK_FROM);
@@ -199,11 +199,11 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		boolean seekToFormatError = ! seekToEmpty && toDate == null;
 		boolean seekNegativePeriode = toDate != null && fromDate != null && toDate.before(fromDate);
 		errorMessage =  
-			(seekFromFormatError ? localize(LOCALIZER_PREFIX + "date_format_from_error", "From format error") : 
-			(seekToFormatError ? localize(LOCALIZER_PREFIX + "date_format_to_error", "To format error") :
-			(seekFromEmptyOnly ? localize(LOCALIZER_PREFIX + "date_from_missing", "From missing") :
-			(seekToEmptyOnly ? localize(LOCALIZER_PREFIX + "date_to_missing", "To missing") : 
-			(seekNegativePeriode ? localize(LOCALIZER_PREFIX + "negative_periode", "Neagtive periode") :
+			(seekFromFormatError ? localize(this.LOCALIZER_PREFIX + "date_format_from_error", "From format error") : 
+			(seekToFormatError ? localize(this.LOCALIZER_PREFIX + "date_format_to_error", "To format error") :
+			(seekFromEmptyOnly ? localize(this.LOCALIZER_PREFIX + "date_from_missing", "From missing") :
+			(seekToEmptyOnly ? localize(this.LOCALIZER_PREFIX + "date_to_missing", "To missing") : 
+			(seekNegativePeriode ? localize(this.LOCALIZER_PREFIX + "negative_periode", "Neagtive periode") :
 				null
 			)))));
 		
@@ -227,7 +227,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 					handleDefaultAction(iwc, user, fromDate, toDate);
 					break;
 				case ACTION_SEARCH_INVOICE:	
-					handleDefaultAction(iwc, user, fromDate, toDate, (seekFromEmpty && seekToEmpty) ? localize(LOCALIZER_PREFIX + "date_empty", "No date present") : null);						
+					handleDefaultAction(iwc, user, fromDate, toDate, (seekFromEmpty && seekToEmpty) ? localize(this.LOCALIZER_PREFIX + "date_empty", "No date present") : null);						
 					break;
 				case ACTION_CANCEL_NEW_EDIT:				
 				case ACTION_OPFIELD_MAINSCREEN:
@@ -354,7 +354,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		RegularInvoiceEntry entry = getRegularInvoiceEntry(iwc.getParameter(PAR_PK));
 		
 		if (!iwc.isLoggedOn()){
-			errorMessages.put(ERROR_NO_USER_SESSION, localize(ERROR_NO_USER_SESSION, "Not logged in."));
+			errorMessages.put(this.ERROR_NO_USER_SESSION, localize(this.ERROR_NO_USER_SESSION, "Not logged in."));
 			return;
 		}
 		User loggedOnUser = iwc.getCurrentUser();
@@ -379,7 +379,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 			amount = AccountingUtil.roundAmount(new Float(iwc.getParameter(PAR_AMOUNT_PR_MONTH)).floatValue());
 		}catch(NumberFormatException ex){
 			ex.printStackTrace();
-			errorMessages.put(ERROR_AMOUNT_FORMAT, localize(ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
+			errorMessages.put(this.ERROR_AMOUNT_FORMAT, localize(this.ERROR_AMOUNT_FORMAT, "Wrong format for amount"));
 		}
 		entry.setAmount(amount);
 		
@@ -402,7 +402,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 
 		RegulationSpecType regSpecType = getRegulationSpecType(iwc.getParameter(PAR_REGULATION_TYPE));
 		if (regSpecType.getRegSpecType().equals(RegSpecConstant.BLANK)){
-			errorMessages.put(ERROR_REG_SPEC_BLANK, localize(LOCALIZER_PREFIX + "reg_spec_blank", "Choose another value for regelspec.typ."));
+			errorMessages.put(this.ERROR_REG_SPEC_BLANK, localize(this.LOCALIZER_PREFIX + "reg_spec_blank", "Choose another value for regelspec.typ."));
 		}	
 
 		entry.setRegSpecTypeId(Integer.parseInt((String) regSpecType.getPrimaryKey()));
@@ -416,12 +416,12 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		try{
 			PostingBlock p = new PostingBlock(iwc);			
 			if (p.getOwnPosting() == null || p.getOwnPosting().trim().length() == 0){
-				errorMessages.put(ERROR_OWNPOSTING_EMPTY, localize(LOCALIZER_PREFIX + "own_posting_null", "Own posting must be given a value"));
+				errorMessages.put(this.ERROR_OWNPOSTING_EMPTY, localize(this.LOCALIZER_PREFIX + "own_posting_null", "Own posting must be given a value"));
 			}			
 			entry.setOwnPosting(p.getOwnPosting());
 			entry.setDoublePosting(p.getDoublePosting());
 		} catch (PostingParametersException e) {
-			errorMessages.put(ERROR_POSTING, localize(e.getTextKey(), e.getTextKey()) + e. getDefaultText());
+			errorMessages.put(this.ERROR_POSTING, localize(e.getTextKey(), e.getTextKey()) + e. getDefaultText());
 		}	
 		
 		boolean schoolCategorySet = false;
@@ -435,12 +435,12 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		}		
 		
 		if (from == null || to == null){
-			errorMessages.put(ERROR_DATE_FORMAT, localize(LOCALIZER_PREFIX + "date_format_yymm_warning", "Wrong date format. use: yymm."));
+			errorMessages.put(this.ERROR_DATE_FORMAT, localize(this.LOCALIZER_PREFIX + "date_format_yymm_warning", "Wrong date format. use: yymm."));
 		} else if (to.before(from)){
-			errorMessages.put(ERROR_DATE_PERIODE_NEGATIVE, localize(LOCALIZER_PREFIX + "negative_periode", "Neagtive periode"));
+			errorMessages.put(this.ERROR_DATE_PERIODE_NEGATIVE, localize(this.LOCALIZER_PREFIX + "negative_periode", "Neagtive periode"));
 		} 
 		if (entry.getPlacing() == null || entry.getPlacing().length() == 0){
-			errorMessages.put(ERROR_PLACING_EMPTY, localize(LOCALIZER_PREFIX + "placing_null", "Placing must be given a value"));
+			errorMessages.put(this.ERROR_PLACING_EMPTY, localize(this.LOCALIZER_PREFIX + "placing_null", "Placing must be given a value"));
 		} 
 
 		
@@ -572,7 +572,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		form.maintainParameter(RegulationSearchPanel.PAR_PROVIDER);
 		Table t2 = new Table();
 		int row = 1;
-		UserSearcher searcher = _userSearcher;
+		UserSearcher searcher = this._userSearcher;
 		
 		t2.add(searcher, 1, row++);
 		if (user != null){
@@ -757,8 +757,8 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
 		
-		if (errorMessages.get(ERROR_NO_USER_SESSION) != null){
-			table.add(getErrorText((String) errorMessages.get(ERROR_NO_USER_SESSION)), 1, row++);			
+		if (errorMessages.get(this.ERROR_NO_USER_SESSION) != null){
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_NO_USER_SESSION)), 1, row++);			
 		}			
 				
 		addField(table, KEY_SSN, user.getPersonalID(), 1, row);
@@ -771,8 +771,8 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		searchPanel.setLeftColumnMinWidth(MIN_LEFT_COLUMN_WIDTH);
 		
 		searchPanel.maintainParameter(new String[]{PAR_USER_SSN, PAR_FROM, PAR_TO, PAR_AMOUNT_PR_MONTH, PAR_SEEK_FROM, PAR_SEEK_TO, PAR_PK});
-		if (errorMessages.get(ERROR_PLACING_EMPTY) != null) {
-			searchPanel.setError((String) errorMessages.get(ERROR_PLACING_EMPTY));			
+		if (errorMessages.get(this.ERROR_PLACING_EMPTY) != null) {
+			searchPanel.setError((String) errorMessages.get(this.ERROR_PLACING_EMPTY));			
 		}		
 		searchPanel.setPlacingIfNull(entry.getPlacing());
 		searchPanel.setSchoolIfNull(entry.getSchool());
@@ -797,12 +797,12 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 
 
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
-		if (errorMessages.get(ERROR_DATE_FORMAT) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_DATE_FORMAT)), 2, row++);			
+		if (errorMessages.get(this.ERROR_DATE_FORMAT) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_DATE_FORMAT)), 2, row++);			
 		}
 		
-		if (errorMessages.get(ERROR_DATE_PERIODE_NEGATIVE) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_DATE_PERIODE_NEGATIVE)), 2, row++);			
+		if (errorMessages.get(this.ERROR_DATE_PERIODE_NEGATIVE) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_DATE_PERIODE_NEGATIVE)), 2, row++);			
 		}
 				
 		table.add(getLocalizedLabel(KEY_PERIODE, "Period:"), 1, row);
@@ -829,8 +829,8 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 //			
 //		}
 		
-		if (errorMessages.get(ERROR_AMOUNT_FORMAT) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_AMOUNT_FORMAT)), 2, row++);			
+		if (errorMessages.get(this.ERROR_AMOUNT_FORMAT) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_AMOUNT_FORMAT)), 2, row++);			
 		}		
 		addIntField(table, PAR_AMOUNT_PR_MONTH, KEY_AMOUNT_PR_MONTH, "" + AccountingUtil.roundAmount(entry.getAmount()), 1, row++);
 
@@ -847,18 +847,18 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 
 		table.setHeight(row++, EMPTY_ROW_HEIGHT);
 
-		if (errorMessages.get(ERROR_REG_SPEC_BLANK) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_REG_SPEC_BLANK)), 2, row++);			
+		if (errorMessages.get(this.ERROR_REG_SPEC_BLANK) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_REG_SPEC_BLANK)), 2, row++);			
 		}
 		table.mergeCells(2, row, 10, row);
 		addDropDown(table, PAR_REGULATION_TYPE, KEY_REGULATION_TYPE, regTypes, entry.getRegSpecTypeId(), "getRegSpecType", 1, row++);
 		table.mergeCells(2, row, 10, row);
 		addDropDownLocalized(table, PAR_VAT_RULE, KEY_VAT_RULE, vatTypes, entry.getVatRuleRegulationId(),  "getName", 1, row++);
 
-		if (errorMessages.get(ERROR_POSTING) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_POSTING)), 2, row++);			
-		} else if (errorMessages.get(ERROR_OWNPOSTING_EMPTY) != null) {
-			table.add(getErrorText((String) errorMessages.get(ERROR_OWNPOSTING_EMPTY)), 2, row++);			
+		if (errorMessages.get(this.ERROR_POSTING) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_POSTING)), 2, row++);			
+		} else if (errorMessages.get(this.ERROR_OWNPOSTING_EMPTY) != null) {
+			table.add(getErrorText((String) errorMessages.get(this.ERROR_OWNPOSTING_EMPTY)), 2, row++);			
 		} else if (postingException != null){
 			Text error = getLocalizedException(postingException);
 			table.add(error, 2, row++);				
@@ -1233,7 +1233,7 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 		
 	private Table addIntField(Table table, String parameter, String key, String value, int col, int row){
 		TextInput input = getTextInput(parameter, value);
-		input.setAsPosNegIntegers(localize(LOCALIZER_PREFIX + "int_format_error", "Format-error: Expecting integer:" )+ " " + localize(key, "")); 
+		input.setAsPosNegIntegers(localize(this.LOCALIZER_PREFIX + "int_format_error", "Format-error: Expecting integer:" )+ " " + localize(key, "")); 
 		return addWidget(table, key, input, col, row);
 	}		
 	

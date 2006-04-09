@@ -25,7 +25,7 @@ public class BatchRunList extends AccountingBlock {
 	private static String UPDATE_KEY = "updateKey";
 	private String response;
 	public void init(IWContext iwc) {
-		response = null;
+		this.response = null;
 		handleAction(iwc);
 		Form form = new Form();
 
@@ -59,10 +59,10 @@ public class BatchRunList extends AccountingBlock {
 			}
 			form.add(errorTable);
 		} else {
-			response = "batchlist.No_batchruns_in_queue";
+			this.response = "batchlist.No_batchruns_in_queue";
 		}
-		if (response != null) {
-			form.add(getLocalizedText(response, response.replace('_', ' ')));
+		if (this.response != null) {
+			form.add(getLocalizedText(this.response, this.response.replace('_', ' ')));
 			form.add(new Break());
 		}
 		SubmitButton submitButton =
@@ -86,7 +86,7 @@ public class BatchRunList extends AccountingBlock {
 	 */
 	private void handleAction(IWContext iwc) {
 		if (iwc.isParameterSet(KEY)) {
-			response = BatchRunQueue.removeBatchRunFromQueue(iwc.getParameter(KEY));
+			this.response = BatchRunQueue.removeBatchRunFromQueue(iwc.getParameter(KEY));
 			System.out.println(iwc.getParameter(KEY));
 		}
 	}

@@ -346,7 +346,9 @@ public class InvoiceRecordBMPBean extends GenericEntity implements InvoiceRecord
 
 	public Collection ejbFindByPaymentRecords (PaymentRecord [] paymentRecords)
         throws FinderException {
-		if (0 >= paymentRecords.length) throw new FinderException ();
+		if (0 >= paymentRecords.length) {
+			throw new FinderException ();
+		}
 		final IDOQuery sql = idoQuery ();
 		sql.appendSelectAllFrom (this);
 		sql.appendWhere (COLUMN_PAYMENT_RECORD_ID).append (" in ( ");
@@ -356,7 +358,9 @@ public class InvoiceRecordBMPBean extends GenericEntity implements InvoiceRecord
 	}
 
 	public int ejbHomeGetIndividualCountByPaymentRecords (PaymentRecord [] paymentRecords) throws IDOException {
-		if (0 >= paymentRecords.length) return 0;
+		if (0 >= paymentRecords.length) {
+			return 0;
+		}
 		final String R_ = "r."; // sql alias for invoice record
 		final String M_ = "m."; // sql alias for schoolclassmember
 		final String [] tableNames =

@@ -27,20 +27,21 @@ public class TooManyRegulationsException extends AccountingException {
 	}
 
 	public void addRegulationName(String name) {
-		if (_regNames == null)
-			_regNames = new ArrayList();
+		if (this._regNames == null) {
+			this._regNames = new ArrayList();
+		}
 		
-		_regNames.add(name);
+		this._regNames.add(name);
 	}
 	
 	public ArrayList getRegulationNames() {
-		return _regNames;
+		return this._regNames;
 	}
 	
 	public String getRegulationNamesString() {
 		StringBuffer names = new StringBuffer("");
-		if (_regNames != null) {
-			Iterator it =_regNames.iterator();
+		if (this._regNames != null) {
+			Iterator it =this._regNames.iterator();
 			while (it.hasNext()) {
 				String name = (String)it.next();
 				names.append(name);

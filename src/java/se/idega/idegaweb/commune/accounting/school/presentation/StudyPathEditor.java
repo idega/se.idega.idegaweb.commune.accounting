@@ -1,5 +1,5 @@
 /*
- * $Id: StudyPathEditor.java,v 1.12 2005/05/11 07:15:37 laddi Exp $
+ * $Id: StudyPathEditor.java,v 1.13 2006/04/09 11:53:33 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -33,10 +33,10 @@ import com.idega.presentation.ui.TextInput;
 /** 
  * This idegaWeb block that handles study paths for schools.
  * <p>
- * Last modified: $Date: 2005/05/11 07:15:37 $ by $Author: laddi $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  *
  * @author Anders Lindman
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class StudyPathEditor extends AccountingBlock {
 
@@ -307,11 +307,13 @@ public class StudyPathEditor extends AccountingBlock {
 				int points = -1;
 				points = sp.getPoints();
 				String sPoints = "";
-				if (points != -1)
+				if (points != -1) {
 					sPoints = ", " + (new Integer (points)).toString();
+				}
 				String localizedKey = "";
-				if (spg != null && localizedKey != null && localizedKey.equals(""))
+				if (spg != null && localizedKey != null && localizedKey.equals("")) {
 					localizedKey = ", " + getLocalizedText(spg.getLocalizationKey(), spg.getLocalizationKey());
+				}
 				l.addParameter(PARAMETER_STUDY_PATH_ID, sp.getPrimaryKey().toString());
 				list.add(l);
 				list.add(sp.getDescription() + sPoints + localizedKey);
@@ -365,8 +367,9 @@ public class StudyPathEditor extends AccountingBlock {
 			app.setLocalizedTitle(KEY_TITLE_EDIT, "Redigera studieväg");
 		}
 		
-		if (points.equals("-1"))
+		if (points.equals("-1")) {
 			points = "";
+		}
 		
 		Table table = new Table();
 		table.setCellpadding(getCellpadding());

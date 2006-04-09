@@ -1,5 +1,5 @@
 /*
- * $Id: PostingParameterList.java,v 1.34 2004/02/25 08:40:27 laddi Exp $
+ * $Id: PostingParameterList.java,v 1.35 2006/04/09 11:53:32 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -48,10 +48,10 @@ import se.idega.idegaweb.commune.accounting.posting.data.PostingParameters;
  * @see se.idega.idegaweb.commune.accounting.posting.data.PostingParameters;
  * @see se.idega.idegaweb.commune.accounting.posting.data.PostingString;
  * <p>
- * $Id: PostingParameterList.java,v 1.34 2004/02/25 08:40:27 laddi Exp $
+ * $Id: PostingParameterList.java,v 1.35 2006/04/09 11:53:32 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kjell Lindman</a>
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class PostingParameterList extends AccountingBlock {
 
@@ -105,14 +105,14 @@ public class PostingParameterList extends AccountingBlock {
 	 * Handles the property editPage
 	 */
 	public void setEditPage(ICPage page) {
-		_editPage = page;
+		this._editPage = page;
 	}
 
 	/**
 	 * Handles the property editPage
 	 */
 	public ICPage getEditPage() {
-		return _editPage;
+		return this._editPage;
 	}
 
 
@@ -177,7 +177,7 @@ public class PostingParameterList extends AccountingBlock {
 
 	private ButtonPanel getButtonPanel() {
 		ButtonPanel buttonPanel = new ButtonPanel(this);
-		buttonPanel.addLocalizedButton(PARAM_NEW, KEY_NEW, "Ny", _editPage);
+		buttonPanel.addLocalizedButton(PARAM_NEW, KEY_NEW, "Ny", this._editPage);
 		return buttonPanel;
 	}
 	
@@ -211,17 +211,17 @@ public class PostingParameterList extends AccountingBlock {
 
 		try {
 			pBiz = getPostingBusiness(iwc);
-			int accountLength = pBiz.getPostingFieldByDateAndFieldNo(_currentFromDate, 1);						
+			int accountLength = pBiz.getPostingFieldByDateAndFieldNo(this._currentFromDate, 1);						
 			//Collection items = pBiz.findPostingParametersByPeriod(_currentFromDate, _currentToDate);
 			// aron 18.02.2004
-			Collection items = pBiz.findPostingParametersByPeriod(_currentFromDate, _currentToDate,_currentOperation);
+			Collection items = pBiz.findPostingParametersByPeriod(this._currentFromDate, this._currentToDate,this._currentOperation);
 			if (items != null) {
 				Iterator iter = items.iterator();
 				while (iter.hasNext()) {
 					PostingParameters p = (PostingParameters) iter.next();
 					Link link = getLink(formatDate(p.getPeriodFrom(), 4) + "-" + formatDate(p.getPeriodTo(), 4),
 										 PARAM_EDIT_ID, p.getPrimaryKey().toString());
-					link.setPage(_editPage);
+					link.setPage(this._editPage);
 					link.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					link.addParameter(PARAM_RETURN_TO_DATE, tod);
 					list.add(link);
@@ -271,7 +271,7 @@ public class PostingParameterList extends AccountingBlock {
 					edit.addParameter(PARAM_EDIT_ID, p.getPrimaryKey().toString());
 					edit.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					edit.addParameter(PARAM_RETURN_TO_DATE, tod);
-					edit.setPage(_editPage);
+					edit.setPage(this._editPage);
 					list.add(edit);
 					
 					Link copy = new Link(getCopyIcon(localize(KEY_BUTTON_COPY, "Kopiera")));
@@ -279,7 +279,7 @@ public class PostingParameterList extends AccountingBlock {
 					copy.addParameter(PARAM_MODE_COPY, "1");
 					edit.addParameter(PARAM_RETURN_FROM_DATE, fromd);
 					edit.addParameter(PARAM_RETURN_TO_DATE, tod);
-					copy.setPage(_editPage);
+					copy.setPage(this._editPage);
 					list.add(copy);
 
 					SubmitButton delete = new SubmitButton(getDeleteIcon(localize(KEY_REMOVE, "Radera")));
@@ -309,7 +309,7 @@ public class PostingParameterList extends AccountingBlock {
 		//table.add(getLocalizedLabel(KEY_HEADER_SORT_BY, "Sortera pa"), 3, 1);
 		
 		table.add(getLocalizedLabel(KEY_PERIOD_SEARCH, "Period"), 1, 2);
-		table.add(getFromToDatePanel(PARAM_FROM, _currentFromDate, PARAM_TO, _currentToDate), 2, 2);
+		table.add(getFromToDatePanel(PARAM_FROM, this._currentFromDate, PARAM_TO, this._currentToDate), 2, 2);
 		table.add(getLocalizedButton(PARAM_SEARCH, KEY_SEARCH, "Sök"), 3, 2);
 		table.add(new HiddenInput(PARAM_DELETE_ID, ""));
 
@@ -331,8 +331,8 @@ public class PostingParameterList extends AccountingBlock {
 
 	private void setupDefaultDates(IWContext iwc) { 
 		try {
-			_currentOperation = getSession().getOperationalField();
-			_currentOperation = _currentOperation == null ? "" : _currentOperation;
+			this._currentOperation = getSession().getOperationalField();
+			this._currentOperation = this._currentOperation == null ? "" : this._currentOperation;
 		} catch (RemoteException e) {}
 		
 		
@@ -345,47 +345,47 @@ public class PostingParameterList extends AccountingBlock {
 		} catch (Exception e) {}
 
 		if (iwc.isParameterSet(PARAM_FROM)) {
-			_currentFromDate = parseDate(iwc.getParameter(PARAM_FROM));
+			this._currentFromDate = parseDate(iwc.getParameter(PARAM_FROM));
 		} else {
 			if (iwc.isParameterSet(PARAM_RETURN_FROM_DATE)) {
-				_currentFromDate = parseDate(iwc.getParameter(PARAM_RETURN_FROM_DATE));
+				this._currentFromDate = parseDate(iwc.getParameter(PARAM_RETURN_FROM_DATE));
 			}
-			if (_currentFromDate == null) {
+			if (this._currentFromDate == null) {
 				if (sessionFromDate != null) {
-					_currentFromDate = sessionFromDate;				
+					this._currentFromDate = sessionFromDate;				
 				} else {
-					_currentFromDate = getFlattenedTodaysDate();
+					this._currentFromDate = getFlattenedTodaysDate();
 				}
 			}
 		}
 			
 		if (iwc.isParameterSet(PARAM_TO)) {
-			_currentToDate = parseDate(iwc.getParameter(PARAM_TO));
+			this._currentToDate = parseDate(iwc.getParameter(PARAM_TO));
 		} else {
 			if (iwc.isParameterSet(PARAM_RETURN_TO_DATE)) {
-				_currentToDate = parseDate(iwc.getParameter(PARAM_RETURN_TO_DATE));
+				this._currentToDate = parseDate(iwc.getParameter(PARAM_RETURN_TO_DATE));
 			}
-			if (_currentToDate == null) {
+			if (this._currentToDate == null) {
 				if (sessionToDate != null) {
-					_currentToDate = sessionToDate;				
+					this._currentToDate = sessionToDate;				
 				} else {
-					_currentToDate = parseDate("9999-12-31");
+					this._currentToDate = parseDate("9999-12-31");
 				}
 			}
 		}
 			
-		if(_currentToDate == null) {
-			_currentToDate = parseDate("9999-12-31");
+		if(this._currentToDate == null) {
+			this._currentToDate = parseDate("9999-12-31");
 		}
-		if(_currentFromDate == null) {
-			_currentFromDate = getFlattenedTodaysDate();
+		if(this._currentFromDate == null) {
+			this._currentFromDate = getFlattenedTodaysDate();
 		}
-		_currentFromDate = parseDate(formatDate(_currentFromDate, 4));
-		_currentToDate = parseDate(formatDate(_currentToDate, 4));
+		this._currentFromDate = parseDate(formatDate(this._currentFromDate, 4));
+		this._currentToDate = parseDate(formatDate(this._currentToDate, 4));
 		
 		try {
-			getSession().getUserContext().setSessionAttribute(PARAM_FROM, _currentFromDate);
-			getSession().getUserContext().setSessionAttribute(PARAM_TO, _currentToDate);
+			getSession().getUserContext().setSessionAttribute(PARAM_FROM, this._currentFromDate);
+			getSession().getUserContext().setSessionAttribute(PARAM_TO, this._currentToDate);
 		} catch (Exception e) {}
 	}
 	

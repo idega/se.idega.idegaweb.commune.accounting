@@ -1,5 +1,5 @@
 /*
- * $Id: IFSCreateExcelFileUtil.java,v 1.1 2005/01/28 11:36:24 palli Exp $ Created on Jan
+ * $Id: IFSCreateExcelFileUtil.java,v 1.2 2006/04/09 11:53:33 laddi Exp $ Created on Jan
  * 21, 2005
  * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -49,10 +49,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- * Last modified: $Date: 2005/01/28 11:36:24 $ by $Author: palli $
+ * Last modified: $Date: 2006/04/09 11:53:33 $ by $Author: laddi $
  * 
  * @author <a href="mailto:palli@idega.com">palli </a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IFSCreateExcelFileUtil {
 	
@@ -102,7 +102,7 @@ public class IFSCreateExcelFileUtil {
 			int[] columnWidths = { 15, 20, 12, 35 };
 			String[] columnNames = { "Fakturaperiod", "Fakturmottagars pnr", "Belopp", "Avvikelse orsak" };
 			createExcelWorkBook(columnWidths, columnNames, headerText);
-			HSSFSheet sheet = wb.getSheet("Excel");
+			HSSFSheet sheet = this.wb.getSheet("Excel");
 			short rowNumber = (short) (sheet.getLastRowNum() + 1);
 			short cellNumber = 0;
 			long totalAmount = 0;
@@ -119,8 +119,9 @@ public class IFSCreateExcelFileUtil {
 				if (!iRecs.isEmpty()) {
 					long headerSum = 0;
 					invoiceHeaderDeviations = false;
-					for (int i = 0; i < iRecs.size(); i++)
+					for (int i = 0; i < iRecs.size(); i++) {
 						headerSum += AccountingUtil.roundAmount(((InvoiceRecord) iRecs.get(i)).getAmount());
+					}
 					if (headerSum < 0) {
 						setDeviationString("Total belopp från faktura huvud är negativt");
 						invoiceHeaderDeviations = true;
@@ -140,33 +141,36 @@ public class IFSCreateExcelFileUtil {
 						if (recordAmount >= 0 || headerSum < 0) {
 							if (invoiceHeaderDeviations || hasInvoiceRecordDeviations(iRec)) {
 								totalAmount += recordAmount;
-								row = sheet.createRow(rowNumber++);
-								row.createCell(cellNumber++).setCellValue(iHead.getPeriod().toString());
-								if (iHead.getCustodian() != null)
-									row.createCell(cellNumber++).setCellValue(iHead.getCustodian().getPersonalID());
-								else
+								this.row = sheet.createRow(rowNumber++);
+								this.row.createCell(cellNumber++).setCellValue(iHead.getPeriod().toString());
+								if (iHead.getCustodian() != null) {
+									this.row.createCell(cellNumber++).setCellValue(iHead.getCustodian().getPersonalID());
+								}
+								else {
 									cellNumber++;
-								cell = row.createCell(cellNumber++);
-								cell.setCellValue(getNumberFormat().format(recordAmount));
-								cell.setCellStyle(getStyleAlignRight());
-								row.createCell(cellNumber++).setCellValue(getDeviationString());
+								}
+								this.cell = this.row.createCell(cellNumber++);
+								this.cell.setCellValue(getNumberFormat().format(recordAmount));
+								this.cell.setCellStyle(getStyleAlignRight());
+								this.row.createCell(cellNumber++).setCellValue(getDeviationString());
 								cellNumber = 0;
-								if (!invoiceHeaderDeviations)
+								if (!invoiceHeaderDeviations) {
 									setDeviationString("");
+								}
 							}
 						}
 					}
 				}
 			}
 			setDeviationString("");
-			row = sheet.createRow(rowNumber++);
-			cell = row.createCell(cellNumber);
-			cell.setCellValue("Summa");
-			cell.setCellStyle(getStyleBold());
-			cell = row.createCell(cellNumber += 2);
-			cell.setCellValue(getNumberFormat().format(totalAmount));
-			cell.setCellStyle(getStyleBoldAlignRight());
-			saveExcelWorkBook(fileName, wb);
+			this.row = sheet.createRow(rowNumber++);
+			this.cell = this.row.createCell(cellNumber);
+			this.cell.setCellValue("Summa");
+			this.cell.setCellStyle(getStyleBold());
+			this.cell = this.row.createCell(cellNumber += 2);
+			this.cell.setCellValue(getNumberFormat().format(totalAmount));
+			this.cell.setCellStyle(getStyleBoldAlignRight());
+			saveExcelWorkBook(fileName, this.wb);
 		}
 	}
 
@@ -200,7 +204,7 @@ public class IFSCreateExcelFileUtil {
 			return true;
 		}
 		try {
-			CareBusiness business = (CareBusiness) IBOLookup.getServiceInstance(iwac, CareBusiness.class);
+			CareBusiness business = (CareBusiness) IBOLookup.getServiceInstance(this.iwac, CareBusiness.class);
 			return !business.hasGrantedCheck(contract.getChild());
 		}
 		catch (RemoteException re) {
@@ -222,7 +226,7 @@ public class IFSCreateExcelFileUtil {
 				columnNames = kommunColumnNames;
 			}
 			createExcelWorkBook(columnWidths, columnNames, headerText);
-			HSSFSheet sheet = wb.getSheet("Excel");
+			HSSFSheet sheet = this.wb.getSheet("Excel");
 			short rowNumber = (short) (sheet.getLastRowNum() + 1);
 			// HSSFHeader header = sheet.getHeader();
 			// header.setLeft(headerText);
@@ -252,13 +256,14 @@ public class IFSCreateExcelFileUtil {
 					totalAmount += amount;
 				}
 			}
-			if (fileType == FILE_TYPE_KOMMUN)
+			if (fileType == FILE_TYPE_KOMMUN) {
 				setInCommuneSum(totalAmount);
-			sheet.createRow(rowNumber += 2).createCell(row.getFirstCellNum()).setCellValue(
+			}
+			sheet.createRow(rowNumber += 2).createCell(this.row.getFirstCellNum()).setCellValue(
 					numberOfRecords + " bokföringsposter,   Kreditbelopp totalt:  - "
 							+ getNumberFormat().format(totalAmount) + ",   Debetbelopp totalt: "
 							+ getNumberFormat().format(totalAmount));
-			saveExcelWorkBook(fileName, wb);
+			saveExcelWorkBook(fileName, this.wb);
 		}
 	}
 
@@ -266,37 +271,38 @@ public class IFSCreateExcelFileUtil {
 			PostingBusiness pb, PaymentRecord pRec, School school, String postingString, int fileType)
 			throws RemoteException {
 		short cellNumber = 0;
-		row = sheet.createRow(rowNumber++);
-		row.createCell(cellNumber++).setCellValue(paymentDate.getDateString("yyyy-MM-dd"));
+		this.row = sheet.createRow(rowNumber++);
+		this.row.createCell(cellNumber++).setCellValue(this.paymentDate.getDateString("yyyy-MM-dd"));
 		short loopTillEndOfPostingFields = (short) (cellNumber + 8);
-		for (short i = cellNumber; i < loopTillEndOfPostingFields; i++)
-			row.createCell(cellNumber++).setCellValue(pb.findFieldInStringByName(postingString, columnNames[i]));
-		if (fileType == FILE_TYPE_KOMMUN) {
-			cell = row.createCell(cellNumber++);
-			cell.setCellValue(pRec.getPlacements());
+		for (short i = cellNumber; i < loopTillEndOfPostingFields; i++) {
+			this.row.createCell(cellNumber++).setCellValue(pb.findFieldInStringByName(postingString, columnNames[i]));
 		}
-		cell = row.createCell(cellNumber++);
-		cell.setCellValue(getNumberFormat().format(amount));
-		cell.setCellStyle(getStyleAlignRight());
-		row.createCell(cellNumber++).setCellValue(pRec.getPaymentText());
-		row.createCell(cellNumber++).setCellValue(school.getName());
+		if (fileType == FILE_TYPE_KOMMUN) {
+			this.cell = this.row.createCell(cellNumber++);
+			this.cell.setCellValue(pRec.getPlacements());
+		}
+		this.cell = this.row.createCell(cellNumber++);
+		this.cell.setCellValue(getNumberFormat().format(amount));
+		this.cell.setCellStyle(getStyleAlignRight());
+		this.row.createCell(cellNumber++).setCellValue(pRec.getPaymentText());
+		this.row.createCell(cellNumber++).setCellValue(school.getName());
 		return rowNumber;
 	}
 
 	protected void createInvoiceSigningFilesExcel(String fileName, String headerText, boolean signingFooter)
 			throws IOException, IDOException {
-		wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet("Excel");
+		this.wb = new HSSFWorkbook();
+		HSSFSheet sheet = this.wb.createSheet("Excel");
 		sheet.setColumnWidth((short) 0, (short) (30 * 256));
 		sheet.setColumnWidth((short) 1, (short) (20 * 256));
 		sheet.setColumnWidth((short) 2, (short) (20 * 256));
 		short rowNumber = 0;
 		short cellNumber = 0;
-		row = sheet.createRow(rowNumber++);
+		this.row = sheet.createRow(rowNumber++);
 		if (!headerText.equals("")) {
-			row.createCell(cellNumber++).setCellValue(headerText);
+			this.row.createCell(cellNumber++).setCellValue(headerText);
 			rowNumber++;
-			row = sheet.createRow(rowNumber += 4);
+			this.row = sheet.createRow(rowNumber += 4);
 		}
 		CalendarMonth currentMonth = new CalendarMonth();
 		CalendarMonth previousMonth = currentMonth.getPreviousCalendarMonth();
@@ -306,25 +312,25 @@ public class IFSCreateExcelFileUtil {
 		int numberOfChildrenForPreviousMonth = ((InvoiceHeaderHome) IDOLookup.getHome(InvoiceHeader.class)).getNumberOfChildrenForMonth(previousMonth);
 		int totalInvoiceRecordAmountForCurrentMonth = ((InvoiceHeaderHome) IDOLookup.getHome(InvoiceHeader.class)).getTotalInvoiceRecordAmountForCurrentMonth();
 		int totalInvoiceRecordAmountFoPreviousMonth = ((InvoiceHeaderHome) IDOLookup.getHome(InvoiceHeader.class)).getTotalInvoiceRecordAmountForMonth(previousMonth);
-		row = sheet.createRow(rowNumber++);
-		row.createCell(cellNumber++).setCellValue("Innevarande månad");
-		row.createCell(cellNumber).setCellValue("Föregående månad");
-		row = sheet.createRow(rowNumber++);
-		row.createCell(cellNumber--).setCellValue(numberOfInvoicesForPreviousMonth);
-		row.createCell(cellNumber--).setCellValue(numberOfInvoicesForCurrentMonth);
-		row.createCell(cellNumber).setCellValue("Total antal generade fakturor");
-		row = sheet.createRow(rowNumber++);
-		row.createCell(cellNumber++).setCellValue("Total antal behandlade indvider");
-		row.createCell(cellNumber++).setCellValue(numberOfChildrenForCurrentMonth);
-		row.createCell(cellNumber).setCellValue(numberOfChildrenForPreviousMonth);
-		row = sheet.createRow(rowNumber++);
-		row.createCell(cellNumber--).setCellValue(totalInvoiceRecordAmountFoPreviousMonth);
-		row.createCell(cellNumber--).setCellValue(totalInvoiceRecordAmountForCurrentMonth);
-		row.createCell(cellNumber).setCellValue("Totalt fakturerat belopp");
+		this.row = sheet.createRow(rowNumber++);
+		this.row.createCell(cellNumber++).setCellValue("Innevarande månad");
+		this.row.createCell(cellNumber).setCellValue("Föregående månad");
+		this.row = sheet.createRow(rowNumber++);
+		this.row.createCell(cellNumber--).setCellValue(numberOfInvoicesForPreviousMonth);
+		this.row.createCell(cellNumber--).setCellValue(numberOfInvoicesForCurrentMonth);
+		this.row.createCell(cellNumber).setCellValue("Total antal generade fakturor");
+		this.row = sheet.createRow(rowNumber++);
+		this.row.createCell(cellNumber++).setCellValue("Total antal behandlade indvider");
+		this.row.createCell(cellNumber++).setCellValue(numberOfChildrenForCurrentMonth);
+		this.row.createCell(cellNumber).setCellValue(numberOfChildrenForPreviousMonth);
+		this.row = sheet.createRow(rowNumber++);
+		this.row.createCell(cellNumber--).setCellValue(totalInvoiceRecordAmountFoPreviousMonth);
+		this.row.createCell(cellNumber--).setCellValue(totalInvoiceRecordAmountForCurrentMonth);
+		this.row.createCell(cellNumber).setCellValue("Totalt fakturerat belopp");
 		if (signingFooter) {
 			createSigningFooter(sheet, rowNumber);
 		}
-		saveExcelWorkBook(fileName, wb);
+		saveExcelWorkBook(fileName, this.wb);
 	}
 
 	protected void createPaymentSigningFilesExcel(Collection data, String fileName, String headerText)
@@ -333,7 +339,7 @@ public class IFSCreateExcelFileUtil {
 			int[] columnWidths = { 25, 35, 12, 12 };
 			String[] columnNames = { "Anordnare", "Text", "Placeringar", "Belopp" };
 			createExcelWorkBook(columnWidths, columnNames, headerText);
-			HSSFSheet sheet = wb.getSheet("Excel");
+			HSSFSheet sheet = this.wb.getSheet("Excel");
 			short rowNumber = (short) (sheet.getLastRowNum() + 1);
 			short cellNumber = 0;
 			ArrayList paymentHeaders = new ArrayList(data);
@@ -357,30 +363,31 @@ public class IFSCreateExcelFileUtil {
 					Iterator prIt = pRecs.iterator();
 					firstRecord = true;
 					school = pHead.getSchool();
-					row = sheet.createRow(rowNumber++);
-					row.createCell(cellNumber++).setCellValue(school.getName());
+					this.row = sheet.createRow(rowNumber++);
+					this.row.createCell(cellNumber++).setCellValue(school.getName());
 					while (prIt.hasNext()) {
 						PaymentRecord pRec = (PaymentRecord) prIt.next();
-						if (!firstRecord)
-							row = sheet.createRow(rowNumber++);
-						row.createCell(cellNumber++).setCellValue(pRec.getPaymentText());
+						if (!firstRecord) {
+							this.row = sheet.createRow(rowNumber++);
+						}
+						this.row.createCell(cellNumber++).setCellValue(pRec.getPaymentText());
 						recordAmount = AccountingUtil.roundAmount(pRec.getTotalAmount());
 						totalHeaderAmount += recordAmount;
 						totalHeaderStudents += pRec.getPlacements();
-						cell = row.createCell(cellNumber++);
-						cell.setCellValue(pRec.getPlacements());
-						cell.setCellStyle((getStyleAlignRight()));
-						cell = row.createCell(cellNumber--);
-						cell.setCellValue(getNumberFormat().format(recordAmount));
-						cell.setCellStyle((getStyleAlignRight()));
+						this.cell = this.row.createCell(cellNumber++);
+						this.cell.setCellValue(pRec.getPlacements());
+						this.cell.setCellStyle((getStyleAlignRight()));
+						this.cell = this.row.createCell(cellNumber--);
+						this.cell.setCellValue(getNumberFormat().format(recordAmount));
+						this.cell.setCellStyle((getStyleAlignRight()));
 						cellNumber--;
 						if (!prIt.hasNext()) {
 							cellNumber--;
-							row = sheet.createRow(rowNumber++);
-							row.createCell(cellNumber++).setCellValue("");
-							row.createCell(cellNumber++).setCellValue("Summa");
-							row.createCell(cellNumber++).setCellValue(totalHeaderStudents);
-							row.createCell(cellNumber--).setCellValue(getNumberFormat().format(totalHeaderAmount));
+							this.row = sheet.createRow(rowNumber++);
+							this.row.createCell(cellNumber++).setCellValue("");
+							this.row.createCell(cellNumber++).setCellValue("Summa");
+							this.row.createCell(cellNumber++).setCellValue(totalHeaderStudents);
+							this.row.createCell(cellNumber--).setCellValue(getNumberFormat().format(totalHeaderAmount));
 						}
 						firstRecord = false;
 					}
@@ -389,50 +396,50 @@ public class IFSCreateExcelFileUtil {
 					totalHeaderAmount = 0;
 					totalStudents += totalHeaderStudents;
 					totalHeaderStudents = 0;
-					for (short i = row.getFirstCellNum(); i <= row.getLastCellNum(); i++) {
-						row.getCell(i).setCellStyle(getStyleItalicUnderlineAlignRight());
+					for (short i = this.row.getFirstCellNum(); i <= this.row.getLastCellNum(); i++) {
+						this.row.getCell(i).setCellStyle(getStyleItalicUnderlineAlignRight());
 					}
 				}
 			}
-			row = sheet.createRow(rowNumber++);
-			cell = row.createCell(cellNumber += 2);
-			cell.setCellValue(getNumberFormat().format(totalStudents));
-			cell.setCellStyle(getStyleBoldAlignRight());
-			cell = row.createCell(cellNumber += 1);
-			cell.setCellValue(getNumberFormat().format(totalAmount));
-			cell.setCellStyle(getStyleBoldAlignRight());
+			this.row = sheet.createRow(rowNumber++);
+			this.cell = this.row.createCell(cellNumber += 2);
+			this.cell.setCellValue(getNumberFormat().format(totalStudents));
+			this.cell.setCellStyle(getStyleBoldAlignRight());
+			this.cell = this.row.createCell(cellNumber += 1);
+			this.cell.setCellValue(getNumberFormat().format(totalAmount));
+			this.cell.setCellStyle(getStyleBoldAlignRight());
 			rowNumber++;
-			row = sheet.createRow(rowNumber++);
-			cell = row.createCell(cellNumber -= 3);
-			cell.setCellValue("Summa från egna kommunala anordnare");
-			cell = row.createCell(cellNumber += 3);
-			cell.setCellValue(getNumberFormat().format(getInCommuneSum()));
-			cell.setCellStyle(getStyleAlignRight());
-			row = sheet.createRow(rowNumber++);
-			cell = row.createCell(cellNumber -= 3);
-			cell.setCellValue("Summa från övriga anordnare");
-			cell = row.createCell(cellNumber += 3);
-			cell.setCellValue(getNumberFormat().format(totalAmount - getInCommuneSum()));
-			cell.setCellStyle(getStyleAlignRight());
-			row = sheet.createRow(rowNumber++);
-			cell = row.createCell(cellNumber -= 3);
-			cell.setCellValue("Bruttosumma att utbetala");
-			cell.setCellStyle(getStyleBold());
-			cell = row.createCell(cellNumber += 3);
-			cell.setCellValue(getNumberFormat().format(totalAmount));
-			cell.setCellStyle(getStyleBoldAlignRight());
+			this.row = sheet.createRow(rowNumber++);
+			this.cell = this.row.createCell(cellNumber -= 3);
+			this.cell.setCellValue("Summa från egna kommunala anordnare");
+			this.cell = this.row.createCell(cellNumber += 3);
+			this.cell.setCellValue(getNumberFormat().format(getInCommuneSum()));
+			this.cell.setCellStyle(getStyleAlignRight());
+			this.row = sheet.createRow(rowNumber++);
+			this.cell = this.row.createCell(cellNumber -= 3);
+			this.cell.setCellValue("Summa från övriga anordnare");
+			this.cell = this.row.createCell(cellNumber += 3);
+			this.cell.setCellValue(getNumberFormat().format(totalAmount - getInCommuneSum()));
+			this.cell.setCellStyle(getStyleAlignRight());
+			this.row = sheet.createRow(rowNumber++);
+			this.cell = this.row.createCell(cellNumber -= 3);
+			this.cell.setCellValue("Bruttosumma att utbetala");
+			this.cell.setCellStyle(getStyleBold());
+			this.cell = this.row.createCell(cellNumber += 3);
+			this.cell.setCellValue(getNumberFormat().format(totalAmount));
+			this.cell.setCellStyle(getStyleBoldAlignRight());
 			createSigningFooter(sheet, rowNumber);
-			saveExcelWorkBook(fileName, wb);
+			saveExcelWorkBook(fileName, this.wb);
 		}
 	}
 
 	private void createSigningFooter(HSSFSheet sheet, short rowNumber) {
 		short cellNumber = 1;
 		createStyleBold();
-		row = sheet.createRow(rowNumber += 4);
-		cell = row.createCell(cellNumber--);
-		cell.setCellValue("Attestering");
-		cell.setCellStyle(getStyleBold());
+		this.row = sheet.createRow(rowNumber += 4);
+		this.cell = this.row.createCell(cellNumber--);
+		this.cell.setCellValue("Attestering");
+		this.cell.setCellStyle(getStyleBold());
 		rowNumber += 4;
 		createSigningFooterDetail(sheet, rowNumber, cellNumber, "Granskingsattest");
 		rowNumber = createSigningFooterDetail(sheet, rowNumber, cellNumber += 2, "Beslutsattest");
@@ -440,39 +447,42 @@ public class IFSCreateExcelFileUtil {
 	}
 
 	private short createSigningFooterDetail(HSSFSheet sheet, short rowNumber, short cellNumber, String text) {
-		row = sheet.createRow(rowNumber);
-		cell = row.createCell(cellNumber);
-		cell.setCellValue(text);
-		row = sheet.createRow(rowNumber += 2);
-		cell = row.createCell(cellNumber);
-		cell.setCellValue("Datum...............................");
-		row = sheet.createRow(rowNumber += 2);
-		cell = row.createCell(cellNumber);
-		cell.setCellValue("...........................................");
+		this.row = sheet.createRow(rowNumber);
+		this.cell = this.row.createCell(cellNumber);
+		this.cell.setCellValue(text);
+		this.row = sheet.createRow(rowNumber += 2);
+		this.cell = this.row.createCell(cellNumber);
+		this.cell.setCellValue("Datum...............................");
+		this.row = sheet.createRow(rowNumber += 2);
+		this.cell = this.row.createCell(cellNumber);
+		this.cell.setCellValue("...........................................");
 		return rowNumber;
 	}
 
 	private void createExcelWorkBook(int[] columnWidths, String[] columnNames, String headerText) {
-		wb = new HSSFWorkbook();
+		this.wb = new HSSFWorkbook();
 		createStyleBoldUnderlineAlignRight();
 		createStyleBoldUnderline();
-		HSSFSheet sheet = wb.createSheet("Excel");
-		for (short i = 0; i < columnWidths.length; i++)
+		HSSFSheet sheet = this.wb.createSheet("Excel");
+		for (short i = 0; i < columnWidths.length; i++) {
 			sheet.setColumnWidth(i, (short) (columnWidths[i] * 256));
+		}
 		short rowNumber = 0;
-		row = sheet.createRow(rowNumber++);
+		this.row = sheet.createRow(rowNumber++);
 		if (!headerText.equals("")) {
-			row.createCell((short) 0).setCellValue(headerText);
+			this.row.createCell((short) 0).setCellValue(headerText);
 			rowNumber++;
-			row = sheet.createRow(rowNumber++);
+			this.row = sheet.createRow(rowNumber++);
 		}
 		for (short i = 0; i < columnNames.length; i++) {
-			cell = row.createCell(i);
-			cell.setCellValue(columnNames[i]);
-			if (columnNames[i].equals("Belopp"))
-				cell.setCellStyle(getStyleBoldUnderlineAlignRight());
-			else
-				cell.setCellStyle(getStyleBoldUnderline());
+			this.cell = this.row.createCell(i);
+			this.cell.setCellValue(columnNames[i]);
+			if (columnNames[i].equals("Belopp")) {
+				this.cell.setCellStyle(getStyleBoldUnderlineAlignRight());
+			}
+			else {
+				this.cell.setCellStyle(getStyleBoldUnderline());
+			}
 		}
 	}
 
@@ -483,101 +493,101 @@ public class IFSCreateExcelFileUtil {
 	}
 
 	private void createNumberFormat() {
-		numberFormat = NumberFormat.getInstance(Locale.FRENCH);
-		numberFormat.setMaximumFractionDigits(0);
-		numberFormat.setMinimumIntegerDigits(1);
+		this.numberFormat = NumberFormat.getInstance(Locale.FRENCH);
+		this.numberFormat.setMaximumFractionDigits(0);
+		this.numberFormat.setMinimumIntegerDigits(1);
 	}
 
 	private NumberFormat getNumberFormat() {
-		return numberFormat;
+		return this.numberFormat;
 	}
 
 	private String getDeviationString() {
-		return deviationString;
+		return this.deviationString;
 	}
 
 	private void setDeviationString(String _deviationString) {
-		deviationString = _deviationString;
+		this.deviationString = _deviationString;
 	}
 
 	private HSSFCellStyle getStyleAlignRight() {
-		return styleAlignRight;
+		return this.styleAlignRight;
 	}
 
 	private HSSFCellStyle getStyleBold() {
-		return styleBold;
+		return this.styleBold;
 	}
 
 	private HSSFCellStyle getStyleBoldAlignRight() {
-		return styleBoldAlignRight;
+		return this.styleBoldAlignRight;
 	}
 
 	private HSSFCellStyle getStyleBoldUnderline() {
-		return styleBoldUnderline;
+		return this.styleBoldUnderline;
 	}
 
 	private HSSFCellStyle getStyleBoldUnderlineAlignRight() {
-		return styleBoldUnderlineAlignRight;
+		return this.styleBoldUnderlineAlignRight;
 	}
 
 	private HSSFCellStyle getStyleItalicUnderlineAlignRight() {
-		return styleItalicUnderlineAlignRight;
+		return this.styleItalicUnderlineAlignRight;
 	}
 
 	private HSSFCellStyle createStyleAlignRight() {
-		styleAlignRight = wb.createCellStyle();
-		styleAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
-		return styleAlignRight;
+		this.styleAlignRight = this.wb.createCellStyle();
+		this.styleAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		return this.styleAlignRight;
 	}
 
 	private HSSFCellStyle createStyleBold() {
-		HSSFFont font = wb.createFont();
+		HSSFFont font = this.wb.createFont();
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		styleBold = wb.createCellStyle();
-		styleBold.setFont(font);
-		return styleBold;
+		this.styleBold = this.wb.createCellStyle();
+		this.styleBold.setFont(font);
+		return this.styleBold;
 	}
 
 	private HSSFCellStyle createStyleBoldAlignRight() {
-		HSSFFont font = wb.createFont();
+		HSSFFont font = this.wb.createFont();
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		styleBoldAlignRight = wb.createCellStyle();
-		styleBoldAlignRight.setFont(font);
-		styleBoldAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
-		return styleBoldAlignRight;
+		this.styleBoldAlignRight = this.wb.createCellStyle();
+		this.styleBoldAlignRight.setFont(font);
+		this.styleBoldAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		return this.styleBoldAlignRight;
 	}
 
 	private HSSFCellStyle createStyleBoldUnderline() {
-		HSSFFont font = wb.createFont();
+		HSSFFont font = this.wb.createFont();
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		styleBoldUnderline = wb.createCellStyle();
-		styleBoldUnderline.setFont(font);
-		styleBoldUnderline.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		return styleBoldUnderline;
+		this.styleBoldUnderline = this.wb.createCellStyle();
+		this.styleBoldUnderline.setFont(font);
+		this.styleBoldUnderline.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		return this.styleBoldUnderline;
 	}
 
 	private HSSFCellStyle createStyleBoldUnderlineAlignRight() {
-		HSSFFont font = wb.createFont();
+		HSSFFont font = this.wb.createFont();
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		styleBoldUnderlineAlignRight = wb.createCellStyle();
-		styleBoldUnderlineAlignRight.setFont(font);
-		styleBoldUnderlineAlignRight.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		styleBoldUnderlineAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
-		return styleBoldUnderlineAlignRight;
+		this.styleBoldUnderlineAlignRight = this.wb.createCellStyle();
+		this.styleBoldUnderlineAlignRight.setFont(font);
+		this.styleBoldUnderlineAlignRight.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		this.styleBoldUnderlineAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		return this.styleBoldUnderlineAlignRight;
 	}
 
 	private HSSFCellStyle createStyleItalicUnderlineAlignRight() {
-		HSSFFont italicFont = wb.createFont();
+		HSSFFont italicFont = this.wb.createFont();
 		italicFont.setItalic(true);
-		styleItalicUnderlineAlignRight = wb.createCellStyle();
-		styleItalicUnderlineAlignRight.setFont(italicFont);
-		styleItalicUnderlineAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
-		styleItalicUnderlineAlignRight.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		return styleItalicUnderlineAlignRight;
+		this.styleItalicUnderlineAlignRight = this.wb.createCellStyle();
+		this.styleItalicUnderlineAlignRight.setFont(italicFont);
+		this.styleItalicUnderlineAlignRight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		this.styleItalicUnderlineAlignRight.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		return this.styleItalicUnderlineAlignRight;
 	}
 
 	private long getInCommuneSum() {
-		return inCommuneSum;
+		return this.inCommuneSum;
 	}
 
 	private void setInCommuneSum(long inCommuneSum) {
@@ -586,7 +596,7 @@ public class IFSCreateExcelFileUtil {
 	
 	private IFSBusiness getIFSBusiness() {
 		try {
-			return (IFSBusiness) IBOLookup.getServiceInstance(iwac, IFSBusiness.class);
+			return (IFSBusiness) IBOLookup.getServiceInstance(this.iwac, IFSBusiness.class);
 		}
 		catch (RemoteException e) {
 			throw new IBORuntimeException(e.getMessage());
