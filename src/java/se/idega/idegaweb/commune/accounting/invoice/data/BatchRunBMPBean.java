@@ -21,13 +21,13 @@ public class BatchRunBMPBean extends GenericEntity implements BatchRun {
 	private static final String COLUMN_STOP = "stop_date";
 	private static final String COLUMN_TEST = "test";
 	/**
-	 * @see com.idega.data.IDOLegacyEntity#getEntityName()
+	 * @see com.idega.data.IDOEntity#getEntityName()
 	 */
 	public String getEntityName() {
 		return ENTITY_NAME;
 	}
 	/**
-	 * @see com.idega.data.IDOLegacyEntity#initializeAttributes()
+	 * @see com.idega.data.IDOEntity#initializeAttributes()
 	 */
 	public void initializeAttributes() {
 		addAttribute(getIDColumnName());

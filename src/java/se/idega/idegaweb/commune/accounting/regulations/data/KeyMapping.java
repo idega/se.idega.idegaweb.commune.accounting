@@ -1,7 +1,7 @@
 package se.idega.idegaweb.commune.accounting.regulations.data;
 
 
-public interface KeyMapping extends com.idega.data.IDOEntity,com.idega.data.IDOLegacyEntity
+public interface KeyMapping extends com.idega.data.IDOEntity
 {
  public java.lang.String getCategory();
  public java.lang.String getKey();

@@ -4,7 +4,6 @@ import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
 import com.idega.data.GenericEntity;
-import com.idega.data.IDOLegacyEntity;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDOQuery;
@@ -18,7 +17,7 @@ import com.idega.data.IDOQuery;
  * 
  * Probably depricated (joakim@idega.com)
  */
-public class KeyMappingBMPBean extends GenericEntity implements KeyMapping, IDOLegacyEntity {
+public class KeyMappingBMPBean extends GenericEntity implements KeyMapping {
 	private static final String ENTITY_NAME = "cacc_key_mapping";
 
 	public static final String CAT_ACTIVITY ="activity";
@@ -34,13 +33,13 @@ public class KeyMappingBMPBean extends GenericEntity implements KeyMapping, IDOL
 	private static final String COLUMN_KEY = "key";
 	private static final String COLUMN_VALUE = "value";
 	/**
-	 * @see com.idega.data.IDOLegacyEntity#getEntityName()
+	 * @see com.idega.data.IDOEntity#getEntityName()
 	 */
 	public String getEntityName() {
 		return ENTITY_NAME;
 	}
 	/**
-	 * @see com.idega.data.IDOLegacyEntity#initializeAttributes()
+	 * @see com.idega.data.IDOEntity#initializeAttributes()
 	 */
 	public void initializeAttributes() {
 		addAttribute(getIDColumnName());

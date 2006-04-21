@@ -1,7 +1,7 @@
 package se.idega.idegaweb.commune.accounting.posting.data;
 
 
-public interface PostingString extends com.idega.data.IDOEntity,com.idega.data.IDOLegacyEntity
+public interface PostingString extends com.idega.data.IDOEntity
 {
  public java.sql.Date getValidFrom();
  public java.sql.Date getValidTo();
