@@ -1,4 +1,4 @@
-/* $Id: ControlListWriter.java,v 1.13 2006/04/09 11:53:32 laddi Exp $
+/* $Id: ControlListWriter.java,v 1.14 2006/05/08 13:53:11 laddi Exp $
 *
 * Copyright (C) 2003 Agura IT. All Rights Reserved.
 *
@@ -28,6 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import se.idega.idegaweb.commune.accounting.invoice.presentation.ControlList;
 import se.idega.idegaweb.commune.accounting.presentation.AccountingBlock;
+import se.idega.idegaweb.commune.presentation.CommuneBlock;
 
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWResourceBundle;
@@ -50,7 +51,7 @@ import com.lowagie.text.pdf.PdfWriter;
 /** 
  * PDF and XLS Writer for the Control List
  * <p>
- * $Id: ControlListWriter.java,v 1.13 2006/04/09 11:53:32 laddi Exp $
+ * $Id: ControlListWriter.java,v 1.14 2006/05/08 13:53:11 laddi Exp $
  *
  * @author Kelly
  */
@@ -80,7 +81,7 @@ public class ControlListWriter extends AccountingBlock implements MediaWritable 
 			//TODO The correnct bundle_ident variable is called IW_ACCOUNTING_BUNDLE_IDENTIFER and this
 			//     one points to CommuneBlock.IW_BUNDLE_IDENTIFIER and therefore this class is using the
 			//     wrong resourceBundle. Remember that, when fixing this, whoever you are ....
-			this.iwrb = iwc.getIWMainApplication().getBundle(AccountingBlock.IW_BUNDLE_IDENTIFIER).getResourceBundle(this.locale);
+			this.iwrb = iwc.getIWMainApplication().getBundle(CommuneBlock.IW_BUNDLE_IDENTIFIER).getResourceBundle(this.locale);
 			ControlListBusiness business = getControlListBusiness(iwc.getIWMainApplication().getIWApplicationContext());
 			
 			String type = req.getParameter(prmPrintType);

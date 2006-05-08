@@ -70,19 +70,17 @@ import com.idega.util.IWTimestamp;
 /**
  * Abstract class that holds all the logic that is common for the shool billing
  * 
- * Last modified: $Date: 2006/04/09 11:53:32 $ by $Author: laddi $
+ * Last modified: $Date: 2006/05/08 13:53:11 $ by $Author: laddi $
  * 
  * @author <a href="mailto:joakim@idega.com">Joakim Johnson</a>
  * @author <a href="http://www.staffannoteberg.com">Staffan Nöteberg</a>
- * @version $Revision: 1.143 $
+ * @version $Revision: 1.144 $
  * 
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadElementarySchool
  * @see se.idega.idegaweb.commune.accounting.invoice.business.PaymentThreadHighSchool
  * @see se.idega.idegaweb.commune.accounting.invoice.business.BillingThread
  */
 public abstract class PaymentThreadSchool extends BillingThread {
-
-	Logger log = Logger.getLogger(this.getClass().getName());
 
 	PaymentHeader paymentHeader;
 
@@ -128,10 +126,12 @@ public abstract class PaymentThreadSchool extends BillingThread {
 
 	public PaymentThreadSchool(Date month, IWContext iwc) {
 		super(month, iwc);
+		this.log = Logger.getLogger(this.getClass().getName());
 	}
 
 	public PaymentThreadSchool(Date month, IWContext iwc, School school, boolean testRun) {
 		super(month, iwc, school, testRun);
+		this.log = Logger.getLogger(this.getClass().getName());
 	}
 
 	public boolean isInDefaultCommune(User user) throws RemoteException, FinderException {

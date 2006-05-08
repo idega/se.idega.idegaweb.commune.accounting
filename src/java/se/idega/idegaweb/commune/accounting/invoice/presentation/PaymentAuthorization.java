@@ -1,6 +1,6 @@
 
 /*
- * $Id: PaymentAuthorization.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
+ * $Id: PaymentAuthorization.java,v 1.5 2006/05/08 13:53:11 laddi Exp $
  *
  * Copyright (C) 2003 Agura IT. All Rights Reserved.
  *
@@ -33,10 +33,10 @@ import com.idega.user.data.User;
  * PaymentAuthorization is an idegaWeb block that handles Authorization of
  * payment to providers
  * <p>
- * $Id: PaymentAuthorization.java,v 1.4 2006/04/09 11:53:32 laddi Exp $
+ * $Id: PaymentAuthorization.java,v 1.5 2006/05/08 13:53:11 laddi Exp $
  *
  * @author <a href="http://www.lindman.se">Kelly</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PaymentAuthorization extends AccountingBlock {
 
@@ -59,7 +59,6 @@ public class PaymentAuthorization extends AccountingBlock {
 	private final static String KEY_NOT_AUTHORIZED = KEY_PREFIX + "not_authorized";
 	private final static String KEY_NO_AUTHORIZING = KEY_PREFIX + "no_authorizing";
 	
-	private final static String PARAM_SAVE = "param_save";
 	private final static String PARAM_ABORT = "param_abort";
 	private final static String PARAM_BACK = "param_back";
 

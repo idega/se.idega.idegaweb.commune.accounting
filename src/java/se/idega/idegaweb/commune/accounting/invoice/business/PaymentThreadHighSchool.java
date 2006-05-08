@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import se.idega.idegaweb.commune.accounting.export.data.ExportDataMapping;
-import se.idega.idegaweb.commune.accounting.invoice.data.PaymentHeader;
 import se.idega.idegaweb.commune.accounting.posting.business.PostingException;
 import se.idega.idegaweb.commune.accounting.regulations.business.PaymentFlowConstant;
 import se.idega.idegaweb.commune.accounting.regulations.business.RegSpecConstant;
@@ -38,7 +37,6 @@ import com.idega.presentation.IWContext;
  * @see se.idega.idegaweb.commune.accounting.invoice.business.BillingThread
  */
 public class PaymentThreadHighSchool extends PaymentThreadSchool {
-	PaymentHeader paymentHeader;
 
 	public PaymentThreadHighSchool(Date month, IWContext iwc, School school, boolean testRun) {
 		super(month, iwc, school, testRun);

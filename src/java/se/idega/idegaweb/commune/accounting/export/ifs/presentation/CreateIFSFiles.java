@@ -38,7 +38,7 @@ public class CreateIFSFiles extends AccountingBlock {
 	protected final static String KEY_CREATE = "cacc_create_files_save";
 
 	protected final static String PARAM_CREATE_FILE = "ifs_file_create";
-	protected final static String PARAM_CANCEL = "ifs_file_cancel";
+	protected final static String PARAM_CANCEL_ACTION = "ifs_file_cancel";
 	protected final static String PARAM_PAYMENT_DATE = "ifs_payment_date";
 	protected final static String PARAM_PERIOD_TEXT = "ifs_period_text";
 

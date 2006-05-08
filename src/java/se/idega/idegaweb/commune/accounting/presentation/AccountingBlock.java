@@ -45,7 +45,6 @@ import com.idega.presentation.ui.util.SelectorUtility;
 public abstract class AccountingBlock extends CommuneBlock {
 	
 	public final static String IW_ACCOUNTING_BUNDLE_IDENTIFER = "se.idega.idegaweb.commune.accounting";
-	public final static String IW_BUNDLE_IDENTIFIER = CommuneBlock.IW_BUNDLE_IDENTIFIER;
 	private AccountingBusiness business;
 	private AccountingSession session;
 	
