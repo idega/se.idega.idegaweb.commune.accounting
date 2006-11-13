@@ -15,7 +15,7 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.school">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.contract">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.contract-SNAPSHOT.jar">
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.process">
   </classpathentry>
