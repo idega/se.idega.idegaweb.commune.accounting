@@ -1,6 +1,6 @@
 /*
  * Created on 5.11.2003
- *
+ * 
  */
 package se.idega.idegaweb.commune.accounting.presentation;
 
@@ -39,24 +39,22 @@ import com.idega.presentation.ui.Parameter;
 /**
  * @author Roar
  * 
- * Search panel for searchin in regulations and postings. 
- * The panel shows a dropdown with providers, a field for regulation name and a field
- * for date.
+ * Search panel for searchin in regulations and postings. The panel shows a dropdown with providers, a field for regulation name and a field for date.
  */
 public class RegulationSearchPanel extends AccountingBlock {
+
 	private static final String KEY_PROVIDER = "provider";
-	private static final String KEY_PLACING = "placing";	
-	private static final String KEY_VALID_DATE = "valid_date";	
-	private static final String KEY_SEARCH = "search";		
-	
-	public static String PAR_PROVIDER = KEY_PROVIDER; 
-	public static final String PAR_PLACING = KEY_PLACING;	
-	public static final String PAR_VALID_DATE = KEY_VALID_DATE; 
+	private static final String KEY_PLACING = "placing";
+	private static final String KEY_VALID_DATE = "valid_date";
+	private static final String KEY_SEARCH = "search";
+
+	public static String PAR_PROVIDER = KEY_PROVIDER;
+	public static final String PAR_PLACING = KEY_PLACING;
+	public static final String PAR_VALID_DATE = KEY_VALID_DATE;
 	private static final String PAR_ENTRY_PK = "PAR_ENTRY_PK";
 
-	
 	public static final String SEARCH_REGULATION = "ACTION_SEARCH_REGULATION";
-	
+
 	private Regulation _currentRegulation = null;
 	private Collection _searchResult = null;
 	private SchoolCategory _currentSchoolCategory = null;
@@ -69,202 +67,206 @@ public class RegulationSearchPanel extends AccountingBlock {
 	private String _dateFormatErrorMessage = null;
 	private PostingException _postingException = null;
 	private boolean _outFlowOnly = false;
-	
-		
-	//Force the request to be processed at once.
-	private RegulationSearchPanel(){
+
+	public RegulationSearchPanel(IWContext iwc) {
 		super();
-	}
-	
-	public RegulationSearchPanel(IWContext iwc){
-		super(); 
 		process(iwc);
 	}
-	
-	public RegulationSearchPanel(IWContext iwc, String providerKey){
-		super(); 
+
+	public RegulationSearchPanel(IWContext iwc, String providerKey) {
+		super();
 		PAR_PROVIDER = providerKey;
 		process(iwc);
-	}	
-		
-	
+	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see se.idega.idegaweb.commune.accounting.presentation.AccountingBlock#init(com.idega.presentation.IWContext)
 	 */
 	public void init(IWContext iwc) throws Exception {
-				
-		process(iwc); //This should not be necessary, as the request will always be processed by now...
+
+		process(iwc); // This should not be necessary, as the request will always be processed by now...
 
 		maintainParameter(PAR_PLACING);
 		maintainParameter(PAR_PROVIDER);
 		maintainParameter(PAR_VALID_DATE);
-				
+
 		Table t = new Table();
 		t.add(getSearchForm(iwc), 1, 1);
-		
-		if (this._searchResult != null){
-			t.add(getResultList(iwc, this._searchResult), 1, 2); 
-		} 
+
+		if (this._searchResult != null) {
+			t.add(getResultList(iwc, this._searchResult), 1, 2);
+		}
 		add(t);
-	} 
-	
+	}
+
 	private boolean processed = false;
+
 	/**
-	 * Processes the request: does the actual search or lookup so that the
-	 * enclosing block can use the result to populate fields.
+	 * Processes the request: does the actual search or lookup so that the enclosing block can use the result to populate fields.
+	 * 
 	 * @param iwc
 	 */
-	public void process(IWContext iwc){
-		if (! this.processed){
+	public void process(IWContext iwc) {
+		if (!this.processed) {
 			boolean searchAction = iwc.getParameter(SEARCH_REGULATION) != null;
-			
-			//Find selected category, date and provider
+
+			// Find selected category, date and provider
 			String vDate = iwc.getParameter(PAR_VALID_DATE);
-			this._validDate = parseDate(vDate);		
-			if (vDate != null && vDate.length() > 0 && this._validDate == null){
+			this._validDate = parseDate(vDate);
+			if (vDate != null && vDate.length() > 0 && this._validDate == null) {
 				this._dateFormatErrorMessage = localize("regulation_search_panel.date_format_error", "Error i dateformat");
-			} else {
-				
+			}
+			else {
+
 				this._currentSchool = null;
-				//First time on this page: PAR_PROVIDER parameter not set
-				if (iwc.getParameter(PAR_PROVIDER) != null){
-					try{
-						SchoolHome schoolHome = (SchoolHome) IDOLookup.getHome(School.class);	
+				// First time on this page: PAR_PROVIDER parameter not set
+				if (iwc.getParameter(PAR_PROVIDER) != null) {
+					try {
+						SchoolHome schoolHome = (SchoolHome) IDOLookup.getHome(School.class);
 						int currentSchoolId = new Integer(iwc.getParameter(PAR_PROVIDER)).intValue();
 						this._currentSchool = schoolHome.findByPrimaryKey("" + currentSchoolId);
-					}catch(RemoteException ex){
+					}
+					catch (RemoteException ex) {
 						ex.printStackTrace();
-					}catch(FinderException ex){ 
+					}
+					catch (FinderException ex) {
 						ex.printStackTrace();
 					}
 				}
-				
-					
-				//Search regulations
-				if (searchAction){
+
+				// Search regulations
+				if (searchAction) {
 					this._searchResult = doSearch(iwc);
-				} 
-						
-				//Lookup regulation and postings
+				}
+
+				// Lookup regulation and postings
 				String regId = iwc.getParameter(PAR_ENTRY_PK);
-				//regId and _currentRegulation will get a value only after choosing a regulation (by clicking a link)
-				if (regId != null){
+				// regId and _currentRegulation will get a value only after choosing a regulation (by clicking a link)
+				if (regId != null) {
 					this._currentRegulation = getRegulation(regId);
-					try{
+					try {
 						RegulationsBusiness regBiz = (RegulationsBusiness) IBOLookup.getServiceInstance(iwc, RegulationsBusiness.class);
 						PostingBusiness postingBiz = (PostingBusiness) IBOLookup.getServiceInstance(iwc, PostingBusiness.class);
-						if (this._currentRegulation != null){
+						if (this._currentRegulation != null) {
 							this._currentSchoolType = regBiz.getSchoolType(this._currentRegulation);
 							this._currentPosting = postingBiz.getPostingStrings(getCurrentSchoolCategory(iwc), this._currentSchoolType, ((Integer) this._currentRegulation.getRegSpecType().getPrimaryKey()).intValue(), new Provider(this._currentSchool), this._validDate);
 						}
-					}catch (RemoteException ex){
+					}
+					catch (RemoteException ex) {
 						ex.printStackTrace();
-					}catch (PostingException ex){
+					}
+					catch (PostingException ex) {
 						this._postingException = ex;
 					}
-									
+
 				}
-				if (this._currentRegulation!= null){
+				if (this._currentRegulation != null) {
 					this._currentPlacing = this._currentRegulation.getName();
-				} else if (iwc.getParameter(PAR_PLACING) != null){
+				}
+				else if (iwc.getParameter(PAR_PLACING) != null) {
 					this._currentPlacing = iwc.getParameter(PAR_PLACING);
 				}
-								
+
 			}
 			this.processed = true;
 		}
 	}
-	
-	public SchoolCategory getCurrentSchoolCategory(IWContext iwc){
-		if (this._currentSchoolCategory == null){
-		
+
+	public SchoolCategory getCurrentSchoolCategory(IWContext iwc) {
+		if (this._currentSchoolCategory == null) {
+
 			try {
-				SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup.getServiceInstance(iwc.getApplicationContext(),	SchoolBusiness.class);
+				SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup.getServiceInstance(iwc.getApplicationContext(), SchoolBusiness.class);
 				String opField = getSession().getOperationalField();
-				this._currentSchoolCategory = schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField);					
-			} catch (RemoteException e) {
+				this._currentSchoolCategory = schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField);
+			}
+			catch (RemoteException e) {
 				e.printStackTrace();
-			} catch (FinderException e) {
+			}
+			catch (FinderException e) {
 				e.printStackTrace();
-			}	
+			}
 		}
-		
-		return this._currentSchoolCategory;	
+
+		return this._currentSchoolCategory;
 	}
-		
-	
+
 	private List _maintainParameters = new ArrayList();
-	public void maintainParameter(String par){
+
+	public void maintainParameter(String par) {
 		this._maintainParameters.add(par);
 	}
-	public void maintainParameter(String[] parameters){
-		for(int i = 0; i < parameters.length; i++){
-			this._maintainParameters.add(parameters[i]);			
+
+	public void maintainParameter(String[] parameters) {
+		for (int i = 0; i < parameters.length; i++) {
+			this._maintainParameters.add(parameters[i]);
 		}
-	}	
-	
-	private List _setParameters = new ArrayList();	
-	public void setParameter(String par, String value){
+	}
+
+	private List _setParameters = new ArrayList();
+
+	public void setParameter(String par, String value) {
 		this._setParameters.add(new Parameter(par, value));
-	}	
-	
-	
-	private void maintainParameters(IWContext iwc, Link link){
+	}
+
+	private void maintainParameters(IWContext iwc, Link link) {
 		Iterator i = this._maintainParameters.iterator();
-		while(i.hasNext()){
-		String par = (String) i.next();
+		while (i.hasNext()) {
+			String par = (String) i.next();
 			link.maintainParameter(par, iwc);
 		}
 	}
-	
-	private void setParameters(Link link){
+
+	private void setParameters(Link link) {
 		Iterator i = this._setParameters.iterator();
-		while(i.hasNext()){
+		while (i.hasNext()) {
 			link.addParameter((Parameter) i.next());
 		}
-	}		
+	}
 
 	/**
-	 * Formats the search results and returns a Table that displays it
-	 * as links, or an approperiate text if none where found
+	 * Formats the search results and returns a Table that displays it as links, or an approperiate text if none where found
+	 * 
 	 * @param iwc
 	 * @param results
 	 * @return
 	 */
-	private Table getResultList(IWContext iwc, Collection results){
-		Table table = new Table(); 
+	private Table getResultList(IWContext iwc, Collection results) {
+		Table table = new Table();
 		table.setCellspacing(10);
 		int row = 1, col = 0;
-		
-		if (results.size() == 0){
+
+		if (results.size() == 0) {
 			table.add(getErrorText(localize("regulation_search_panel.no_regulations_found", "No regulations found")));
-			
-		} else {
+
+		}
+		else {
 			Iterator i = results.iterator();
-	
+
 			HiddenInput h = new HiddenInput(PAR_ENTRY_PK, "");
-			table.add(h); 
-							
-			while(i.hasNext()){
+			table.add(h);
+
+			while (i.hasNext()) {
 				Regulation reg = (Regulation) i.next();
 				if (this._outFlowOnly && !reg.getPaymentFlowType().getLocalizationKey().equals(PaymentFlowConstant.OUT)) {
 					continue;
-				}else{
-					Link link = new Link(reg.getName() /* + " ("+formatDate(reg.getPeriodFrom(), 4) + "-" + formatDate(reg.getPeriodTo(), 4)+")"*/ );
+				}
+				else {
+					Link link = new Link(reg.getName() /* + " ("+formatDate(reg.getPeriodFrom(), 4) + "-" + formatDate(reg.getPeriodTo(), 4)+")" */);
 					link.addParameter(new Parameter(PAR_ENTRY_PK, reg.getPrimaryKey().toString()));
 					maintainParameters(iwc, link);
 					setParameters(link);
-					
-					if (col >= 3){
+
+					if (col >= 3) {
 						col = 1;
 						row++;
-					} else{
+					}
+					else {
 						col++;
 					}
-					
+
 					table.add(link, col, row);
 				}
 			}
@@ -272,193 +274,187 @@ public class RegulationSearchPanel extends AccountingBlock {
 		return table;
 	}
 
-
 	/**
-	 *	Does the search in the regulations and return them as a Collection
+	 * Does the search in the regulations and return them as a Collection
 	 */
-	private Collection doSearch(IWContext iwc){
+	private Collection doSearch(IWContext iwc) {
 		Collection matches = new ArrayList();
-		String wcName = "%"+iwc.getParameter(PAR_PLACING)+"%";
-		try{
+		String wcName = "%" + iwc.getParameter(PAR_PLACING) + "%";
+		try {
 			RegulationHome regHome = (RegulationHome) IDOLookup.getHome(Regulation.class);
-			
-			String catId = getCurrentSchoolCategoryId(iwc);
-			
-			matches = this._validDate != null ? 
-				regHome.findRegulationsByNameNoCaseDateAndCategory(wcName, this._validDate, catId)
-				: regHome.findRegulationsByNameNoCaseAndCategory(wcName, catId);
 
-			
-			
-		}catch(RemoteException ex){
-			ex.printStackTrace();
-			
-		}catch(FinderException ex){
-			ex.printStackTrace();			
+			String catId = getCurrentSchoolCategoryId(iwc);
+
+			matches = this._validDate != null ? regHome.findRegulationsByNameNoCaseDateAndCategory(wcName, this._validDate, catId) : regHome.findRegulationsByNameNoCaseAndCategory(wcName, catId);
+
 		}
-		
+		catch (RemoteException ex) {
+			ex.printStackTrace();
+
+		}
+		catch (FinderException ex) {
+			ex.printStackTrace();
+		}
+
 		return matches;
-	}	
-	
+	}
+
 	/**
 	 * Does a lookup to find a regulation.
+	 * 
 	 * @param regId
 	 * @return the Regulation
 	 */
-	private Regulation getRegulation(String regId){
+	private Regulation getRegulation(String regId) {
 		Regulation reg = null;
-		try{
+		try {
 			RegulationHome regHome = (RegulationHome) IDOLookup.getHome(Regulation.class);
 			reg = regHome.findByPrimaryKey(regId);
 
-
-		}catch(RemoteException ex){
+		}
+		catch (RemoteException ex) {
 			ex.printStackTrace();
-			
-		}catch(FinderException ex){
-			ex.printStackTrace();			
-		}		
+
+		}
+		catch (FinderException ex) {
+			ex.printStackTrace();
+		}
 		return reg;
 	}
-	
+
 	/**
 	 * 
 	 * @return the currently chosen Regulation
 	 */
-	public Regulation getRegulation(){
+	public Regulation getRegulation() {
 		return this._currentRegulation;
 	}
-	
 
-			
-	
 	/**
 	 * 
 	 * @return the currently chosen posting strings as String[]
 	 */
-	public String[] getPosting() throws PostingException{
-		if (this._postingException != null){
+	public String[] getPosting() throws PostingException {
+		if (this._postingException != null) {
 			throw this._postingException;
 		}
 		return this._currentPosting;
-	}	
+	}
 
 	/**
 	 * Returns the search form as an Table
+	 * 
 	 * @param iwc
 	 * @return
 	 */
 	private Table getSearchForm(IWContext iwc) {
-		
-		Collection providers = new ArrayList();		
-		try{
-			SchoolHome home = (SchoolHome) IDOLookup.getHome(School.class);	
+
+		Collection providers = new ArrayList();
+		try {
+			SchoolHome home = (SchoolHome) IDOLookup.getHome(School.class);
 			SchoolCategory category = getCurrentSchoolCategory(iwc);
-			if (category != null){			
+			if (category != null) {
 				providers = home.findAllByCategory(category);
 			}
-		}catch(RemoteException ex){
+		}
+		catch (RemoteException ex) {
 			ex.printStackTrace();
-		}catch(FinderException ex){ 
+		}
+		catch (FinderException ex) {
 			ex.printStackTrace();
 		}
 
 		Table table = new Table();
 		int row = 1;
-		
+
 		String currentSchoolId = this._currentSchool != null ? "" + this._currentSchool.getPrimaryKey() : "0";
 		addDropDown(table, PAR_PROVIDER, KEY_PROVIDER, providers, currentSchoolId, "getSchoolName", true, 1, row++);
-		
-//		Collection types = null;
-//		try{
-//			types = _currentSchool != null ? _currentSchool.getSchoolTypes() : new ArrayList();
-//		}catch(IDORelationshipException ex ){
-//			ex.printStackTrace();
-//		}
 
-//		if (! providers.isEmpty()){
-//			String currentTypeId = iwc.getParameter(PAR_TYPE) != null ? iwc.getParameter(PAR_TYPE) : "0";
-//			addDropDown(table, PAR_TYPE, KEY_TYPE, types, currentTypeId, "getName", false, 1, row++);
-//		}
-		
-		if (this._placingErrorMessage != null){
+		// Collection types = null;
+		// try{
+		// types = _currentSchool != null ? _currentSchool.getSchoolTypes() : new ArrayList();
+		// }catch(IDORelationshipException ex ){
+		// ex.printStackTrace();
+		// }
+
+		// if (! providers.isEmpty()){
+		// String currentTypeId = iwc.getParameter(PAR_TYPE) != null ? iwc.getParameter(PAR_TYPE) : "0";
+		// addDropDown(table, PAR_TYPE, KEY_TYPE, types, currentTypeId, "getName", false, 1, row++);
+		// }
+
+		if (this._placingErrorMessage != null) {
 			table.add(getErrorText(this._placingErrorMessage), 2, row);
-		}		
-		if (this._dateFormatErrorMessage != null){
+		}
+		if (this._dateFormatErrorMessage != null) {
 			table.add(getErrorText(this._dateFormatErrorMessage), 4, row);
-		}		
+		}
 
-		if (this._dateFormatErrorMessage != null || this._placingErrorMessage != null){
+		if (this._dateFormatErrorMessage != null || this._placingErrorMessage != null) {
 			row++;
 		}
-		
 
-		
-		addField(table, PAR_PLACING, KEY_PLACING, this._currentPlacing, 1, row, 300);		
-		String date = iwc.getParameter(PAR_VALID_DATE) != null ? iwc.getParameter(PAR_VALID_DATE) :
-			formatDate(new Date(System.currentTimeMillis()), 4); 
-		addField(table, PAR_VALID_DATE, KEY_VALID_DATE, date, 3, row, 35);	
+		addField(table, PAR_PLACING, KEY_PLACING, this._currentPlacing, 1, row, 300);
+		String date = iwc.getParameter(PAR_VALID_DATE) != null ? iwc.getParameter(PAR_VALID_DATE) : formatDate(new Date(System.currentTimeMillis()), 4);
+		addField(table, PAR_VALID_DATE, KEY_VALID_DATE, date, 3, row, 35);
 		table.add(getLocalizedButton(SEARCH_REGULATION, KEY_SEARCH, "Search"), 5, row++);
 
 		table.setColumnWidth(1, "" + this._leftColMinWidth);
 		return table;
-	
+
 	}
 
 	private int _leftColMinWidth = 0;
-	public void setLeftColumnMinWidth(int minWidth){
+
+	public void setLeftColumnMinWidth(int minWidth) {
 		this._leftColMinWidth = minWidth;
 	}
-	
-	
+
 	private Table addDropDown(Table table, String parameter, String key, Collection options, String selected, String method, boolean setToSubmit, int col, int row) {
 		DropdownMenu dropDown = getDropdownMenu(parameter, options, method);
 		dropDown.setToSubmit(setToSubmit);
 		dropDown.setSelectedElement(selected);
-		return addWidget(table, key, dropDown, col, row);		
-	}	
-	
-	private Table addField(Table table, String parameter, String key, String value, int col, int row, int width){
+		return addWidget(table, key, dropDown, col, row);
+	}
+
+	private Table addField(Table table, String parameter, String key, String value, int col, int row, int width) {
 		return addWidget(table, key, getTextInput(parameter, value, width), col, row);
 	}
-	
-	private Table addWidget(Table table, String key, PresentationObject widget, int col, int row){
+
+	private Table addWidget(Table table, String key, PresentationObject widget, int col, int row) {
 		table.add(getLocalizedLabel(key, key), col, row);
 		table.add(widget, col + 1, row);
 		return table;
-	
+
 	}
-	
-	public void setOutFlowOnly(boolean b){
+
+	public void setOutFlowOnly(boolean b) {
 		this._outFlowOnly = b;
 	}
 
 	public void setPlacingIfNull(String placing) {
-		if (this._currentPlacing == null){
+		if (this._currentPlacing == null) {
 			this._currentPlacing = placing;
 		}
-	}		
-	
+	}
+
 	public void setSchoolIfNull(School school) {
-		if (this._currentSchool == null){
+		if (this._currentSchool == null) {
 			this._currentSchool = school;
 		}
-	}		
-		
+	}
 
-
-	public void setError(String placingErrorMessage){
+	public void setError(String placingErrorMessage) {
 		this._placingErrorMessage = placingErrorMessage;
 	}
-	
-	public School getSchool(){
+
+	public School getSchool() {
 		return this._currentSchool;
 	}
-	
-	public String getCurrentSchoolCategoryId(IWContext iwc) throws RemoteException, FinderException{
-		SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup.getServiceInstance(iwc.getApplicationContext(),	SchoolBusiness.class);
+
+	public String getCurrentSchoolCategoryId(IWContext iwc) throws RemoteException, FinderException {
+		SchoolBusiness schoolBusiness = (SchoolBusiness) IBOLookup.getServiceInstance(iwc.getApplicationContext(), SchoolBusiness.class);
 		String opField = getSession().getOperationalField();
-		return schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField).getPrimaryKey().toString();					
+		return schoolBusiness.getSchoolCategoryHome().findByPrimaryKey(opField).getPrimaryKey().toString();
 	}
 
 	/**
@@ -467,7 +463,5 @@ public class RegulationSearchPanel extends AccountingBlock {
 	public SchoolType getCurrentSchoolType() {
 		return this._currentSchoolType;
 	}
-		
-	
 
 }
