@@ -58,7 +58,7 @@ import com.idega.presentation.ui.SubmitButton;
 import com.idega.presentation.ui.TextArea;
 
 
-/** 
+/**
  * AgeEditor is an idegaWeb block that handles age values and
  * age regulations for children in childcare.
  * <p>
@@ -76,8 +76,8 @@ public class ProviderEditor extends AccountingBlock {
 	private final static int ACTION_OPEN = 5;
 	private final static int ACTION_SAVE = 6;
 	private final static int ACTION_DELETE = 7;
-	
-	private final static String PP = "cacc_provider_editor_"; // Parameter prefix 
+
+	private final static String PP = "cacc_provider_editor_"; // Parameter prefix
 
 	private final static String PARAMETER_SCHOOL_ID = PP + "school_id";
 	private final static String PARAMETER_PROVIDER_STRING_ID = PP + "provider_string_id";
@@ -89,12 +89,12 @@ public class ProviderEditor extends AccountingBlock {
 	private final static String PARAMETER_INFO = PP + "info";
 	private final static String PARAMETER_KEY_CODE = PP + "key_code";
 	private final static String PARAMETER_LONGITUDE = PP + "longitude";
-	private final static String PARAMETER_LATITUDE = PP + "latitude";	
-	private final static String PARAMETER_SCHOOL_AREA_ID = PP + "school_area_id";	
+	private final static String PARAMETER_LATITUDE = PP + "latitude";
+	private final static String PARAMETER_SCHOOL_AREA_ID = PP + "school_area_id";
 	private final static String PARAMETER_SCHOOL_SUB_AREA_ID = PP + "school_sub_area_id";
-    private final static String PARAMETER_SORTED_BY_DATE_OF_BIRTH = PP + "sorted_by_date_of_birth";    
-	private final static String PARAMETER_SCHOOL_TYPE_ID = PP + "school_type_id";	
-	private final static String PARAMETER_SCHOOL_YEAR_ID = PP + "school_year_id";	
+    private final static String PARAMETER_SORTED_BY_DATE_OF_BIRTH = PP + "sorted_by_date_of_birth";
+	private final static String PARAMETER_SCHOOL_TYPE_ID = PP + "school_type_id";
+	private final static String PARAMETER_SCHOOL_YEAR_ID = PP + "school_year_id";
 	private final static String PARAMETER_ORGANIZATION_NUMBER = PP + "organization_number";
 	private final static String PARAMETER_EXTRA_PROVIDER_ID = PP + "extra_provider_id";
 	private final static String PARAMETER_PROVIDER_TYPE_ID = PP + "provider_type_id";
@@ -120,8 +120,8 @@ public class ProviderEditor extends AccountingBlock {
 
 	private final static String PARAMETERVALUE_ALL_PROVIDERS = "ALL_PROVIDERS";
 
-	private final static String KP = "provider_editor."; // key prefix 
-	
+	private final static String KP = "provider_editor."; // key prefix
+
 	private final static String KEY_TITLE = KP + "title";
 	private final static String KEY_TITLE_ADD = KP + "title_add";
 	private final static String KEY_TITLE_EDIT = KP + "title_edit";
@@ -134,10 +134,10 @@ public class ProviderEditor extends AccountingBlock {
 	private final static String KEY_ZIP_AREA = KP + "zip_area";
 	private final static String KEY_PHONE = KP + "phone";
 	private final static String KEY_INFO = KP + "info";
-	private final static String KEY_OPERATIONS = KP + "operations";	
+	private final static String KEY_OPERATIONS = KP + "operations";
 	private final static String KEY_SCHOOL_AREA = KP + "school_area";
 	private final static String KEY_SCHOOL_SUB_AREA = KP + "school_sub_area";
-    private final static String KEY_SORTED_BY_DATE_OF_BIRTH = KP + "sorted_by_date_of_birth";    
+    private final static String KEY_SORTED_BY_DATE_OF_BIRTH = KP + "sorted_by_date_of_birth";
 	private final static String KEY_ORGANIZATION_NUMBER = KP + "organization_number";
 	private final static String KEY_EXTRA_PROVIDER_ID = KP + "extra_provider_id";
 	private final static String KEY_PROVIDER_TYPE = KP + "provider_type";
@@ -168,32 +168,32 @@ public class ProviderEditor extends AccountingBlock {
 	private final static String KEY_DELETE = KP + "delete";
 	private final static String KEY_DELETE_CONFIRM = KP + "delete_confirm_message";
 	private final static String KEY_BUTTON_EDIT = KP + "button_edit";
-	private final static String KEY_BUTTON_DELETE = KP + "button_delete";	
-	private final static String KEY_AREA_MISSING = KP + "area_missing";	
-	
+	private final static String KEY_BUTTON_DELETE = KP + "button_delete";
+	private final static String KEY_AREA_MISSING = KP + "area_missing";
+
 
 	private boolean _useCancelButton = true;
 	private boolean _useProviderStringId = false;
 	private boolean requireAreaChoiceForDefaultCommune = true;
-    
+
     private boolean showSortedByBirthdateCheckbox = false;
-	
+
 	public boolean getUseCancelButton() {
 		return this._useCancelButton;
 	}
-	
+
 	public void setUseCancelButton(boolean b) {
 		this._useCancelButton = b;
 	}
-	
+
 	public boolean getUseProviderStringId() {
 		return this._useProviderStringId;
 	}
-	
+
 	public void setUseProviderStringId(boolean b) {
 		this._useProviderStringId = b;
 	}
-	
+
 	public boolean isShowSortedByBirthdateCheckbox() {
         return this.showSortedByBirthdateCheckbox;
     }
@@ -206,6 +206,7 @@ public class ProviderEditor extends AccountingBlock {
     /**
 	 * @see com.idega.presentation.Block#main()
 	 */
+	@Override
 	public void init(final IWContext iwc) {
 		try {
 			int action = parseAction(iwc);
@@ -224,7 +225,7 @@ public class ProviderEditor extends AccountingBlock {
 					break;
 				case ACTION_AREA_CHANGE:
 					handleAreaChangeAction(iwc);
-					break;					
+					break;
 				case ACTION_SAVE:
 					handleSaveAction(iwc);
 					break;
@@ -239,23 +240,23 @@ public class ProviderEditor extends AccountingBlock {
 	}
 
 	/*
-	 * Returns the action constant for the action to perform based 
+	 * Returns the action constant for the action to perform based
 	 * on the POST parameters in the specified context.
 	 */
 	private int parseAction(IWContext iwc) {
 		int action = ACTION_DEFAULT;
 
-		//Must test for CANCEL and SAVE before AREA_CHANGE, because AREA_CHANGE 
+		//Must test for CANCEL and SAVE before AREA_CHANGE, because AREA_CHANGE
 		//is always set to true (hidden) on the edit/new page
-		
+
 		if (iwc.isParameterSet(PARAMETER_CANCEL)) {
 			action = ACTION_CANCEL;
 		} else if (iwc.isParameterSet(PARAMETER_NEW)) {
-			action = ACTION_NEW;			
+			action = ACTION_NEW;
 		} else if (iwc.isParameterSet(PARAMETER_SAVE)) {
 			action = ACTION_SAVE;
 		} else if (iwc.isParameterSet(PARAMETER_AREA_CHANGE)) {
-			action = ACTION_AREA_CHANGE;			
+			action = ACTION_AREA_CHANGE;
 		} else if (getIntParameter(iwc, PARAMETER_DELETE_ID) > 0) {
 			action = ACTION_DELETE;
 		} else if (iwc.isParameterSet(PARAMETER_SCHOOL_ID)) {
@@ -263,12 +264,12 @@ public class ProviderEditor extends AccountingBlock {
 		}
 
 		return action;
-		
+
 	}
 
 	/*
 	 * Handles the default action for this block.
-	 */	
+	 */
 	private void handleDefaultAction(IWContext iwc) {
 		ApplicationForm app = new ApplicationForm(this);
 		app.setLocalizedTitle(KEY_TITLE, "Providers");
@@ -279,9 +280,9 @@ public class ProviderEditor extends AccountingBlock {
 
 	/*
 	 * Handles the new action for this block.
-	 */	
+	 */
 	private void handleNewAction(IWContext iwc) {
-	
+
         ApplicationForm af = getProviderForm(iwc, "-1", // schoolId,
                 "", // providerStringId
                 "", // name,
@@ -317,29 +318,29 @@ public class ProviderEditor extends AccountingBlock {
                 "",  // sortedByDateOfBirth
                 ""); //Girotext
         add(af);
-        
+
 	}
-	
+
 	/*
      * Handles the area change action (school area dropdown submit) for this
      * block.
-     */	
+     */
 	private void handleAreaChangeAction(IWContext iwc) {
-		
+
 		String ownPosting = null;
 		String doublePosting = null;
 		String errorMessage = null;
-		
-		try {			
+
+		try {
 			PostingBlock p = new PostingBlock(null, null);
 			p.generateStrings(iwc);
 			ownPosting = p.getOwnPosting();
-			doublePosting = p.getDoublePosting();	
+			doublePosting = p.getDoublePosting();
 		} catch (PostingParametersException e) {
 			errorMessage = localize(e.getTextKey(), e.getTextKey()) + e. getDefaultText();
-		}				
-		
-		add(getProviderForm(iwc, 
+		}
+
+		add(getProviderForm(iwc,
 			getParameter(iwc, PARAMETER_SCHOOL_ID),
 			getParameter(iwc, PARAMETER_PROVIDER_STRING_ID),
 			getParameter(iwc, PARAMETER_NAME),
@@ -350,7 +351,7 @@ public class ProviderEditor extends AccountingBlock {
 			getParameter(iwc, PARAMETER_PHONE),
 			getParameter(iwc, PARAMETER_KEY_CODE),
 			getParameter(iwc, PARAMETER_LATITUDE),
-			getParameter(iwc, PARAMETER_LONGITUDE),            
+			getParameter(iwc, PARAMETER_LONGITUDE),
 			getParameter(iwc, PARAMETER_SCHOOL_AREA_ID),
 			getParameter(iwc, PARAMETER_SCHOOL_SUB_AREA_ID),
 			getSchoolTypeMap(iwc),
@@ -368,17 +369,17 @@ public class ProviderEditor extends AccountingBlock {
 			getParameter(iwc, PARAMETER_POSTGIRO),
 			getParameter(iwc, PARAMETER_BANKGIRO),
 			getParameter(iwc, PARAMETER_STATISTICS_TYPE),
-			ownPosting, 
-			doublePosting, 
-			errorMessage, 
+			ownPosting,
+			doublePosting,
+			errorMessage,
 			!iwc.isParameterSet(PARAMETER_SCHOOL_ID),
              getParameter(iwc, PARAMETER_SORTED_BY_DATE_OF_BIRTH),
-             getParameter(iwc, PARAMETER_GIROTEXT)));		
-	}	
+             getParameter(iwc, PARAMETER_GIROTEXT)));
+	}
 
 	/*
 	 * Handles the open action (edit icon clicked in the list) for this block.
-	 */	
+	 */
 	private void handleOpenAction(IWContext iwc) {
 		try {
 			Provider provider = new Provider(getIntParameter(iwc, PARAMETER_SCHOOL_ID));
@@ -405,7 +406,7 @@ public class ProviderEditor extends AccountingBlock {
 						}
 					}
 					schoolTypeMap.put(stIdString, schoolYearMap);
-				}			
+				}
 			}
 			add(getProviderForm(
 					iwc,
@@ -419,9 +420,9 @@ public class ProviderEditor extends AccountingBlock {
 					school.getSchoolPhone(),
 					school.getSchoolKeyCode(),
 					school.getSchoolLatitude(),
-					school.getSchoolLongitude(),                    
+					school.getSchoolLongitude(),
 					"" + school.getSchoolAreaId(),
-					"" + school.getSchoolSubAreaId(),                    
+					"" + school.getSchoolSubAreaId(),
 					schoolTypeMap,
 					school.getOrganizationNumber(),
 					school.getExtraProviderId(),
@@ -455,19 +456,19 @@ public class ProviderEditor extends AccountingBlock {
 		String errorMessage = null;
 
 		String ownPosting = null;
-		String doublePosting = null;  
-		 
-		try {			
+		String doublePosting = null;
+
+		try {
 			PostingBlock p = new PostingBlock(null, null);
 			p.generateStrings(iwc);
 			ownPosting = p.getOwnPosting();
 			doublePosting = p.getDoublePosting();
-			
+
 			//If chosen commune is default, area and sub area must be specified
 			String communeId = getParameter(iwc, PARAMETER_COMMUNE_ID);
 			String areaId = getParameter(iwc, PARAMETER_SCHOOL_AREA_ID);
 			String subAreaId = getParameter(iwc, PARAMETER_SCHOOL_SUB_AREA_ID);
-			
+
 			if(this.requireAreaChoiceForDefaultCommune){
 				CommuneHome home = (CommuneHome) com.idega.data.IDOLookup.getHome(Commune.class);
 				try{
@@ -476,10 +477,10 @@ public class ProviderEditor extends AccountingBlock {
 						throw new ProviderException(KEY_AREA_MISSING, "Area and/or sub area is missing");
 					}
 				}catch(FinderException ex){
-	
+
 				}
 			}
-			
+
 			ProviderBusiness pb = getProviderBusiness(iwc);
 			pb.saveProvider(
 					getParameter(iwc, PARAMETER_SCHOOL_ID),
@@ -510,11 +511,11 @@ public class ProviderEditor extends AccountingBlock {
 					getParameter(iwc, PARAMETER_POSTGIRO),
 					getParameter(iwc, PARAMETER_BANKGIRO),
 					getParameter(iwc, PARAMETER_STATISTICS_TYPE),
-					ownPosting, 
+					ownPosting,
 					doublePosting,
 					this._useProviderStringId,
                      getParameter(iwc, PARAMETER_SORTED_BY_DATE_OF_BIRTH),
-                     getParameter(iwc, PARAMETER_GIROTEXT)); 
+                     getParameter(iwc, PARAMETER_GIROTEXT));
 		} catch (RemoteException e) {
 			add(new ExceptionWrapper(e));
 			return;
@@ -522,8 +523,8 @@ public class ProviderEditor extends AccountingBlock {
 			errorMessage = localize(e.getTextKey(), e.getDefaultText());
 		} catch (PostingParametersException e) {
 			errorMessage = localize(e.getTextKey(), e.getTextKey()) + e. getDefaultText();
-		} 
-		
+		}
+
 		if (errorMessage != null) {
 			add(getProviderForm(
 					iwc,
@@ -537,7 +538,7 @@ public class ProviderEditor extends AccountingBlock {
 					getParameter(iwc, PARAMETER_PHONE),
 					getParameter(iwc, PARAMETER_KEY_CODE),
 					getParameter(iwc, PARAMETER_LATITUDE),
-					getParameter(iwc, PARAMETER_LONGITUDE),                    
+					getParameter(iwc, PARAMETER_LONGITUDE),
 					getParameter(iwc, PARAMETER_SCHOOL_AREA_ID),
 					getParameter(iwc, PARAMETER_SCHOOL_SUB_AREA_ID),
 					getSchoolTypeMap(iwc),
@@ -565,10 +566,10 @@ public class ProviderEditor extends AccountingBlock {
 			handleDefaultAction(iwc);
 		}
 	}
-	
+
 	/*
 	 * Handles the delete action for this block.
-	 */	
+	 */
 	private void handleDeleteAction(IWContext iwc) {
 		String errorMessage = null;
 		try {
@@ -591,12 +592,12 @@ public class ProviderEditor extends AccountingBlock {
 			ButtonPanel bp = new ButtonPanel(this);
 			bp.addLocalizedButton(PARAMETER_CANCEL, KEY_CANCEL, "Avbryt");
 			app.setButtonPanel(bp);
-			add(app);		
+			add(app);
 		} else {
 			handleDefaultAction(iwc);
 		}
 	}
-	 
+
 	/*
 	 * Returns the search panel for this block.
 	 */
@@ -604,7 +605,7 @@ public class ProviderEditor extends AccountingBlock {
 		Table searchPanel = new Table();
 		searchPanel.setCellpadding(0);
 		searchPanel.setCellspacing(0);
-		
+
 		Table selectorTable = new Table();
 		selectorTable.setCellpadding(getCellpadding());
 		selectorTable.setCellspacing(getCellspacing());
@@ -624,15 +625,15 @@ public class ProviderEditor extends AccountingBlock {
 				}
 				GenericButton cancelButton = new GenericButton(PARAM_CANCEL, localize(KEY_CANCEL, "Cancel"));
 				cancelButton = getButton(cancelButton);
-				cancelButton.setPageToOpen(homePage);			
+				cancelButton.setPageToOpen(homePage);
 				buttonTable.add(cancelButton, 2, 1);
 			} catch (Exception e) {}
 		}
 		searchPanel.add(buttonTable, 1, 2);
-		
+
 		return searchPanel;
-	}	
-	
+	}
+
 	/*
 	 * Returns the list of providers.
 	 */
@@ -645,7 +646,7 @@ public class ProviderEditor extends AccountingBlock {
 			if (operationalField.equals(PARAMETERVALUE_ALL_PROVIDERS)) {
 				providers = pb.findAllSchools();
 			} else if (operationalField.length() == 0) {
-				providers = pb.findAllSchoolsByOperationalField(getSession().getOperationalField());				
+				providers = pb.findAllSchoolsByOperationalField(getSession().getOperationalField());
 			} else {
 				getSession().setOperationalField(operationalField);
 				providers = pb.findAllSchoolsByOperationalField(operationalField);
@@ -657,7 +658,7 @@ public class ProviderEditor extends AccountingBlock {
 		}
 
 		ListTable list = new ListTable(this, 7);
-		
+
 		list.setLocalizedHeader(KEY_NAME, "Name", 1);
 		list.setLocalizedHeader(KEY_ADDRESS, "Address", 2);
 		list.setLocalizedHeader(KEY_ZIP_CODE, "Zip code", 3);
@@ -712,9 +713,9 @@ public class ProviderEditor extends AccountingBlock {
 		mainPanel.setCellpadding(0);
 		mainPanel.setCellspacing(0);
 		mainPanel.add(new HiddenInput(PARAMETER_DELETE_ID, "-1"), 1, 1);
-	
+
 		mainPanel.add(list, 1, 1);
-		
+
 		return mainPanel;
 	}
 
@@ -733,7 +734,7 @@ public class ProviderEditor extends AccountingBlock {
 //		} catch (Exception e) {}
 //		return bp;
 //	}
-	
+
 	/*
 	 * Returns the application form for creating or editing a provider.
 	 */
@@ -746,12 +747,12 @@ public class ProviderEditor extends AccountingBlock {
 			String address,
 			String zipCode,
 			String zipArea,
-			String phone,            
+			String phone,
 			String keyCode,
 			String latitude,
 			String longitude,
 			String schoolAreaId,
-			String schoolSubAreaId,            
+			String schoolSubAreaId,
 			Map schoolTypeMap,
 			String organizationNumber,
 			String extraProviderId,
@@ -770,7 +771,7 @@ public class ProviderEditor extends AccountingBlock {
 			String ownPosting,
 			String doublePosting,
 			String errorMessage,
-			boolean isNew, 
+			boolean isNew,
              String sortedByDateOfBirth,
              String girotext) {
 
@@ -783,7 +784,7 @@ public class ProviderEditor extends AccountingBlock {
 		info = info == null ? "" : info;
 		if (info.equals("null")) {
 			info = "";
-		}		
+		}
 		keyCode = keyCode == null ? "" : keyCode;
 		longitude = longitude == null ? "" : longitude;
 		latitude = latitude == null ? "" : latitude;
@@ -791,15 +792,15 @@ public class ProviderEditor extends AccountingBlock {
 		extraProviderId = extraProviderId == null ? "" : extraProviderId;
 		postgiro = postgiro == null ? "" : postgiro;
 		bankgiro = bankgiro == null ? "" : bankgiro;
-		girotext = girotext == null ? "" : girotext;	
-		
+		girotext = girotext == null ? "" : girotext;
+
 		ApplicationForm app = new ApplicationForm(this);
 		if (isNew) {
 			app.setLocalizedTitle(KEY_TITLE_ADD, "Create new provider");
 		} else {
 			app.setLocalizedTitle(KEY_TITLE_EDIT, "Edit provider");
 		}
-		
+
 		Table table = new Table();
 		table.setCellpadding(getCellpadding());
 		table.setCellspacing(getCellspacing());
@@ -827,12 +828,12 @@ public class ProviderEditor extends AccountingBlock {
 		table.add(getCommuneDropdownMenu(PARAMETER_COMMUNE_ID, communeId), 2, row++);
 		table.add(getSmallHeader(localize(KEY_COUNTRY, "Country")), 1, row);
 		table.mergeCells(2, row, 4, row);
-		table.add(getCountryDropdownMenu(PARAMETER_COUNTRY_ID, countryId), 2, row++);        
-        
-		table.add(getSmallHeader(localize(KEY_PHONE, "Phone")), 1, row);        
+		table.add(getCountryDropdownMenu(PARAMETER_COUNTRY_ID, countryId), 2, row++);
+
+		table.add(getSmallHeader(localize(KEY_PHONE, "Phone")), 1, row);
 		table.mergeCells(2, row, 4, row);
-		table.add(getTextInput(PARAMETER_PHONE, phone, 100), 2, row++);       
-		
+		table.add(getTextInput(PARAMETER_PHONE, phone, 100), 2, row++);
+
 		table.add(getSmallHeader(localize(KEY_INFO, "Information")), 1, row);
 		table.setVerticalAlignment(1, row, Table. VERTICAL_ALIGN_TOP);
 		table.mergeCells(2, row, 4, row);
@@ -840,31 +841,31 @@ public class ProviderEditor extends AccountingBlock {
 		infoTextArea.setColumns(32);
 		infoTextArea.setRows(3);
 		infoTextArea.setValue(info);
-		table.add(infoTextArea, 2, row++);		
+		table.add(infoTextArea, 2, row++);
 		table.add(getSmallHeader(localize(KEY_SCHOOL_AREA, "School area")), 1, row);
 		table.mergeCells(2, row, 4, row);
 		DropdownMenu schoolAreaDrpdwn = getSchoolAreaDropdownMenu(iwc, PARAMETER_SCHOOL_AREA_ID, schoolAreaId);
 		table.add(schoolAreaDrpdwn, 2, row++);
-		
+
 		table.add(getSmallHeader(localize(KEY_SCHOOL_SUB_AREA, "School sub area")), 1, row);
 		table.mergeCells(2, row, 4, row);
 		table.add(getSchoolSubAreaDropdownMenu(iwc, PARAMETER_SCHOOL_SUB_AREA_ID, schoolSubAreaId, schoolAreaId), 2, row++);
-        
+
         if (isShowSortedByBirthdateCheckbox()) {
-            table.add(getSmallHeader(localize(KEY_SORTED_BY_DATE_OF_BIRTH, "Sorted by date of birth")), 1, row); 
+            table.add(getSmallHeader(localize(KEY_SORTED_BY_DATE_OF_BIRTH, "Sorted by date of birth")), 1, row);
             table.mergeCells(2, row, 4, row);
             CheckBox cb = getCheckBox(PARAMETER_SORTED_BY_DATE_OF_BIRTH, "true");
             if (!sortedByDateOfBirth.equals("")) {
                 cb.setChecked(true);
             }
-            table.add(cb, 2, row++);    
+            table.add(cb, 2, row++);
         }
-        
+
 		row++;
 		Table schoolTypeTable = new Table();
 		schoolTypeTable.setCellpadding(getCellpadding());
 		schoolTypeTable.setCellspacing(getCellspacing());
-		Collection schoolTypes = getSchoolTypes(iwc);				
+		Collection schoolTypes = getSchoolTypes(iwc);
 		Iterator iter = schoolTypes.iterator();
 		int stRow = 1;
 		while (iter.hasNext()) {
@@ -880,7 +881,7 @@ public class ProviderEditor extends AccountingBlock {
 			Table t = getSchoolYearCheckBoxes(iwc, ((Integer) st.getPrimaryKey()).intValue(), (Map) schoolTypeMap.get(stId));
 			if (t != null) {
 				schoolTypeTable.add(t, 2, stRow);
-				stRow++; 
+				stRow++;
 			}
 		}
 		table.add(getSmallHeader(localize(KEY_OPERATIONS, "Operations")), 1, row);
@@ -927,7 +928,7 @@ public class ProviderEditor extends AccountingBlock {
 		table.add(getSmallHeader(localize(KEY_GIROTEXT, "Girotext")), 2, row);
 		table.add(getText("&nbsp;&nbsp;&nbsp;&nbsp;"), 2, row);
 		table.add(this.getTextArea(PARAMETER_GIROTEXT, girotext), 2, row++);
-		
+
 		row++;
 		table.mergeCells(2, row, 4, row);
 		table.add(getText("&nbsp;"), 2, row);
@@ -942,11 +943,11 @@ public class ProviderEditor extends AccountingBlock {
 		row++;
 		table.mergeCells(2, row, 4, row);
 		table.add(new PostingBlock(ownPosting, doublePosting), 2, row);
-		
+
 		Table mainPanel = new Table();
 		mainPanel.setCellpadding(0);
 		mainPanel.setCellspacing(0);
-		
+
 		if (errorMessage != null) {
 			Table t = new Table();
 			t.setCellpadding(getCellpadding());
@@ -961,21 +962,21 @@ public class ProviderEditor extends AccountingBlock {
 		if (!isNew) {
 			app.addHiddenInput(PARAMETER_EDIT, "true");
 		}
-		app.setMainPanel(mainPanel);	
-		
+		app.setMainPanel(mainPanel);
+
 		ButtonPanel bp = new ButtonPanel(this);
 		bp.addLocalizedButton(PARAMETER_SAVE, KEY_SAVE, "Spara");
 		bp.addLocalizedButton(PARAMETER_CANCEL, KEY_CANCEL, "Avbryt");
 		app.setButtonPanel(bp);
-		
+
 		schoolAreaDrpdwn.setToSubmit();
 		schoolAreaDrpdwn.setOnSubmit(PARAMETER_AREA_CHANGE);
 		// Action command for the area dropdown submit.
-		// Would be better to set this direcly on the drop down 
+		// Would be better to set this direcly on the drop down
 		// with schoolAreaDrpdwn.setOnSubmit(PARAMETER_AREA_CHANGE)
 		app.addHiddenInput(PARAMETER_AREA_CHANGE, "true");
-		
-		return app;		
+
+		return app;
 	}
 
 	private Map getSchoolTypeMap(IWContext iwc) {
@@ -983,8 +984,8 @@ public class ProviderEditor extends AccountingBlock {
 		Map schoolTypeMap = new TreeMap();
 		while(iter.hasNext()) {
 			SchoolType st = (SchoolType) iter.next();
-			String stId = st.getPrimaryKey().toString();			
-			if (iwc.isParameterSet(PARAMETER_SCHOOL_TYPE_ID + stId)) {		
+			String stId = st.getPrimaryKey().toString();
+			if (iwc.isParameterSet(PARAMETER_SCHOOL_TYPE_ID + stId)) {
 				Map schoolYearMap = new TreeMap();
 				String[] schoolYearIds = iwc.getParameterValues(PARAMETER_SCHOOL_YEAR_ID + stId);
 				if (schoolYearIds != null) {
@@ -1000,7 +1001,7 @@ public class ProviderEditor extends AccountingBlock {
 
 	/*
 	 * Returns a checkbox table.
-	 */	
+	 */
 	private Table getCheckBoxTable(String parameter, String value, String textKey, String defaultText) {
 		Table table = new Table();
 		table.add(getSmallHeader(localize(textKey, defaultText)), 2, 1);
@@ -1011,15 +1012,15 @@ public class ProviderEditor extends AccountingBlock {
 		table.add(cb, 1, 1);
 		return table;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for school areas. 
+	 * Returns a DropdownMenu for school areas.
 	 */
 	private DropdownMenu getSchoolAreaDropdownMenu(IWContext iwc, String parameter, String schoolAreaId) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
 		menu.addMenuElement(-1, localize(KEY_SCHOOL_AREA_SELECTOR_HEADER, "Choose school area"));
 		int selectedId;
-		try{	
+		try{
 			selectedId = (new Integer(schoolAreaId)).intValue();
 		} catch (NumberFormatException ex){
 			selectedId = -1;
@@ -1035,12 +1036,12 @@ public class ProviderEditor extends AccountingBlock {
 			if (selectedId > 0) {
 				menu.setSelectedElement(selectedId);
 			}
-		}		
-		return menu;	
+		}
+		return menu;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for school areas. 
+	 * Returns a DropdownMenu for school areas.
 	 */
 	private DropdownMenu getSchoolSubAreaDropdownMenu(IWContext iwc, String parameter, String schoolSubAreaId, String schoolAreaId) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
@@ -1063,12 +1064,12 @@ public class ProviderEditor extends AccountingBlock {
 				menu.setSelectedElement(selectedId);
 			}
 		}
-		
-		return menu;	
-	}	
-	
+
+		return menu;
+	}
+
 	/*
-	 * Returns a DropdownMenu for provider types. 
+	 * Returns a DropdownMenu for provider types.
 	 */
 	private DropdownMenu getProviderTypeDropdownMenu(IWContext iwc, String name, String selectedIndex) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(name));
@@ -1079,7 +1080,7 @@ public class ProviderEditor extends AccountingBlock {
 				Iterator iter = c.iterator();
 				while (iter.hasNext()) {
 					ProviderType pt = (ProviderType) iter.next();
-					menu.addMenuElement("" + (((Integer) pt.getPrimaryKey()).intValue()), 
+					menu.addMenuElement("" + (((Integer) pt.getPrimaryKey()).intValue()),
 							localize(pt.getLocalizationKey(), pt.getLocalizationKey()));
 				}
 				if (selectedIndex != null) {
@@ -1088,11 +1089,11 @@ public class ProviderEditor extends AccountingBlock {
 			}
 		} catch (RemoteException e) {}
 
-		return menu;	
+		return menu;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for school management types. 
+	 * Returns a DropdownMenu for school management types.
 	 */
 	private DropdownMenu getSchoolManagementTypeDropdownMenu(IWContext iwc, String parameter, String companyTypeId) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
@@ -1109,19 +1110,19 @@ public class ProviderEditor extends AccountingBlock {
 			if (companyTypeId != null) {
 				menu.setSelectedElement(companyTypeId);
 			}
-		}		
-		return menu;	
+		}
+		return menu;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for communes. 
+	 * Returns a DropdownMenu for communes.
 	 */
 	private DropdownMenu getCommuneDropdownMenu(String parameter, String communeId) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
 		menu.addMenuElement(0, localize(KEY_COMMUNE_SELECTOR_HEADER, "Choose commune"));
 		try {
 			CommuneHome home = (CommuneHome) com.idega.data.IDOLookup.getHome(Commune.class);
-			home.toString();			
+			home.toString();
 			Collection c = home.findAllCommunes();
 			if (c != null) {
 				Iterator iter = c.iterator();
@@ -1133,34 +1134,34 @@ public class ProviderEditor extends AccountingBlock {
 				if (communeId != null) {
 					menu.setSelectedElement(communeId);
 				}
-			}		
+			}
 		} catch (Exception e) {
 			add(new ExceptionWrapper(e));
 		}
-		return menu;	
+		return menu;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for countries. 
+	 * Returns a DropdownMenu for countries.
 	 */
 	private CountryDropdownMenu getCountryDropdownMenu(String parameter, String countryId) {
 		CountryDropdownMenu menu = (CountryDropdownMenu) getStyledInterface(new CountryDropdownMenu(parameter));
 		try {
 			CountryHome home = (CountryHome) com.idega.data.IDOLookup.getHome(Country.class);
 			Country country = home.findByPrimaryKey(new Integer(countryId));
-			menu.setSelectedCountry(country);						
+			menu.setSelectedCountry(country);
 		} catch (Exception e) {}
 		return menu;
 	}
-	
+
 	/*
-	 * Returns a DropdownMenu for provider statistics types. 
+	 * Returns a DropdownMenu for provider statistics types.
 	 */
 	private DropdownMenu getStatisticsTypeDropdownMenu(String parameter, String statisticsType) {
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
 		menu.addMenuElement("", localize(KEY_STATISTICS_TYPE_SELECTOR_HEADER, "Choose statistics type"));
 		try {
-			ProviderStatisticsTypeHome home = (ProviderStatisticsTypeHome) com.idega.data.IDOLookup.getHome(ProviderStatisticsType.class);			
+			ProviderStatisticsTypeHome home = (ProviderStatisticsTypeHome) com.idega.data.IDOLookup.getHome(ProviderStatisticsType.class);
 			Collection c = home.findAll();
 			if (c != null) {
 				Iterator iter = c.iterator();
@@ -1173,20 +1174,20 @@ public class ProviderEditor extends AccountingBlock {
 				if (!statisticsType.equals("")) {
 					menu.setSelectedElement(statisticsType);
 				}
-			}		
+			}
 		} catch (Exception e) {
 			add(new ExceptionWrapper(e));
 		}
-		return menu;	
+		return menu;
 	}
 
 	/*
-	 * Returns a DropdownMenu for operational fields. 
+	 * Returns a DropdownMenu for operational fields.
 	 */
 	private DropdownMenu getOperationalFieldDropdownMenu(String parameter, String operationalField) {
 		if (operationalField == null || operationalField.length() == 0) {
 			try {
-				operationalField = getSession().getOperationalField();				
+				operationalField = getSession().getOperationalField();
 			} catch (RemoteException e) {}
 		}
 		DropdownMenu menu = (DropdownMenu) getStyledInterface(new DropdownMenu(parameter));
@@ -1209,17 +1210,17 @@ public class ProviderEditor extends AccountingBlock {
 			add(new ExceptionWrapper(e));
 		}
 		menu.setToSubmit(true);
-		return menu;	
+		return menu;
 	}
 
 	/*
-	 * Returns a table with checkboxes for school years for the specified school type id. 
+	 * Returns a table with checkboxes for school years for the specified school type id.
 	 */
 	Table getSchoolYearCheckBoxes(IWContext iwc, int schoolTypeId, Map schoolYearMap) {
 		Table table = new Table();
 		table.setCellpadding(getCellpadding());
 		table.setCellspacing(getCellspacing());
-		
+
 		Collection c = getSchoolYears(iwc, schoolTypeId);
 		Iterator iter = c.iterator();
 		int col = 1;
@@ -1235,7 +1236,7 @@ public class ProviderEditor extends AccountingBlock {
 			table.add(syCheckBox, col, 1);
 			table.add(getText(sy.getName()), col, 2);
 			table.setAlignment(col, 2, Table.HORIZONTAL_ALIGN_CENTER);
-			col++;								
+			col++;
 		}
 
 		if (hasSchoolYears) {
@@ -1244,20 +1245,14 @@ public class ProviderEditor extends AccountingBlock {
 			return null;
 		}
 	}
-	 
+
 	/*
 	 * Returns all school areas.
 	 */
-	private Collection getSchoolAreas(IWContext iwc) {
-		Collection c = null;
-		try {
-			c = getSchoolBusiness(iwc).findAllSchoolAreas();
-		} catch (RemoteException e) {
-			add(new ExceptionWrapper(e));
-		}
-		return c;
+	private Collection<SchoolArea> getSchoolAreas(IWContext iwc) {
+		return getSchoolBusiness(iwc).getAllSchoolAreas();
 	}
-	
+
 	private Collection getSchoolSubAreas(IWContext iwc, String schoolArea) {
 		Collection c = null;
 		if (!schoolArea.equals("")) { //there is no use to look for sub areas if area itself is not defined
@@ -1265,10 +1260,10 @@ public class ProviderEditor extends AccountingBlock {
                 c = getSchoolBusiness(iwc).findAllSchoolSubAreasByArea(schoolArea);
             } catch (RemoteException e) {
                 add(new ExceptionWrapper(e));
-            }    
+            }
         }
 		return c;
-	}	
+	}
 
 	/*
 	 * Returns all school types.
@@ -1308,7 +1303,7 @@ public class ProviderEditor extends AccountingBlock {
 		}
 		return c;
 	}
-	
+
 	/*
 	 * Returns a school business object
 	 */
@@ -1320,8 +1315,8 @@ public class ProviderEditor extends AccountingBlock {
 			add(new ExceptionWrapper(e));
 		}
 		return sb;
-	}	
-	
+	}
+
 	/*
 	 * Returns a provider business object
 	 */
@@ -1333,7 +1328,7 @@ public class ProviderEditor extends AccountingBlock {
 			add(new ExceptionWrapper(e));
 		}
 		return pb;
-	}	
+	}
 
 	/*
 	 * Returns a regulations business object
