@@ -13,12 +13,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.EJBLocalHome;
 import javax.ejb.EJBLocalObject;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
+
 import se.idega.idegaweb.commune.accounting.business.AccountingUtil;
 import se.idega.idegaweb.commune.accounting.invoice.business.RegularPaymentBusiness;
 import se.idega.idegaweb.commune.accounting.invoice.data.RegularPaymentEntry;
@@ -36,6 +38,7 @@ import se.idega.idegaweb.commune.accounting.regulations.data.Regulation;
 import se.idega.idegaweb.commune.accounting.regulations.data.RegulationHome;
 import se.idega.idegaweb.commune.accounting.regulations.data.RegulationSpecType;
 import se.idega.idegaweb.commune.accounting.school.presentation.PostingBlock;
+
 import com.idega.block.school.business.SchoolBusiness;
 import com.idega.block.school.data.School;
 import com.idega.block.school.data.SchoolCategory;
@@ -43,6 +46,7 @@ import com.idega.block.school.data.SchoolHome;
 import com.idega.block.school.data.SchoolType;
 import com.idega.block.school.data.SchoolTypeHome;
 import com.idega.business.IBOLookup;
+import com.idega.data.IDOEntity;
 import com.idega.data.IDOEntityDefinition;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
@@ -1145,7 +1149,7 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 				return false;
 			}
 
-			public int compareTo(Object arg0) {
+			public int compareTo(IDOEntity arg0) {
 				return 0;
 			}
 
@@ -1170,7 +1174,7 @@ public class RegularPaymentEntriesList extends AccountingBlock {
 			public void setEditSign(String p0) {
 			}
 
-			public Object decode(String string) {
+			public Integer decode(String string) {
 				return null;
 			}
 

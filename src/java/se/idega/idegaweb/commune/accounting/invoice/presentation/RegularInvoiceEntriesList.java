@@ -48,6 +48,7 @@ import com.idega.block.school.data.SchoolCategory;
 import com.idega.block.school.data.SchoolHome;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
+import com.idega.data.IDOEntity;
 import com.idega.data.IDOEntityDefinition;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
@@ -1084,8 +1085,8 @@ public class RegularInvoiceEntriesList extends AccountingBlock {
 			public Object getPrimaryKey() throws EJBException {return null;}
 			public void remove() throws EJBException {}
 			public boolean isIdentical(EJBLocalObject arg0) throws EJBException {return false;}
-			public int compareTo(Object arg0) {return 0;}
-			public Object decode(String string){return null;}
+			public int compareTo(IDOEntity arg0) {return 0;}
+			public Integer decode(String string){return null;}
 			public Collection decode(String[] pks){return null;}
 			public String getDatasource() {return null;}
 			public void setDatasource(String datasource) {}
